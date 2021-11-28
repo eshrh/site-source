@@ -1,15 +1,15 @@
 (defn upload []
   (os/shell "git add *")
   (os/shell "git commit -m 'website update'")
-  #(os/shell "git push origin master")
+  (os/shell "git push origin master")
 
   (os/shell "stack build")
-  (os/shell "stack exec site build"))
+  (os/shell "stack exec site build")
 
-  #(os/cd "_site")
-  #(os/shell "git add *")
-  #(os/shell "git commit -m 'website update'")
-  #(os/shell "git push origin master"))
+  (os/cd "_site")
+  (os/shell "git add *")
+  (os/shell "git commit -m 'website update'")
+  (os/shell "git push origin master"))
 
 (defn run [] (print "run"))
 
