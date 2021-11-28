@@ -21,6 +21,8 @@ pandocCompilerHighlight =
     defaultHakyllWriterOptions
       { writerHighlightStyle   = Just pandocCodeStyle}
 
+
+
 expandHome :: FilePath -> String -> FilePath
 expandHome home s
   | "~" `isPrefixOf` s = joinPath [home, drop 2 s]
@@ -68,8 +70,8 @@ main = do
         compile $ do
             posts <- recentFirst =<< loadAll "posts/*"
             let archiveCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Archives"            `mappend`
+                    listField "posts" postCtx (return posts) <>
+                    constField "title" "Archives"            <>
                     defaultContext
 
             makeItem ""
@@ -83,7 +85,7 @@ main = do
         compile $ do
             posts <- recentFirst =<< loadAll "posts/*"
             let indexCtx =
-                    listField "posts" postCtx (return posts) `mappend`
+                    listField "posts" postCtx (return posts) <>
                     defaultContext
 
             getResourceBody
@@ -99,7 +101,8 @@ main = do
         makeItem $ styleToCss pandocCodeStyle
 
 --------------------------------------------------------------------------------
+
 postCtx :: Context String
 postCtx =
-    dateField "date" "%B %e, %Y" `mappend`
+    dateField "date" "%Y / %m / %d" <>
     defaultContext
