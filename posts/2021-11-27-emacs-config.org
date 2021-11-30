@@ -590,7 +590,9 @@ Aur helper in emacs
 (straight-use-package 'elfeed)
 (setq elfeed-feeds
       '("https://sachachua.com/blog/feed/"
-        "https://hnrss.org/frontpage"))
+        "https://hnrss.org/frontpage"
+        "https://ianthehenry.com/feed.xml"))
+
 #+END_SRC
 
 * Programming
@@ -756,11 +758,12 @@ I use the digestif LSP. I don’t like the lens in this mode, so I turn it off.
    :host github
    :repo "serialdev/ijanet-mode"
 ))
-
-(define-key janet-mode-map (kbd "C-c C-l") 'ijanet-eval-line)
-(define-key janet-mode-map (kbd "C-c C-p") 'ijanet)
-(define-key janet-mode-map (kbd "C-c C-b") 'ijanet-eval-buffer)
-(define-key janet-mode-map (kbd "C-c C-r") 'ijanet-eval-region)
+(defun janet-key-config ()
+  (interactive)
+    (define-key janet-mode-map (kbd "C-c C-l") 'ijanet-eval-line)
+    (define-key janet-mode-map (kbd "C-c C-p") 'ijanet)
+    (define-key janet-mode-map (kbd "C-c C-b") 'ijanet-eval-buffer)
+    (define-key janet-mode-map (kbd "C-c C-r") 'ijanet-eval-region))
 #+END_SRC
 
 * Elisp

@@ -10,12 +10,12 @@
    (stack exec site build)))
 
 (defn upload []
+  (build)
   (do-shell
    (git add *)
    (git commit -m "website update")
    (git push origin master))
 
-  (build)
   (os/cd "_site")
   (do-shell
    (git add *)
