@@ -20,7 +20,7 @@
 
   (if (not (os/stat ".git"))
     (do-shell
-     (git-init)
+     (git init)
      (git remote add origin "https://github.com/eshrh/site")))
 
   (do-shell
