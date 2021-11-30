@@ -26,7 +26,7 @@
   (do-shell
    (git add *)
    (git commit -m "website update")
-   (git push origin master)))
+   (git push origin master --force)))
 
 (defn run []
   (build)
