@@ -17,6 +17,12 @@
    (git push origin master))
 
   (os/cd "_site")
+
+  (if (not (os/stat ".git"))
+    (do-shell
+     (git-init)
+     (git remote add origin "https://github.com/eshrh/site")))
+
   (do-shell
    (git add *)
    (git commit -m "website update")
