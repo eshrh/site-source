@@ -1,11 +1,22 @@
+:root {
+    --bg:#333745;
+    --fg:#EEF5DB;
+    --acc1:#C7EFCF;
+    --acc2:#FE5F55;
+    --acc3:#E63462;
+}
+
 html {
   font-family: Helvetica, sans-serif;
   font-size: 90%;
+  background-color: var(--bg);
 }
+
+
 
 body {
   font-size: 1.6rem;
-  color: #000;
+  color: var(--fg);
 }
 
 .tocheader {
@@ -17,7 +28,7 @@ body {
 }
 
 header {
-  border-bottom: 0.2rem solid #000;
+  border-bottom: 0.2rem solid var(--fg);
 }
 
   width: 300px;
@@ -28,18 +39,21 @@ nav {
 nav a {
   font-size: 1.8rem;
   font-weight: bold;
-  color: black;
+  color: var(--fg);
   text-decoration: none;
   text-transform: lowercase;
+}
+nav a:link, nav a:visited, header a:link, header a:visited {
+    color: var(--acc1);
 }
 
 footer {
   margin-top: 2rem;
   padding: 1.2rem 0;
   padding-top: 0;
-  border-top: 0.2rem solid #000;
+  border-top: 0.2rem solid var(--fg);
   font-size: 1.2rem;
-  color: #555;
+  color: var(--fg);
 }
 
 h1 {
@@ -58,8 +72,17 @@ article .header {
 
 .logo a {
   font-weight: bold;
-  color: #000;
+  color: var(--fg);
   text-decoration: none;
+}
+a {
+    text-decoration: underline;
+}
+a:link {
+    color: var(--acc1);
+}
+a:visited {
+    color: var(--acc2);
 }
 
 .sourceCode {

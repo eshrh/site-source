@@ -11,14 +11,14 @@ import Hakyll.Web.Html (demoteHeaders)
 import System.Directory (copyFile,
                          getHomeDirectory)
 import System.FilePath (FilePath, joinPath)
-import Text.Pandoc.Highlighting (Style, pygments, styleToCss)
+import Text.Pandoc.Highlighting (Style, breezeDark, styleToCss)
 import Text.Pandoc.Options      (ReaderOptions (..), WriterOptions (..))
 import qualified Text.Pandoc.Templates (Template)
 import Text.Pandoc.Templates (compileTemplate)
 import System.Posix.Internals (newFilePath)
 --------------------------------------------------------------------------------
 pandocCodeStyle :: Style
-pandocCodeStyle = pygments
+pandocCodeStyle = breezeDark
 
 
 tocTemplate :: Text.Pandoc.Templates.Template Text
