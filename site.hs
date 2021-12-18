@@ -2,6 +2,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 import Data.Monoid (mappend)
 import Data.List (isPrefixOf)
+import Data.Text (Text)
+import Data.Functor.Identity (runIdentity)
+import qualified Data.Text as T
 import Control.Monad (mapM_)
 import Hakyll
 import Hakyll.Web.Html (demoteHeaders)
@@ -10,16 +13,34 @@ import System.Directory (copyFile,
 import System.FilePath (FilePath, joinPath)
 import Text.Pandoc.Highlighting (Style, pygments, styleToCss)
 import Text.Pandoc.Options      (ReaderOptions (..), WriterOptions (..))
+import qualified Text.Pandoc.Templates (Template)
+import Text.Pandoc.Templates (compileTemplate)
+import System.Posix.Internals (newFilePath)
 --------------------------------------------------------------------------------
 pandocCodeStyle :: Style
 pandocCodeStyle = pygments
 
-pandocCompilerHighlight :: Compiler (Item String)
-pandocCompilerHighlight =
+
+tocTemplate :: Text.Pandoc.Templates.Template Text
+tocTemplate = either error id . runIdentity . compileTemplate "" $ T.unlines
+  [ "<h2 class=\"tocheader\">Contents</h2>"
+  , "<div class=\"toc\">"
+  , "$toc$"
+  , "</div>"
+  , "$body$"
+  ]
+
+
+pandocCompilerWithOpts :: Compiler (Item String)
+pandocCompilerWithOpts =
   pandocCompilerWith
     defaultHakyllReaderOptions
     defaultHakyllWriterOptions
-      { writerHighlightStyle   = Just pandocCodeStyle}
+      { writerHighlightStyle   = Just pandocCodeStyle,
+        writerTableOfContents  = True,
+        writerNumberSections   = True,
+        writerTOCDepth         = 2,
+        writerTemplate         = Just tocTemplate}
 
 
 
@@ -59,19 +80,19 @@ main = do
 
     match "posts/*" $ do
         route $ setExtension "html"
-        compile $ pandocCompilerHighlight
+        compile $ pandocCompilerWithOpts
             >>= return . fmap demoteHeaders
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
 
     create ["archive.html"] $ do
-        route idRoute
+        route $ constRoute "pages/archive.html"
         compile $ do
             posts <- recentFirst =<< loadAll "posts/*"
             let archiveCtx =
                     listField "posts" postCtx (return posts) <>
-                    constField "title" "Archives"            <>
+                    constField "title" "archives"            <>
                     defaultContext
 
             makeItem ""

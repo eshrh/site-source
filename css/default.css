@@ -8,6 +8,14 @@ body {
   color: #000;
 }
 
+.tocheader {
+  font-weight: bold;
+}
+
+.toc {
+  font-size: 1rem;
+}
+
 header {
   border-bottom: 0.2rem solid #000;
 }

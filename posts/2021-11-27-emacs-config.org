@@ -4,6 +4,12 @@ title: Emacs Configuration
 #+PROPERTY: header-args :tangle "init.el"
 # (add-hook 'after-save-hook (lambda nil (org-babel-tangle)))
 #+TITLE: My Emacs configuration
+#+TOC: headlines 2
+
+This is my literate init.el file. There are a lot of highly opinionated choices
+here! My config is in a constant state of disrepair. If you’re reading this on
+my website, then this is probably quite close to my current config since this
+file is updated by the website’s build script.
 
 * Internals
 ** Packages & Straight bootstrapping
@@ -25,8 +31,7 @@ version stability. Finally, I find its recipe-writing features very nice.
   (load bootstrap-file nil 'nomessage))
 #+end_src
 I still keep use-package around just in case, but make it use straight behind
-the scenes. I can't get evil to work exactly the way I want it to with straight,
-so i fall back.
+the scenes. This is mostly for some deeper compatibility problems.
 #+begin_src emacs-lisp
 (straight-use-package 'use-package)
 (use-package straight
@@ -45,6 +50,7 @@ Turn the yes-or-no prompt into a y/n prompt to make it faster to type.
 #+END_SRC
 
 ** Don’t confirm on buffer kill
+living dangerously!
 #+BEGIN_SRC emacs-lisp
 (setq kill-buffer-query-functions
 	  (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
@@ -73,16 +79,37 @@ Don’t make me think ahead
         (make-directory dir t)))))
 #+END_SRC
 ** JIT
-idk what this does tbh
+I use a self-compiled version of emacs with native compilation enabled. The
+first line enabled deferred comp so that elisp is compiled async when its first
+called. The second line is so that I don’t see annoying popups every time.
 #+BEGIN_SRC emacs-lisp
 (setq comp-deferred-compilation t)
+(setq warning-suppress-log-types '((comp)))
 #+END_SRC
 * Visual configuration
-** General menu
+** Line numbers
+Turn on global line numbers, with some exceptions. IIRC this segment is taken
+from the emacswiki.
 #+BEGIN_SRC emacs-lisp
-(setq display-line-numbers-type 'relative)
-#+END_SRC
+(setq display-line-numbers-type 'absolute)
+(require 'display-line-numbers)
 
+(defcustom display-line-numbers-exempt-modes
+  '(vterm-mode eshell-mode dashboard-mode elfeed-search-mode elfeed-show-mode)
+  "Major modes on which to disable line numbers."
+  :group 'display-line-numbers
+  :type 'list
+  :version "green")
+
+(defun display-line-numbers--turn-on ()
+  "Turn on line numbers except for certain major modes.
+Exempt major modes are defined in `display-line-numbers-exempt-modes'."
+  (unless (or (minibufferp)
+              (member major-mode display-line-numbers-exempt-modes))
+    (display-line-numbers-mode)))
+
+(global-display-line-numbers-mode)
+#+END_SRC
 ** Disable bell
 I don’t know who thought it was a good idea to include this.
 #+BEGIN_SRC emacs-lisp
@@ -98,10 +125,30 @@ Turn off the menu-bar, tool-bar, an scroll-bar. I hate bars!
 #+END_SRC
 
 ** Extra information
-I can’t count parentheses.
+I can’t count parentheses. I use an advice override to change how th paren
+locating functionality works. This is because I use a block cursor with meow,
+which makes cursor position slightly deceptive.
 #+BEGIN_SRC emacs-lisp
 (column-number-mode)
 (show-paren-mode)
+(defun show-paren--locate-near-paren-ad ()
+  "Locate an unescaped paren \"near\" point to show.
+If one is found, return the cons (DIR . OUTSIDE), where DIR is 1
+for an open paren, -1 for a close paren, and OUTSIDE is the buffer
+position of the outside of the paren.  Otherwise return nil."
+  (let* ((before (show-paren--categorize-paren (point))))
+    (when (or
+       (eq (car before) 1)
+       (eq (car before) -1))
+      before)))
+
+(advice-add 'show-paren--locate-near-paren
+            :override #'show-paren--locate-near-paren-ad)
+#+END_SRC
+Colorize color strings.
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'rainbow-mode)
+(rainbow-mode)
 #+END_SRC
 
 ** Font config
@@ -114,11 +161,18 @@ I use IPAGothic because I don’t know anything better.
 #+BEGIN_SRC emacs-lisp
 (defvar emacs-english-font "Hack")
 (defvar emacs-cjk-font "IPAGothic")
+
+(setq my-font (concat emacs-english-font "-12"))
+(set-face-attribute 'default t :font my-font)
+(set-frame-font my-font nil t)
 #+END_SRC
 
 *** CJK hacks
 The general idea is to always have the english and CJK font sizes match each other.
-This workaround is from [[https://gist.github.com/coldnew/7398845][here]] with my additions.
+This workaround is from [[https://gist.github.com/coldnew/7398845][here]] with my additions. I don’t actually use this hack
+at the moment because it’s only useful in a very specific situation (when
+english and cjk are combined inline and string-width is very important), but it
+exposes (configure-fonts) which solves it.
 
 **** Font size pairs
 First, we set initial fonts and keep an alist of correct font sizes. I’m not
@@ -169,20 +223,20 @@ startup, using the fact that my first window when starting emacs is dashboard.
 	(progn 
 	  (set-font-frame emacs-english-font emacs-cjk-font emacs-font-size-pair frame))))
 
-(add-hook 'after-make-frame-functions #'configure-fonts)
-(add-hook 'dashboard-mode-hook (lambda ()
-                                 (configure-fonts (selected-frame))))
+;;(add-hook 'after-make-frame-functions #'configure-fonts)
+;;(add-hook 'dashboard-mode-hook (lambda ()
+;;                                 (configure-fonts (selected-frame))))
 #+END_SRC
 
 ** Theme
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'kaolin-themes)
 (if (or (display-graphic-p) (daemonp))
-    (load-theme 'kaolin-galaxy t)
-    (load-theme 'wombat t))
+    (load-theme 'kaolin-galaxy t nil)
+    (load-theme 'wombat t nil))
 #+END_SRC
 ** Frame
-Make the title look better so that my status bar can print it nicely
+Make the title look better so that my status bar(xmobar) can print it nicely
 #+BEGIN_SRC emacs-lisp
 (setq-default frame-title-format '("emacs: %b"))
 #+END_SRC
@@ -207,14 +261,352 @@ nicer.
 #+END_SRC
 ** Modeline
 *** SML
-Smart mode line is a pretty simple line thta does what I need it to. I used to
+Smart mode line is a pretty simple line that does what I need it to. I used to
 use powerline, but I found its visuals a bit bloated.
 #+BEGIN_SRC emacs-lisp
-  (straight-use-package 'smart-mode-line)
-  (sml/setup)
-  (setq sml/theme 'respectful)
+(straight-use-package 'smart-mode-line)
+(setq sml/theme 'respectful)
+(setq sml/no-confirm-load-theme t)
+(sml/setup)
+#+END_SRC
+* Programming
+** Config
+*** Parentheses
+I use electric to auto-complete paren and quote pairs
+#+BEGIN_SRC emacs-lisp
+(setq electric-pair-pairs '(
+                           (?\{ . ?\})
+                           (?\( . ?\))
+                           (?\[ . ?\])
+                           (?\" . ?\")
+                           ))
+(electric-pair-mode)
+(electric-quote-mode)
+#+END_SRC
+*** Spaces over tabs
+I don’t like tabs
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+*** Final newline
+#+BEGIN_SRC emacs-lisp
+(setq mode-require-final-newline nil)
+#+END_SRC
+
+*** Comment keybinding
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c /") 'comment-or-uncomment-region)
+#+END_SRC
+
+** Essential packages
+*** Flycheck
+Classic linter framework
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'flycheck)
+#+END_SRC
+
+*** Magit
+Nothing to be said here
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'magit)
+#+END_SRC
+
+*** LSP
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'company-lsp)
+(straight-use-package 'lsp-mode)
+(straight-use-package 'lsp-ui)
+#+END_SRC
+**** Declutter lsp UI
+#+BEGIN_SRC emacs-lisp
+(setq lsp-ui-doc-show-with-mouse nil)
+(setq lsp-ui-sideline-enable nil)
+(setq lsp-modeline-code-actions-enable 1)
+#+END_SRC
+
+**** Code action keybinding
+#+BEGIN_SRC emacs-lisp
+(add-hook 'lsp-mode-hook (lambda ()
+			   (local-set-key (kbd "C-c C-j") 'lsp-execute-code-action)))
+#+END_SRC
+
+**** Performance
+#+BEGIN_SRC emacs-lisp
+(setq read-process-output-max (* 1024 1024)) ;; 1mb
+(setq gc-cons-threshold 100000000)
+#+END_SRC
+** Languages
+*** Java
+I don’t use lsp-java. It’s pretty finicky and doesn’t work how I like it to.
+Meghanada on the other hand works perfectly even if it’s a little less feature-rich.
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'meghanada)
+(add-hook 'java-mode-hook
+          (lambda ()
+            ;; meghanada-mode on
+            (meghanada-mode t)
+            (flycheck-mode +1)
+            (setq c-basic-offset 4)
+			(setq tab-width 4)
+            ))
+#+END_SRC
+
+*** Haskell
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'haskell-mode)
+(straight-use-package 'lsp-haskell)
+(require 'lsp-mode)
+(require 'lsp-haskell)
+(add-hook 'haskell-mode-hook #'lsp)
+(add-hook 'haskell-literate-mode-hook #'lsp)
+#+END_SRC
+
+Interactive haskell error customization
+#+BEGIN_SRC emacs-lisp
+(setq haskell-interactive-popup-errors t)
+#+END_SRC
+
+*** C++
+I don’t autostart the LSP because i don’t always need it. I enter the lsp manually
+if I need to.
+#+BEGIN_SRC emacs-lisp
+(setq-default tab-width 4
+              c-basic-offset 4
+              kill-whole-line t
+              indent-tabs-mode nil)
+#+END_SRC
+*** Lisp
+#+BEGIN_SRC emacs-lisp
+(add-hook 'lisp-mode-hook 'flycheck-mode)
+(straight-use-package 'slime)
+(setq inferior-lisp-program "sbcl")
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+(defun eval-surrounding-sexp (levels)
+  (interactive "p")
+  (save-excursion
+    (up-list (abs levels))
+    (eval-last-sexp nil)))
+#+END_SRC
+
+**** Elisp
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'elisp-format)
+(straight-use-package 'aggressive-indent-mode)
+(setq elisp-format-column 80)
+#+END_SRC
+
+*** TeX
+AuCTeX offers a lot of sweet features that I’ve come to take for granted
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'auctex)
+#+END_SRC
+
+Use zathura to view pdfs
+#+BEGIN_SRC emacs-lisp
+(setq TeX-view-program-selection '((output-pdf "Zathura")))
+#+END_SRC
+
+I use the digestif LSP. I don’t like the lens in this mode, so I turn it off.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'tex-mode #'lsp)
+(add-hook 'tex-mode (lambda ()
+					  (setq lsp-lens-enable nil)))
+#+END_SRC
+
+*** Python
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'lsp-jedi)
+(add-hook 'python-mode #'lsp)
+#+END_SRC
+**** IPython
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'polymode)
+(straight-use-package 'ein)
+(setq ein:polymode t)
+#+END_SRC
+
+*** Sage
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'sage-shell-mode)
+(setq sage-shell:sage-executable "/usr/bin/sage")
+#+END_SRC
+
+*** Janet
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'janet-mode)
+(straight-use-package
+ '(ijanet
+   :type git
+   :host github
+   :repo "serialdev/ijanet-mode"
+))
+(defun janet-key-config ()
+    (interactive)
+    (define-key janet-mode-map (kbd "C-c C-l") 'ijanet-eval-line)
+    (define-key janet-mode-map (kbd "C-c C-p") 'ijanet)
+    (define-key janet-mode-map (kbd "C-c C-b") 'ijanet-eval-buffer)
+    (define-key janet-mode-map (kbd "C-c C-r") 'ijanet-eval-region))
+#+END_SRC
+
+I'd like to develop some janet tooling in the future myself, especially with regards to the repl.
+#+BEGIN_SRC emacs-lisp
+(straight-use-package
+  '(janet-editor-elf :host github
+                     :repo "sogaiu/janet-editor-elf"
+                     :files ("*.el" "janet-editor-elf")))
+
+(use-package janet-editor-elf
+  :straight t
+  :config
+  (add-hook 'janet-mode-hook
+            (lambda ()
+              (setq-local indent-line-function
+                          #'jee-indent-line))))
+
+#+END_SRC
+
+Sogaiu's other repl package for janet
+#+BEGIN_SRC emacs-lisp
+(straight-use-package
+  '(ajrepl :host github
+           :repo "sogaiu/ajrepl"
+           :files ("*.el" "ajrepl")))
+
+(use-package ajrepl
+  :straight t
+  :config
+  (add-hook 'janet-mode-hook
+            #'ajrepl-interaction-mode))
 #+END_SRC
 * Packages
+** Meow
+Meow modal editing. The best parts of vim, kakoune and god-mode, all in one.
+*** Custom functions
+The point in emacs is always between characters. However, normal
+mode in meow is represented by a block cursor, even though the point is really
+to the left. This fundamental difference leads to a problem that vim fails to
+deal with as well. For instance, entering and exiting insert mode actually moves
+your cursor back a full char. On the other hand, meow’s behavior is much more
+consistent. However, I think that the granularity of choosing your insert
+position is nice, so I redefine a fully different function to model vim’s "a"
+without interfering with before and after commands that act on regions.
+#+BEGIN_SRC emacs-lisp
+(defun meow-insert-right ()
+  (interactive)
+  (meow-right)
+  (meow-insert))
+#+END_SRC
+
+The default way to find backwards is - to add a prefix argument and then f to
+find. In meow’s default qwerty keyset, the F key is free, so I just make a
+function to bind negative searching. Vim muscle memory dies hard i guess.
+#+BEGIN_SRC emacs-lisp
+(defun meow-negative-find ()
+  (interactive)
+  (let ((current-prefix-arg -1))
+    (call-interactively 'meow-find)))
+#+END_SRC
+
+*** Keymap
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'meow)
+
+(defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-overwrite-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev)
+   '("<escape>" . ignore))
+  (meow-leader-define-key
+   ;; SPC j/k will run the original command in MOTION state.
+   '("j" . "H-j")
+   '("k" . "H-k")
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("F" . meow-negative-find)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("/" . meow-insert-right)
+   '("I" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . meow-join)
+   '("n" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("v" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<escape>" . ignore)))
+
+#+END_SRC
+*** Enable
+#+BEGIN_SRC emacs-lisp
+(require 'meow)
+(meow-setup)
+(meow-global-mode 1)
+#+END_SRC
 ** Ace-window
 Ace-window is super nice because it lets you quickly switch to a window
 when you have >2 open by providing a letter hint.
@@ -267,38 +659,6 @@ Some config
     (progn (setq dashboard-startup-banner (expand-file-name "hiten_render_rsz.png" user-emacs-directory)))
     (progn (setq dashboard-startup-banner (expand-file-name "gnu.txt" user-emacs-directory))))
 #+END_SRC
-** Evil-mode
-Vi bindings are too deeply ingrained in my muscle memory to leave behind
-#+BEGIN_SRC emacs-lisp
-(use-package evil
-  :init
-  (setq evil-want-keybinding nil)
-  :config
-  (evil-mode 1)
-  (use-package evil-leader
-		:config
-		(global-evil-leader-mode t)
-		(evil-leader/set-leader "<SPC>"))
-  
-  (use-package evil-surround
-    :config (global-evil-surround-mode))
-
-  (use-package evil-indent-textobject))
-#+END_SRC
-
-Add some extra vi integration to other programs
-#+BEGIN_SRC emacs-lisp
-(use-package evil-collection
-  :config
-  (evil-collection-init))
-#+END_SRC
-*** Vim-fold
-Vim-style folding
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'vimish-fold)
-(straight-use-package 'evil-vimish-fold)
-#+END_SRC
-
 ** Company
 The one true autocompleter
 #+BEGIN_SRC emacs-lisp
@@ -342,26 +702,50 @@ An essential addition to the search minibuffer that offers a bit of documentatio
 ** Japanese-related
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'anki-editor)
-(straight-use-package 'sdcv)
+(straight-use-package 'posframe)
+(straight-use-package '(sdcv2 :type git
+                              :repo "https://github.com/manateelazycat/sdcv"
+                              :files ("sdcv.el")))
+(setq sdcv-dictionary-simple-list '("JMdict_e"))
+(setq sdcv-dictionary-complete-list '("daijisen.tab" "JMdict_e"))
+(setq sdcv-dictionary-data-dir "/usr/share/stardict/dic/")
+(setq sdcv-env-lang "ja_JP.UTF-8")
 (straight-use-package 'clipmon)
 #+END_SRC
 I use the migemo program to supplement incremental searching for Japanese. It
-requires the cmigemo program in your path, and lets you search for japanese words
-by typing in romaji.
+lets you search for japanese words by typing in romaji. If the program’s not in
+path, it is installed automatically on startup.
 #+BEGIN_SRC emacs-lisp
-(straight-use-package 'migemo)
-(straight-use-package 'ivy-migemo)
+  (straight-use-package 'migemo)
+  (straight-use-package 'ivy-migemo)
+  (straight-use-package 's)
 
-(if (executable-find "cmigemo")
-    (progn
-      (require 'migemo)
-      (setq migemo-command "cmigemo")
-      (setq migemo-options '("-q" "--emacs"))
+  (unless (executable-find "cmigemo")
+    (make-directory (concat user-emacs-directory "japanese") t)
+    (let ((clonedir (concat user-emacs-directory "japanese" "/cmigemo/")))
+      (unless (file-directory-p clonedir)
+        (magit-clone-internal "https://github.com/koron/cmigemo"
+                              nil)))
+    (let ((default-directory
+            (concat
+             user-emacs-directory "japanese" "/cmigemo/")))
+      (shell-command "make gcc")
+      (shell-command "make gcc-dict")
+      (shell-command "cd dict ; make utf-8")
+      (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? "))
+                             " | sudo -S make gcc-install"))))
+
+  (require 'migemo)
+  (setq migemo-command "cmigemo")
+  (setq migemo-options '("-q" "--emacs"))
+  (if (file-directory-p "/usr/share/migemo")
       (setq migemo-dictionary "/usr/share/migemo/utf-8/migemo-dict")
-      (setq migemo-user-dictionary nil)
-      (setq migemo-regex-dictionary nil)
-      (setq migemo-coding-system 'utf-8-unix)
-      (migemo-init)))
+    (setq migemo-dictionary (concat user-emacs-directory
+                                 "japanese/cmigemo/dict/utf-8.d/migemo-dict")))
+  (setq migemo-user-dictionary nil)
+  (setq migemo-regex-dictionary nil)
+  (setq migemo-coding-system 'utf-8-unix)
+  (migemo-init)
 #+END_SRC
 *** Mecab
 This requires mecab to be installed on your system, as well as a dictionary for it.
@@ -403,7 +787,7 @@ MPD integration setup
 #+END_SRC
 *** EMMS browser tree structure
 There is currently a bug in emms that makes it unable to parse mpd albumartist
-tags. A patch by [[Pavel Korytov][sqrtminusone.xyz]] has been accepted upstream, but it hasn’t made it to me yet.
+tags. A patch by Pavel Korytov has been accepted upstream, but it hasn’t made it to me yet.
 #+BEGIN_SRC emacs-lisp
 (defun emms-info-mpd-process (track info)
   (dolist (data info)
@@ -503,28 +887,28 @@ toggle a window with a re-usable vterm
 Path configuration. I use a directory called org in my home directory to store
 my org files.
 #+BEGIN_SRC emacs-lisp
+(straight-use-package 'org)
 (setq org-directory "~/org/")
 (setq org-agenda-files '("~/org/"))
 (setq org-hide-emphasis-markers t)
 (setq org-startup-with-latex-preview t)
-(evil-leader/set-key "o" 'org-agenda)
 (add-hook 'org-mode-hook (lambda ()
                            ;;(org-superstar-mode 1)
                            (org-indent-mode 1)
                            (org-fragtog-mode 1)
-                           (setq electric-quote-mode 'nil)))
+                           (electric-quote-mode 'nil)))
 #+END_SRC
 
 Change the backends
 #+BEGIN_SRC emacs-lisp
 (setq org-export-backends '(latex beamer md html odt ascii org-ref))
+
 #+END_SRC
 
 Don't indent code in org-babel
 #+BEGIN_SRC emacs-lisp
 (setq org-edit-src-content-indentation 0)
 #+END_SRC
-
 
 Even emacs can’t make me not procrastinate!
 #+BEGIN_SRC emacs-lisp
@@ -535,7 +919,6 @@ A neat little package to render latex fragments as you write them.
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'org-fragtog)
 #+END_SRC
-
 *** Org-ref
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'org-ref)
@@ -564,7 +947,43 @@ A neat little package to render latex fragments as you write them.
 	    "pdflatex -interaction nonstopmode -output-directory %o %f"
 	    "pdflatex -interaction nonstopmode -output-directory %o %f"))
 #+END_SRC
-test 
+*** Org-roam
+#+BEGIN_SRC emacs-lisp
+(straight-use-package 'org-roam)
+(setq org-roam-v2-ack t)
+#+END_SRC
+
+basic setup
+#+BEGIN_SRC emacs-lisp
+(unless (file-directory-p "~/roam")
+  (make-directory "~/roam"))
+
+(setq org-roam-directory (file-truename "~/roam"))
+(org-roam-db-autosync-mode)
+#+END_SRC
+*** Anki integration
+#+BEGIN_SRC emacs-lisp
+(defun anki-description-transform ()
+  (interactive)
+  (let* ((begin (re-search-backward "^-"))
+         (end (forward-sentence))
+         (raw (buffer-substring-no-properties
+               begin
+               end))
+         (split (s-split "::" raw))
+         (q (substring (s-trim (car split)) 2))
+         (a (s-trim (cadr split)))
+         (depth (org-current-level)))
+    (yas-expand-snippet
+     (yas-lookup-snippet "anki-editor card")
+     begin end)
+    (insert q)
+    (yas-next-field-or-maybe-expand)
+    (insert a)
+    (yas-end)
+    (org-backward-element)))
+#+END_SRC
+
 ** IRC
 I store this outside of vc because it has some secrets.
 #+BEGIN_SRC emacs-lisp
@@ -596,179 +1015,13 @@ Aur helper in emacs
 (straight-use-package 'elfeed)
 (setq elfeed-feeds
       '("https://sachachua.com/blog/feed/"
-        "https://hnrss.org/frontpage"
-        "https://ianthehenry.com/feed.xml"))
+        "https://hnrss.org/frontpage"))
 #+END_SRC
 
-* Programming
-** Config
-*** Parentheses
-I use electric to auto-complete paren and quote pairs
+Make links open in eww.
 #+BEGIN_SRC emacs-lisp
-(setq electric-pair-pairs '(
-                           (?\{ . ?\})
-                           (?\( . ?\))
-                           (?\[ . ?\])
-                           (?\" . ?\")
-                           ))
-(electric-pair-mode)
-(electric-quote-mode)
+(setq browse-url-browser-function 'eww-browse-url)
 #+END_SRC
-
-*** Spaces over tabs
-I don’t like tabs
-#+BEGIN_SRC emacs-lisp
-(setq-default indent-tabs-mode nil)
-#+END_SRC
-*** Final newline
-#+BEGIN_SRC emacs-lisp
-(setq mode-require-final-newline nil)
-#+END_SRC
-
-** Essential packages
-*** Flycheck
-Classic linter framework
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'flycheck)
-#+END_SRC
-
-*** Magit
-Nothing to be said here
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'magit)
-#+END_SRC
-
-*** LSP
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'company-lsp)
-(straight-use-package 'lsp-mode)
-(straight-use-package 'lsp-ui)
-#+END_SRC
-**** Declutter lsp UI
-#+BEGIN_SRC emacs-lisp
-(setq lsp-ui-doc-show-with-mouse nil)
-(setq lsp-ui-sideline-enable nil)
-(setq lsp-modeline-code-actions-enable 1)
-#+END_SRC
-
-**** Code action keybinding
-#+BEGIN_SRC emacs-lisp
-(add-hook 'lsp-mode-hook (lambda ()
-			   (local-set-key (kbd "C-c C-j") 'lsp-execute-code-action)))
-#+END_SRC
-
-**** Performance
-#+BEGIN_SRC emacs-lisp
-(setq read-process-output-max (* 1024 1024)) ;; 1mb
-(setq gc-cons-threshold 100000000)
-#+END_SRC
-
-** Languages
-*** Java
-I don’t use lsp-java. It’s pretty finicky and doesn’t work how I like it to.
-Meghanada on the other hand works perfectly even if it’s a little less feature-rich.
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'meghanada)
-(add-hook 'java-mode-hook
-          (lambda ()
-            ;; meghanada-mode on
-            (meghanada-mode t)
-            (flycheck-mode +1)
-            (setq c-basic-offset 4)
-			(setq tab-width 4)
-            ))
-#+END_SRC
-
-*** Haskell
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'haskell-mode)
-(straight-use-package 'lsp-haskell)
-(require 'lsp-mode)
-(require 'lsp-haskell)
-(add-hook 'haskell-mode-hook #'lsp)
-(add-hook 'haskell-literate-mode-hook #'lsp)
-#+END_SRC
-
-Interactive haskell error customization
-#+BEGIN_SRC emacs-lisp
-(setq haskell-interactive-popup-errors t)
-#+END_SRC
-
-*** C++
-I don’t autostart the LSP because i don’t always need it. I enter the lsp manually
-if I need to.
-#+BEGIN_SRC emacs-lisp
-(setq-default tab-width 4
-              c-basic-offset 4
-              kill-whole-line t
-              indent-tabs-mode nil)
-#+END_SRC
-*** Lisp
-#+BEGIN_SRC emacs-lisp
-(add-hook 'lisp-mode-hook 'flycheck-mode)
-(straight-use-package 'slime)
-(setq inferior-lisp-program "sbcl")
-#+END_SRC
-**** Elisp
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'elisp-format)
-(straight-use-package 'aggressive-indent-mode)
-(setq elisp-format-column 80)
-#+END_SRC
-
-*** TeX
-AuCTeX offers a lot of sweet features that I’ve come to take for granted
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'auctex)
-#+END_SRC
-
-Use zathura to view pdfs
-#+BEGIN_SRC emacs-lisp
-(setq TeX-view-program-selection '((output-pdf "Zathura")))
-#+END_SRC
-
-I use the digestif LSP. I don’t like the lens in this mode, so I turn it off.
-#+BEGIN_SRC emacs-lisp
-(add-hook 'tex-mode #'lsp)
-(add-hook 'tex-mode (lambda ()
-					  (setq lsp-lens-enable nil)))
-#+END_SRC
-
-*** Python
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'lsp-jedi)
-(add-hook 'python-mode #'lsp)
-#+END_SRC
-**** IPython
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'polymode)
-(straight-use-package 'ein)
-(setq ein:polymode t)
-#+END_SRC
-
-*** Sage
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'sage-shell-mode)
-(setq sage-shell:sage-executable "/usr/bin/sage")
-#+END_SRC
-
-*** Janet
-#+BEGIN_SRC emacs-lisp
-(straight-use-package 'janet-mode)
-(straight-use-package
- '(ijanet
-   :type git
-   :host github
-   :repo "serialdev/ijanet-mode"
-))
-(defun janet-key-config ()
-    (interactive)
-    (define-key janet-mode-map (kbd "C-c C-l") 'ijanet-eval-line)
-    (define-key janet-mode-map (kbd "C-c C-p") 'ijanet)
-    (define-key janet-mode-map (kbd "C-c C-b") 'ijanet-eval-buffer)
-    (define-key janet-mode-map (kbd "C-c C-r") 'ijanet-eval-region))
-#+END_SRC
-
 * Elisp
 ** Split and follow
 does what it says on the tin.
@@ -810,15 +1063,11 @@ Taken from [[https://emacs.stackexchange.com/questions/2888/kill-buffer-when-fra
 M-x sometimes isn’t recognized on the terminal
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-o") 'execute-extended-command)
-(define-key evil-motion-state-map (kbd "C-o") nil)
 #+END_SRC
 
 *** Two keybinds for ace-window switching
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-\;") 'ace-window)
-(global-set-key (kbd "C-p") 'ace-window)
-(define-key evil-motion-state-map (kbd "C-\;") nil)
-(define-key evil-normal-state-map (kbd "C-p") nil)
 #+END_SRC
 
 *** Kill both buffer and window keybinding
@@ -856,13 +1105,3 @@ I make too many changes to type this out every time.
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 #+END_SRC
 
-* Custom
-Cruft. Just cruft.
-#+BEGIN_SRC emacs-lisp
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(dashboard-items-face ((t (:inherit widget-button :overline nil :underline nil)))))
-#+END_SRC
