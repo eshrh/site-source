@@ -58,7 +58,6 @@ main = do
   syncFilesList <- readFile "./syncFiles.txt"
   let syncFiles = map words (lines syncFilesList)
   mapM_ (syncOne homedir) syncFiles
-
   hakyll $ do
     match "images/*" $ do
         route   idRoute

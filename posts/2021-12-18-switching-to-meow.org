@@ -1,0 +1,191 @@
+---
+title: Switching to the meow modal editing system from evil
+---
+
+* Introduction
+The first modal editing system I used was vim. After the initial
+learning curve that comes with getting used to not being able to type
+in every mode, it introduced me to a few key ideas that I feel lead to
+decidedly more efficient editing
++ editing as a language composed of adjectives, nouns and verbs
++ a dedicated "mode" for inserting text that’s distinct and
+  non-default.
+
+Over the years, the vi style of editing and specific, opinionated
+keybinds and patterns became muscle memory. Actions like =ciw= or =2dd=
+are remarkably powerful primary because of the so called "grammar" of
+the vim language: verb -> adjective -> noun.
+
+* Switching to emacs and evil
+When I first switched to emacs, I started on Doom emacs. It’s
+essentially a mostly pre-configured emacs "distribution" that takes
+the elisp edge off for vim refugees. Doom puts a lot of effort into
+making everything "just work" in expectable ways for vim users. While
+this was probably the reason I got into emacs in the first place, I
+think it handicaps users in several ways.
+
+A typical emacs user’s setup probably includes many different packages
+and components that each come with their own modes and keymaps. While
+evil-collection tries (with some success) to make them work sensibly
+with vi-thinking, it doesn’t work all the time. One of the biggest
+modes where failures are apparent is =org-mode=. Actions in org are
+fundamentally different from typical actions in vim, where one
+typically acts on code instead of headings, tables, and lists.
+While =evil-org= seems to superficially fix some of various problems,
+it’s still unwieldy and feels almost like another editing language in
+its own right.
+
+Doom also aims to eliminate the necessity to learn traditional emacs
+and elisp, and succeeds quite well. This is unfortunate because
+traditional keybinds occupy some prime keybind real estate that’s
+difficult to change with good compatibility due to problems mentioned
+earlier.
+
+You only have so many "good keybinds": keybinds that are easy to press
+*and* remember. Evil clutters this up in ways that are annoying to
+fix. For instance, if you want to bind a key like =C-o= to something
+else in emacs, like =(execute-extended-command)= as I do, you’d need to
+first remove the keybind from evil’s map.
+
+Essentially, as the creator of meow puts it, evil has an extremely
+high "cost of integration." The final product of putting in the effort
+(like how distributions like doom/spacemacs do) to make emacs work
+sensibly with evil doesn’t feel much like emacs at all.
+
+Recently, I found a potential alternative called Meow that not only
+fixes the integration problems that come with evil, but also
+introduces concepts from other modal editing styles and directly
+improve on vi ideas.
+* Meow’s critical improvements
+Vi editing, with its popularity, is often seen as the peak of editing
+efficiency -- or at least it certainly did to me. However, there are
+some key areas where improvements can be made. A lot of these changes
+were first introduced by Kakoune, but were adopted in Meow.
+** Grammar inversion
+Vi grammar puts the noun after the verb. To delete a word, you’d type
+the verb to delete, =d=, and then the object, which is selected by
+"inner," =i= and then "word," =w=. The big problem with this grammar is
+that you have no feedback on what you’re acting on until /after/ you act
+on it. This isn’t much of an issue with the object =iw=, but it is an
+issue with say, deleting 4 lines: =4dd=.
+
+Meow’s (and Kakoune’s) solution to this problem is to reverse the grammar and put
+the region in front of the word. This also means that you get constant
+feedback about what you’re acting on before you act on it, since
+objects are always highlighted. Visual mode in vim is rendered useless
+since movements /are already visual!/
+** Sensible movements
+Meow actually comes with no keymap built in. You have to define your
+own keymap, or use one that the author suggests. The suggested QWERTY
+keymap has many direct improvements over vim that are a result of very
+sensibly chosen keybinds that integrate well with emacs.
+*** "Inner" by default
+One of my most used vim "adjectives" is =i= for inner. Meow has built in
+selectors for "inner things" by default. =ciw= in vim becomes =w= to
+select the inner word, and =c= to change. This is a full key saved, a
+huge improvement on an extremely common action -- directly better than
+vim since it reduces the cognitive load of having to do two different
+things based on where your cursor is on the word.
+
+Similarly, there are no "beginning of sentence" and "end of sentence"
+markers in Meow like vim’s =^= and =$= (terrible choices btw),
+only =x= to select the sentence. This is because once the region is
+selected, you can use =i= to insert left of the region and =a= right of
+the region. Furthermore, expanding selections to the a sentence end
+marker integrates perfectly with emacs’ =C-a= and =C-e=.
+*** Expansion hints
+Repeating actions in Meow is extremely well engineered. Consider the
+situation of deleting some number of lines. In vim, without relative line numbers
+you’d have to count lines and then press =<NUM>dd=. If you mess up
+(remember, no feedback), you have to press =u= to undo and then try
+again.
+
+Meow has an elegant solution. You press =x= to select one sentence, and
+then it prompts you on the screen, avy-style, with numbers at the
+start of every next object you can select. You then press a number, it
+expands the selection visually, and finally you supply the verb,
+delete, =s= to delete the whole region. In practice, it works aburdly
+smoothly and lowers cognitive load significantly.
+*** Dwimmy behavior
+Many commands in meow have do-what-i-mean behavior. For example, the =s=
+command, deletion, operates situationally. With a region selected, it
+kills the region, but otherwise kills a single character. If the line
+is empty, it kills the whole line instead. Less thinking for more action.
+** Elegant multi-editing
+Vim doesn’t have multi-editing. The only ways to do repeated actions
+are either to record recursive macros or do some obtuse
+find-and-replace action.
+
+Meow’s multi edit, again inspired by kakoune is quite intuitive. It
+involves first selecting and "grabbing" a region, and then creating a
+set of "multicursors" based on movements. These multicursors are
+intelligent. If you grabbed a region by selecting 3 sentences (=x3=),
+then the fake cursors are replicated on every line. Once you grab a
+selection, every movement creates fake cursors on the ending position
+of the movement. This means that doing multi-edits is very intuitive
+and has lots of visual feedback.
+
+Converting =a_b_c_d_e= to =a-b-c-d-e= is =WG-f_c-<ESC>=. Select the whole
+"symbol," negative search for _, change to - and press escape to run
+the changes. Internally, every time you enter insert mode while in
+"beacon mode" you’re actually recording a macro.
+** Extensibility and scalability
+Meow is remarkably standardized. For example, Meow has a generalized
+"thing" concept. The bounds of any of these "things" is selected by =.=
+(similar to vim’s =a=) and the inner of any "thing" is selected by
+=,=. It’s super easy to add things to this table. I wanted to define a
+thing for strings inside =<>= brackets. This is just:
+
+#+BEGIN_SRC emacs-lisp
+;meow-thing-register THING INNER BOUNDS
+(meow-thing-register 'arrow '(pair ("<") (">")) '(pair ("<") (">")))
+(add-to-list 'meow-char-thing-table '(?a . arrow))
+#+END_SRC
+Of course, meow-thing-register also accepts defining bounds by
+arbitrary syntax keys and regular expressions, which makes the
+possibilities endless. It would be criminal to not mention just how
+good the built in documentation that comes with meow is with respect
+to this section.
+
+The fact that you have to define your own keybinds in your own init
+file is also very helpful, because it makes changing things much
+easier. The way keys are defined is also very elegant, each mode’s
+keybinds are all defined under one function that takes in alists.
+
+To illustrate how easy it is to make changes, I’ll include an example
+of adding a key, =F=, to reverse search for a character.
+
+First, we define a function to reverse a search, which is just calling
+the normal =(meow-find)= command with a negative prefix:
+#+BEGIN_SRC emacs-lisp
+(defun meow-negative-find ()
+  (interactive)
+  (let ((current-prefix-arg -1))
+    (call-interactively 'meow-find)))
+#+END_SRC
+Finally, we throw in the alist ='("F" . meow-negative-find)= into the
+=(meow-normal-define-key)= function. Done!
+
+** Uncluttered keybindings
+Meow is very minimalist. It doesn’t define keys by default if they’re
+not absolutely necessary. For example, there’s no key to go to the top
+or bottom of the buffer. This is fine though, because you can use
+emacs’ built in keybindings, =C-M-<= and =C-M->=, and of course rebind
+them to something in normal mode if needed. After switching from evil,
+it’s great to have a lot of keybind real estate back to bind to more
+useful commands instead of obscure vim actions I’ll never use.
+*** Keypad mode
+As if I wasn’t sold enough on Meow, keypad mode was the nail in the
+coffin. The problem with evil-leader and related solutions is that you
+have to manually rebind functions to leader keybinds, which is a lot
+of work and very annoying to do. This doesn’t mean it’s impossible,
+like Spacemacs has shown, but it’s not something I’m interested in
+doing in vanilla emacs. Meow takes the god-mode suggestion and
+introduces keypad mode, which allows you to type modifier key chords
+using space.
+
+This is done cleverly, too. The first key you press after =SPC= becomes
+the modifier that is applied to every key following it. So =C-x C-f= becomes
+=<SPC> x f=, and =C-c C-v C-t= still becomes =<SPC> c v t=. To escape
+modification, you press =SPC= again. Critically, you can omit the SPC if
+the key you press matches exactly one non-modified key and no modified-keys.

@@ -150,6 +150,10 @@ Colorize color strings.
 (straight-use-package 'rainbow-mode)
 (rainbow-mode)
 #+END_SRC
+highlight the line the point is on.
+#+BEGIN_SRC emacs-lisp
+(global-hl-line-mode)
+#+END_SRC
 
 ** Font config
 Emacs sometimes doesn’t play well with fullwidth CJK alongside normal english
@@ -896,7 +900,8 @@ my org files.
                            ;;(org-superstar-mode 1)
                            (org-indent-mode 1)
                            (org-fragtog-mode 1)
-                           (electric-quote-mode 'nil)))
+                           (electric-quote-mode 'nil)
+                           (auto-fill-mode 1))
 #+END_SRC
 
 Change the backends
