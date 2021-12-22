@@ -11,14 +11,14 @@ import Hakyll.Web.Html (demoteHeaders)
 import System.Directory (copyFile,
                          getHomeDirectory)
 import System.FilePath (FilePath, joinPath)
-import Text.Pandoc.Highlighting (Style, breezeDark, styleToCss)
+import Skylighting (zenburn, styleToCss)
+import Skylighting.Styles
 import Text.Pandoc.Options      (ReaderOptions (..), WriterOptions (..))
 import qualified Text.Pandoc.Templates (Template)
 import Text.Pandoc.Templates (compileTemplate)
 import System.Posix.Internals (newFilePath)
 --------------------------------------------------------------------------------
-pandocCodeStyle :: Style
-pandocCodeStyle = breezeDark
+pandocCodeStyle = zenburn
 
 
 tocTemplate :: Text.Pandoc.Templates.Template Text
@@ -36,8 +36,7 @@ pandocCompilerWithOpts =
   pandocCompilerWith
     defaultHakyllReaderOptions
     defaultHakyllWriterOptions
-      { writerHighlightStyle   = Just pandocCodeStyle,
-        writerTableOfContents  = True,
+      { writerTableOfContents  = True,
         writerNumberSections   = True,
         writerTOCDepth         = 2,
         writerTemplate         = Just tocTemplate}
@@ -58,6 +57,9 @@ main = do
   syncFilesList <- readFile "./syncFiles.txt"
   let syncFiles = map words (lines syncFilesList)
   mapM_ (syncOne homedir) syncFiles
+
+  writeFile "_site/css/syntax.css" $ styleToCss zenburn
+  
   hakyll $ do
     match "images/*" $ do
         route   idRoute
