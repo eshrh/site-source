@@ -30,7 +30,7 @@
 
 (defn run []
   (build)
-  (sh/$ stack exec site watch))
+  (sh/$ stack exec -- site watch --port 8001))
 
 (defn main [& args]
   (match (in args 1)

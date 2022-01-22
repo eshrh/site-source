@@ -6,12 +6,16 @@
     --acc3:#E63462;
 }
 
-html {
-  font-family: Helvetica, sans-serif;
-  font-size: 90%;
-  background-color: var(--bg);
+@font-face {
+    font-family: 'Iosevka Hane Sans';
+    src: url('../files/iosevka-hane-sans-regular.woff2') format('woff2');
 }
 
+html {
+    font-family: "Iosevka Hane Sans", sans-serif;
+    font-size: 90%;
+    background-color: var(--bg);
+}
 
 
 body {
