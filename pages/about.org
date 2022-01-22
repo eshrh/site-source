@@ -10,4 +10,5 @@ I am an undergraduate student at Georgia Tech with many interests. Some of them 
   - A little bit of french
 
 You are looking at my custom build of the [[https://github.com/be5invis/Iosevka][Iosevka]] font, called
-[[../files/iosevka-hane-sans-regular.woff2][Iosevka Hane Sans]].
+[[../files/iosevka-hane-sans-regular.woff2][Iosevka Hane Sans]]. You can find a ttf version [[../files/iosevka-hane-sans-regular.ttf][here]], and the build
+plans [[../files/private-build-plans.toml][here]].
