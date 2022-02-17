@@ -1,0 +1,216 @@
+---
+title: 400 days in a row of spaced repetition
+---
+
+* Introduction
+For nearly the past 2 years, I've been using [[https://apps.ankiweb.net/][Anki]] to learn several
+things, primarily Japanese vocabulary. I've also used it temporarily
+for a few memorization-oriented exams, and recently I've begun to
+study Mandarin. While I started to use Anki seriously around May 2020,
+my current streak only began at the top of 2021. In any sense, I've
+had a pretty long relationship with the program, and I feel like i've
+learned some valuable things other than a lot of Japanese words.
+
+* Timeline
+** 2020
+[[../images/anki-2020.png]]
+
+I first found out about Anki and the spaced repetition idea around
+March of 2020. To be honest though, I was still really toying around
+with the idea of learning Japanese, and I didn't have any real sense
+of the amount of commitment it would require of me for the next 2
+years. I picked up the [[https://ankiweb.net/shared/info/1237389412][2k/6k Core deck]] in May of 2020, and began to
+regularly do repetitions. Further, I'd just entered summer break off
+my junior year of high school, and I had a lot of time to sink into
+this stuff. I started off doing ~100 cards a day for the first few
+weeks, but I couldn't tell you how many new cards I was doing at
+first. I do remember quite clearly trying to write every character as
+I went, but I quickly gave up on it after I realized how much time
+that would take up.
+
+There must have been a certain point over that summer when I realized
+the scope of what I was getting into, because i started to get
+impatient and set my new card/day(NC/D) to 50. Of course, this bumped
+up the number of reviews I was doing to around 400-500 a day. This
+period of time probably involved the most struggle out of anything
+I've had to do while learning Japanese. I think a lot of people who
+are already deep into the CJ learning process forget how it feels to
+have to parse and memorize these random lines and squiggles, before
+your brain develops the pattern recognition machinery to break down
+characters into their constituent radicals. I distinctly remember
+thinking to myself that Anki felt like trying to carve your brain
+into a very specific shape with a baseball bat. Needless to say, I got
+extremely burnt out of Anki, like I can imagine a lot of eager
+learners do with this program. The day I hit 2000 cards young/mature
+on the Core deck, I quit. Well, not really, I thought I'd just take a
+a break, maybe a day or two... and then the reviews pile up, and it
+turns into a week to recover my usual number of reviews, and then a
+month, and then you lose it entirely.
+
+During this time, I started to immerse really heavily in anime,
+movies, manga, youtube, and so on. I really bought into the idea that
+after I memorized 2000 words, all I needed to do was understand
+grammar and I'd be able to understand the general idea of mostly
+everything. As you might imagine, I was extremely wrong, and it took
+nearly two months for me to realize this. I don't think that those two
+months were wasted, because the immersion certainly must have helped
+somehow, but 2000 words simply isn't enough to get to where I could
+start effectively "mining" words (adding words to anki from text
+that you find in the wild). I realized this in december, and decided
+to set myself against the Core deck again. I set all the cards I had
+finished earlier to be infinitely mature, and began starting at 2000,
+and continued until 2021.
+
+** 2021
+[[../images/anki-2021.png]]
+
+Unfortunately, I broke my streak right at the new year by getting
+really into the Witcher 3. I still love the game, but at the time I
+enjoyed it so much my Anki reps barely mattered to me. After putting
+in over a hundred hours into the game on a single playthrough, I got
+back on Anki to catch up on reviews.
+
+This time, I would be in it for the long haul. I eventually finished
+another 2000 words off the core deck, but I made a small but
+significant change to the Core deck around the time I restarted it. I
+made the cards /sentence-first/ instead of /word-first/. Essentially, i
+would have to read the whole sentence instead of just one word before
+flipping the card. This cost me a lot more time, but I realized that I
+needed to absolutely maximize the amount of coherent Japanese I was
+reading. If you're interested in doing this, you can do so pretty
+easily by introducing some new css:
+
+#+BEGIN_SRC css
+#hiddenfuri ruby rt  {visibility:hidden;}
+b{color:teal;font-weight:normal}
+#+END_SRC
+
+And then the front of your card becomes:
+
+#+BEGIN_SRC css
+<span style="font-size: 70px; font-family:IPAGothic;" id="hiddenfuri">{{furigana:Reading}}</span>
+#+END_SRC
+
+Maybe there was a better way to do this, but this worked for me.
+
+At around 4.1k words off of Core, I began to notice that I was indeed
+learning more valuable words from reading actual text than doing more
+deck words. At this point, I turned off new cards from the core deck
+for the last time. This time though, I wasn't really burnt out. I had
+pretty much settled in for the grind, because I fully understood how
+much more there was and had complete acceptance of it. For the rest of
+the year and until now, my primary routine would be to read and enjoy
+Japanese content, and add words I didn't know into anki and review
+every day.
+
+I believe I ended up adding around 3-4k words during the second half of
+my senior year of high school and through the summer. While these
+words were certainly important, I believe that what was more valuable
+during this time was actually immersing in a lot of content, but I
+think that's a topic for another post.
+
+Over the summer, I began to get interested in another topics, and
+supplemented Anki with a few miscellaneous decks. For instance, i
+memorized [[https:ankiweb.net/shared/info/1036098926][counters]], [[https://ankiweb.net/shared/info/1658750019][food]], [[https://ankiweb.net/shared/info/2639768625][prefectures]], [[https://ankiweb.net/shared/info/888837927][poems]] and some other decks that might
+have totalled to maybe 1k extra cards. I didn't keep a lot of these
+cards, because I mostly matured them all and didn't want to have
+clutter every day. I also got really interested in [[https://en.wikipedia.org/wiki/Japanese_pitch_accent][pitch accent]] around
+this time, which led to me adding pitch information retroactively to
+my mining deck (using [[https://gist.github.com/eshrh/715482a3ff02723a9225e8f040069059][this script]] I wrote), and producing a new visual
+sentence-level pitch accent deck you can find [[https://ankiweb.net/shared/info/1928141023][here]]. I might discuss the rationale
+behind the sentence-level pitch accent deck in a future post.
+
+After the summer of 2021, I moved into university to study computer
+science, which of course led to me putting Japanese on the back burner
+for a while. In December, I began the whole process anew, with
+Mandarin using a HSK Chinese vocab deck.
+
+** 2022
+[[../images/anki-2022.png]]
+
+I feel that using Anki for Mandarin for the first time was decidedly
+easier than using it for Japanese back in 2020. I think this
+attributable to several factors. First, I am very comfortable with
+review sessions, Anki, and the prospect of lots and lots of
+cards. However, I also already have the sinograph pattern recognition
+and an instant recall of the meaning of various radicals and
+symbols. This is helped a lot by the fact that I'm currently
+memorizing traditional characters rather than simplified ones.
+
+* Statistics
+[[../images/anki-card-pie.png]]
+
+[[../images/anki-reviews.png]]
+
+[[../images/anki-review-time.png]]
+
++ Total young+mature cards :: 11892
++ Total reviews :: 158,334
++ Average reviews/day :: 262
++ Average time :: 25m/day
++ Total time :: 255 hours
++ Current streak :: 400
+
+* Lessons learned
+** Don't get scared by how much left there is
+Anki is a fundamentally boring and repetitive activity. Pretty much
+nothing you can do will change this. The repetition is literally
+necessary to how the program is intended to work.
+
+It's really, really, /really/ easy to start out and look at the 5,000
+cards you'll have to memorize and lose all hope. I'd know, because
+I've had this happen to me, several times over the past two years. I'm
+not going to say something cliche like "live in the moment," but it's
+essential that you learn to tune out the sense of impending review
+pileup while you're actually reviewing. You have to selectively forget
+that you still have X000 cards left to learn, or else you might never
+get to think about that number in hindsight.
+
+I'm not entirely sure what the best way to develop this kind of
+"resilience against large numbers" is, and I'd be disappointed but
+unsurprised if the only way is to actually crunch through them
+yourself.
+
+** Spaced repetition isn't magic, maximize patterns in content
+What I mean by this is that your performance while doing spaced
+repetition is significantly affected by many things. While this seems,
+obvious, it's too easy to fall into the trap of thinking "if i put it
+into SRS, i'll remember it!" (even if it might be true for a lot of
+things).
+
+A few months ago, I tried to memorize binary numbers -- a simple task
+of going between decimal to binary and binary to decimal. After around
+a month, I had a true retention rate of around 50%. I think the
+problem was that there wasn't enough consistent pattern in the cards
+for my brain to effectively pick out and learn.
+
+This is why card design is so critically important, and why you should
+almost always customize cards how you like them, and even better, make
+cards yourself whenever you can. Learn to recognize when the
+brute-force approach is not going to work and where you can optimize
+for your brain's subconcious pattern recongition, which is almost
+always more powerful than you realize. The key to this kind of
+optimization is to ensure that cards have consistent, meaningful
+patterns that are ideally connected to other cards, emotional
+experiences, stories, or strong memories.
+
+** Tips for good card design
+*** Don't underestimate visuals
+Pictures the brain finds cute,thrilling, exciting, or otherwise
+emotionally engaging work wonders for memorizing cards
+*** Use context, and force context if you must
+Context is the most powerful way to optimize a card. Create context
+arbitrarily if you really have to, while mining a card. Take a
+screenshot of where you found the word, add a few lines about what it
+meant in context, etc.
+*** Minimize clues on the front
+Cards with too much information on the front are bad because you'll
+start to remember the back from irrelevant clues, rather than ones you
+find in the real world when you need to recall. Think of this like
+avoiding overfitting your brain.
+*** Don't quiz yourself on too much
+It's fine to include lots of information on the back of a card, like
+pitch or frequency, but don't try to quiz yourself for correctness on
+too much. For example, don't test yourself on recalling reading,
+meaning, and pitch of word -- pick maybe one or two. You'll still
+absorb into memory a lot of the other content anyway.

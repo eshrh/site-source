@@ -153,7 +153,7 @@ highlight the line the point is on.
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook
-          (lambda () (setq show-trailing-whitespace t)))
+          (lambda () (setq show-trailing-whitespace nil)))
 #+END_SRC
 
 ** Font config
@@ -240,7 +240,7 @@ startup, using the fact that my first window when starting emacs is dashboard.
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'gruvbox-theme)
 (if (or (display-graphic-p) (daemonp))
-    (load-theme 'gruvbox-medium-hard t nil)
+    (load-theme 'gruvbox-dark-hard t nil)
     (load-theme 'tsdh-dark t nil))
 #+END_SRC
 
@@ -274,9 +274,12 @@ nicer.
 I've liked smart-mode-line in the past, but I prefer telephone line's
 modularity, design, and visual appeal right now.
 
+My fork of telephone line includes a segment for meow.
 #+BEGIN_SRC emacs-lisp
-(straight-use-package 'telephone-line)
-
+(straight-use-package
+ '(telephone-line-mine :host github
+                       :repo "eshrh/telephone-line"
+                       :branch "meow-segment"))
 #+END_SRC
 
 
@@ -295,14 +298,6 @@ Use a neat cubic curved shape to separate segments.
 Segment setup:
 #+BEGIN_SRC emacs-lisp
 ;; patch submitted, waiting on upstream
-(telephone-line-defsegment* telephone-line-meow-tag-segment ()
-  (when (bound-and-true-p meow-mode)
-    (let ((tag (meow--get-state-name (meow--current-state))))
-      (if telephone-line-evil-use-short-tag
-          (seq-take tag 1)
-        tag))))
-
-
 (telephone-line-defsegment* telephone-line-simpler-major-mode-segment ()
   (concat "["
           (if (listp mode-name)
@@ -332,6 +327,12 @@ Segment setup:
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'ivy-posframe)
 (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+
+(setq ivy-posframe-display-functions-alist
+      '((swiper          . ivy-display-function-fallback)
+        (org-ref-insert-link . ivy-display-function-fallback)
+        (t               . ivy-posframe-display)))
+
 (ivy-posframe-mode 1)
 #+END_SRC
 
@@ -339,9 +340,8 @@ Segment setup:
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'highlight-indent-guides)
 (setq highlight-indent-guides-method 'character)
-(add-hook 'prog-mode-hook #'highlight-indent-guides-mode)
+; (add-hook 'prog-mode-hook #'highlight-indent-guides-mode)
 #+END_SRC
-
 
 * Packages
 ** Meow
@@ -429,7 +429,6 @@ Add-number supports both positive and negative prefix args.
   (let ((current-prefix-arg -1))
     (call-interactively 'add-number)))
 #+END_SRC
-
 
 
 *** Keymap
@@ -567,6 +566,8 @@ Define a meow state for smartparens commands.
 #+END_SRC
 
 *** Extra things
+A new thing registered to x for latex environments. Correctly finds
+(), $$ and environment notation.
 #+BEGIN_SRC emacs-lisp
 (setq latex-thing-regexp
       '(regexp "\\\\begin{.*?}\\(.*?\\)\n\\|\\$"
@@ -578,6 +579,22 @@ Define a meow state for smartparens commands.
 
 (add-to-list 'meow-char-thing-table
 	         (cons ?x 'latex))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq meow-use-clipboard t)
+
+(defun meow-clipboard-toggle ()
+  (interactive)
+  (if meow-use-clipboard
+      (progn
+        (setq meow-use-clipboard nil)
+        (message "Meow clipboard usage disabled"))
+    (progn
+      (setq meow-use-clipboard t)
+      (message "Meow clipboard usage enabled"))))
+
+(meow-leader-define-key '("t" . meow-clipboard-toggle))
 #+END_SRC
 
 
@@ -791,6 +808,7 @@ Nov-mode is an excellent epub reader.
 ** Music
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'emms)
+(require 'emms-setup)
 (require 'emms-source-file)
 (require 'emms-source-playlist)
 (require 'emms-playlist-mode)
@@ -805,7 +823,39 @@ Nov-mode is an excellent epub reader.
                                                (emms-cache 1))))
 #+END_SRC
 
-MPD integration setup
+browser keybinds
+#+BEGIN_SRC emacs-lisp
+(define-key emms-browser-mode-map (kbd "<tab>") 'emms-browser-toggle-subitems)
+#+END_SRC
+
+*** EMMS browser tree structure
+There is currently a bug in emms that makes it unable to parse mpd
+albumartist tags. A patch by Pavel Korytov has been accepted upstream,
+but it hasn’t made it to me yet.
+#+BEGIN_SRC emacs-lisp
+(defun emms-info-mpd-process-with-aa (track info)
+  (dolist (data info)
+    (let ((name (car data))
+	      (value (cdr data)))
+      (setq name (cond ((string= name "artist") 'info-artist)
+		               ((string= name "albumartist") 'info-albumartist)
+		               ((string= name "composer") 'info-composer)
+		               ((string= name "performer") 'info-performer)
+		               ((string= name "title") 'info-title)
+		               ((string= name "album") 'info-album)
+		               ((string= name "track") 'info-tracknumber)
+		               ((string= name "disc") 'info-discnumber)
+		               ((string= name "date") 'info-year)
+		               ((string= name "genre") 'info-genre)
+		               ((string= name "time")
+			            (setq value (string-to-number value))
+			            'info-playing-time)
+		               (t nil)))
+      (when name
+	    (emms-track-set track name value)))))
+#+END_SRC
+
+*** MPD integration setup
 #+BEGIN_SRC emacs-lisp
 (defun emms-mpd-setup ()
   (require 'emms-player-mpd)
@@ -815,36 +865,12 @@ MPD integration setup
   (setq emms-player-mpd-server-name "localhost")
   (setq emms-player-mpd-server-port "6600")
   (setq emms-player-mpd-music-directory "~/mus")
+  (advice-add 'emms-info-mpd-process :override 'emms-info-mpd-process-with-aa)
   (emms-player-mpd-connect))
 
 (add-hook 'emms-browser-mode-hook 'emms-mpd-setup)
+(add-hook 'emms-playlist-cleared-hook 'emms-player-mpd-clear)
 #+END_SRC
-*** EMMS browser tree structure
-There is currently a bug in emms that makes it unable to parse mpd albumartist
-tags. A patch by Pavel Korytov has been accepted upstream, but it hasn’t made it to me yet.
-#+BEGIN_SRC emacs-lisp
-(defun emms-info-mpd-process (track info)
-  (dolist (data info)
-    (let ((name (car data))
-	  (value (cdr data)))
-      (setq name (cond ((string= name "artist") 'info-artist)
-		       ((string= name "albumartist") 'info-albumartist)
-		       ((string= name "composer") 'info-composer)
-		       ((string= name "performer") 'info-performer)
-		       ((string= name "title") 'info-title)
-		       ((string= name "album") 'info-album)
-		       ((string= name "track") 'info-tracknumber)
-		       ((string= name "disc") 'info-discnumber)
-		       ((string= name "date") 'info-year)
-		       ((string= name "genre") 'info-genre)
-		       ((string= name "time")
-			(setq value (string-to-number value))
-			'info-playing-time)
-		       (t nil)))
-      (when name
-	(emms-track-set track name value)))))
-#+END_SRC
-
 ** Highlights
 *** Highlight todos
 #+BEGIN_SRC emacs-lisp
@@ -971,7 +997,7 @@ A neat little package to render latex fragments as you write them.
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'org-ref)
 (straight-use-package 'ivy-bibtex)
-;;(require 'org-ref-ivy)
+(require 'org-ref-ivy)
 
 (setq org-src-fontify-natively t
       org-confirm-babel-evaluate nil
@@ -989,12 +1015,11 @@ A neat little package to render latex fragments as you write them.
 
 (setq bibtex-completion-bibliography '("~/docs/library.bib"))
 
-(setq org-latex-pdf-process
-      '("pdflatex -interaction nonstopmode -output-directory %o %f"
-	    "bibtex %b"
-	    "pdflatex -interaction nonstopmode -output-directory %o %f"
-	    "pdflatex -interaction nonstopmode -output-directory %o %f"))
+(setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
+
+(define-key org-mode-map (kbd "C-c r") 'org-ref-citation-hydra/body)
 #+END_SRC
+[[cite:&wangWirelessMulticarrierCommunications2000]]
 *** Org-roam
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'org-roam)
@@ -1033,6 +1058,18 @@ but adds about 1.5s to my startup time. Not good!
     (yas-end)
     (org-backward-element)))
 #+END_SRC
+*** Latex
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'ox-latex
+  (add-to-list 'org-latex-classes
+               '("IEEEtran"
+                 "\\documentclass{IEEEtran}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+
+#+END_SRC
+
 
 ** IRC
 I store this outside of vc because it has some secrets.
@@ -1068,7 +1105,7 @@ I store this outside of vc because it has some secrets.
 
 Make links open in eww.
 #+BEGIN_SRC emacs-lisp
-(setq browse-url-browser-function 'eww-browse-url)
+(setq browse-url-browser-function 'browse-url-firefox)
 #+END_SRC
 
 ** Flycheck
@@ -1201,9 +1238,9 @@ AuCTeX offers a lot of sweet features that I’ve come to take for granted
 (straight-use-package 'auctex)
 #+END_SRC
 
-Use zathura to view pdfs
+Use evince to view pdfs
 #+BEGIN_SRC emacs-lisp
-(setq TeX-view-program-selection '((output-pdf "Zathura")))
+(setq TeX-view-program-selection '((output-pdf "evince")))
 #+END_SRC
 
 I use the digestif LSP. I don’t like the lens in this mode, so I turn it off.
@@ -1366,6 +1403,31 @@ M-x sometimes isn’t recognized on the terminal
                                      (thing-at-point 'symbol t)))))
 
 (global-set-key (kbd "C-h C-j") 'xref-pop-marker-stack)
+#+END_SRC
+
+** Spellcheck locale
+Taken from here: http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs/
+#+BEGIN_SRC emacs-lisp
+(cond
+ ;; try hunspell at first
+  ;; if hunspell does NOT exist, use aspell
+ ((executable-find "hunspell")
+  (setq ispell-program-name "hunspell")
+  (setq ispell-local-dictionary "en_US")
+  (setq ispell-local-dictionary-alist
+        ;; Please note the list `("-d" "en_US")` contains ACTUAL parameters passed to hunspell
+        ;; You could use `("-d" "en_US,en_US-med")` to check with multiple dictionaries
+        '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)))
+
+  ;; new variable `ispell-hunspell-dictionary-alist' is defined in Emacs
+  ;; If it's nil, Emacs tries to automatically set up the dictionaries.
+  (when (boundp 'ispell-hunspell-dictionary-alist)
+    (setq ispell-hunspell-dictionary-alist ispell-local-dictionary-alist)))
+
+ ((executable-find "aspell")
+  (setq ispell-program-name "aspell")
+  ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
+  (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")))
 #+END_SRC
 
 ** Function to reload init

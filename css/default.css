@@ -19,8 +19,8 @@ html {
 
 
 body {
-  font-size: 1.6rem;
-  color: var(--fg);
+    font-size: 1.3rem;
+    color: var(--fg);
 }
 
 .tocheader {
