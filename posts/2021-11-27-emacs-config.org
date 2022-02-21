@@ -276,10 +276,7 @@ modularity, design, and visual appeal right now.
 
 My fork of telephone line includes a segment for meow.
 #+BEGIN_SRC emacs-lisp
-(straight-use-package
- '(telephone-line-mine :host github
-                       :repo "eshrh/telephone-line"
-                       :branch "meow-segment"))
+(straight-use-package 'telephone-line)
 #+END_SRC
 
 
@@ -429,7 +426,6 @@ Add-number supports both positive and negative prefix args.
   (let ((current-prefix-arg -1))
     (call-interactively 'add-number)))
 #+END_SRC
-
 
 *** Keymap
 #+BEGIN_SRC emacs-lisp
@@ -595,6 +591,11 @@ A new thing registered to x for latex environments. Correctly finds
       (message "Meow clipboard usage enabled"))))
 
 (meow-leader-define-key '("t" . meow-clipboard-toggle))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(meow-leader-define-key '("a" . "M-x"))
+(meow-leader-define-key '("f" . "C-x C-f"))
 #+END_SRC
 
 
@@ -1427,7 +1428,7 @@ Taken from here: http://blog.binchen.org/posts/what-s-the-best-spell-check-set-u
  ((executable-find "aspell")
   (setq ispell-program-name "aspell")
   ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
-  (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US")))
+  (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_US"))))
 #+END_SRC
 
 ** Function to reload init
@@ -1472,7 +1473,8 @@ I don’t like tabs
  'aggressive-indent-dont-indent-if
  '(and (derived-mode-p 'c++-mode)
        (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
-                           (thing-at-point 'line)))))
+                           (thing-at-point 'line))))
+ '(bound-and-true-p 'java-mode))
 
 #+END_SRC
 
@@ -1481,6 +1483,14 @@ Set the initial mode to be lisp interaction.
 #+BEGIN_SRC emacs-lisp
 (setq initial-major-mode 'lisp-interaction-mode)
 (setq initial-scratch-message "スクラッチ")
+#+END_SRC
+
+** F19 to extended command
+Rshift on my computer is bound to F19.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "<f19>") (lambda () (interactive)
+                                (call-interactively 'execute-extended-command)))
 #+END_SRC
 
 
