@@ -1017,10 +1017,11 @@ A neat little package to render latex fragments as you write them.
 (setq bibtex-completion-bibliography '("~/docs/library.bib"))
 
 (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
+(add-hook 'doc-view-mode-hook 'auto-revert-mode)
 
 (define-key org-mode-map (kbd "C-c r") 'org-ref-citation-hydra/body)
 #+END_SRC
-[[cite:&wangWirelessMulticarrierCommunications2000]]
+
 *** Org-roam
 #+BEGIN_SRC emacs-lisp
 (straight-use-package 'org-roam)
@@ -1241,7 +1242,8 @@ AuCTeX offers a lot of sweet features that I’ve come to take for granted
 
 Use evince to view pdfs
 #+BEGIN_SRC emacs-lisp
-(setq TeX-view-program-selection '((output-pdf "evince")))
+(add-to-list 'TeX-view-program-list '("Evince" "evince --page-index=%(outpage) %o"))
+(setq TeX-view-program-selection '((output-pdf "Evince")))
 #+END_SRC
 
 I use the digestif LSP. I don’t like the lens in this mode, so I turn it off.
@@ -1491,6 +1493,11 @@ Rshift on my computer is bound to F19.
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "<f19>") (lambda () (interactive)
                                 (call-interactively 'execute-extended-command)))
+#+END_SRC
+
+** Disable dialog boxes
+#+BEGIN_SRC emacs-lisp
+(setq use-dialog-box nil)
 #+END_SRC
 
 
