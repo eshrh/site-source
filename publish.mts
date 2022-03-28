@@ -1,38 +1,32 @@
-(import sh)
-(defmacro do-shell [& cmds]
-  (map (fn [cmd]
-         (def qcmd ~(quote ,cmd))
-         ~(sh/run* ,qcmd)) cmds))
-
-(defn build []
-  (do-shell
+(defun build []
+  ($*
    (stack build)
    (stack exec site build)))
 
-(defn upload []
+(defun upload []
   (build)
-  (do-shell
+  ($*
    (git add *)
    (git commit -m "website update")
    (git push origin master))
 
-  (os/cd "_site")
+  (os-cd "_site")
 
-  (if (not (os/stat ".git"))
-    (do-shell
+  (if (not (os-stat ".git"))
+    ($*
      (git init)
      (git remote add origin "https://github.com/eshrh/site")))
 
-  (do-shell
+  ($*
    (git add *)
    (git commit -m "website update")
    (git push origin master --force)))
 
-(defn run []
+(defun run []
   (build)
-  (sh/$ stack exec -- site watch --port 8001))
+  ($ stack exec -- site watch --port 8001 :sh))
 
-(defn main [& args]
+(defun main [& args]
   (match (in args 1)
     "upload" (upload)
     "run" (run)

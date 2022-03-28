@@ -56,6 +56,12 @@ Recently, I found a potential alternative called Meow that not only
 fixes the integration problems that come with evil, but also
 introduces concepts from other modal editing styles and directly
 improve on vi ideas.
+
+Quick note, for the rest of this post I will refer to commands by
+their suggested keybindings. Meow actually comes with no default
+keybind set, and for good reason. It's not clear whether these
+specific keybinds are in fact optimal, or even any good at all.
+
 * Meow’s critical improvements
 Vi editing, with its popularity, is often seen as the peak of editing
 efficiency -- or at least it certainly did to me. However, there are
@@ -107,10 +113,9 @@ expands the selection visually, and finally you supply the verb,
 delete, =s= to delete the whole region. In practice, it works aburdly
 smoothly and lowers cognitive load significantly.
 *** Dwimmy behavior
-Many commands in meow have do-what-i-mean behavior. For example, the =s=
-command, deletion, operates situationally. With a region selected, it
-kills the region, but otherwise kills a single character. If the line
-is empty, it kills the whole line instead. Less thinking for more action.
+Many commands in meow have do-what-i-mean behavior. For example, the =c=
+command, change, operates situationally. With a region selected, it
+changes the region, but otherwise changes a single character.
 ** Elegant multi-editing
 Vim doesn’t have multi-editing. The only ways to do repeated actions
 are either to record recursive macros or do some obtuse
