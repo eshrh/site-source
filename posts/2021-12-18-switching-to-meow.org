@@ -58,9 +58,10 @@ introduces concepts from other modal editing styles and directly
 improve on vi ideas.
 
 Quick note, for the rest of this post I will refer to commands by
-their suggested keybindings. Meow actually comes with no default
-keybind set, and for good reason. It's not clear whether these
-specific keybinds are in fact optimal, or even any good at all.
+their suggested qwerty keybindings. Meow actually comes with no
+default keybind set, and for good reason. It's not clear whether these
+specific keybinds are in fact optimal, or even any good at all. I do
+this only because most people will likely use this keybind set.
 
 * Meow’s critical improvements
 Vi editing, with its popularity, is often seen as the peak of editing
@@ -85,6 +86,7 @@ Meow actually comes with no keymap built in. You have to define your
 own keymap, or use one that the author suggests. The suggested QWERTY
 keymap has many direct improvements over vim that are a result of very
 sensibly chosen keybinds that integrate well with emacs.
+
 *** "Inner" by default
 One of my most used vim "adjectives" is =i= for inner. Meow has built in
 selectors for "inner things" by default. =ciw= in vim becomes =w= to
@@ -93,12 +95,13 @@ huge improvement on an extremely common action -- directly better than
 vim since it reduces the cognitive load of having to do two different
 things based on where your cursor is on the word.
 
-Similarly, there are no "beginning of sentence" and "end of sentence"
+Similarly, there are no (dedicated) "beginning of sentence" and "end of sentence"
 markers in Meow like vim’s =^= and =$= (terrible choices btw),
 only =x= to select the sentence. This is because once the region is
 selected, you can use =i= to insert left of the region and =a= right of
 the region. Furthermore, expanding selections to the a sentence end
 marker integrates perfectly with emacs’ =C-a= and =C-e=.
+
 *** Expansion hints
 Repeating actions in Meow is extremely well engineered. Consider the
 situation of deleting some number of lines. In vim, without relative line numbers
@@ -172,13 +175,14 @@ Finally, we throw in the alist ='("F" . meow-negative-find)= into the
 =(meow-normal-define-key)= function. Done!
 
 ** Uncluttered keybindings
-Meow is very minimalist. It doesn’t define keys by default if they’re
-not absolutely necessary. For example, there’s no key to go to the top
-or bottom of the buffer. This is fine though, because you can use
-emacs’ built in keybindings, =C-M-<= and =C-M->=, and of course rebind
-them to something in normal mode if needed. After switching from evil,
-it’s great to have a lot of keybind real estate back to bind to more
-useful commands instead of obscure vim actions I’ll never use.
+Meow is very minimalist. It doesn’t define keys by default if
+they’re not absolutely necessary. For example, there’s no key to go
+to the top or bottom of the buffer. This is fine though, because you
+can use emacs’ built in keybindings, =C-M-<= and =C-M->=, but also, you
+can generally go the beginning or end of a "thing", and then select
+buffer as your thing, =<b=. After switching from evil, it’s great to
+have a lot of keybind real estate back to bind to more useful commands
+instead of obscure vim actions I’ll never use.
 *** Keypad mode
 As if I wasn’t sold enough on Meow, keypad mode was the nail in the
 coffin. The problem with evil-leader and related solutions is that you

@@ -279,7 +279,6 @@ nicer.
 I've liked smart-mode-line in the past, but I prefer telephone line's
 modularity, design, and visual appeal right now.
 
-My fork of telephone line includes a segment for meow.
 #+BEGIN_SRC emacs-lisp
 (sup 'telephone-line)
 #+END_SRC
@@ -308,11 +307,7 @@ Segment setup:
 
 (telephone-line-defsegment* telephone-line-simple-pos-segment ()
   (concat "%c : " "%l/" (number-to-string (count-lines (point-min) (point-max))) ))
-
-(count-lines (point-min) (point-max))
-
 (setq telephone-line-evil-use-short-tag nil)
-
 (setq telephone-line-lhs
       '((nil . (telephone-line-projectile-buffer-segment))
         (accent . (telephone-line-simpler-major-mode-segment))
@@ -321,41 +316,16 @@ Segment setup:
       telephone-line-rhs
       '((nil . (telephone-line-simple-pos-segment))
         (accent . (telephone-line-buffer-modified-segment))))
-
 (telephone-line-mode 1)
 #+END_SRC
-
-** Posframe
-#+BEGIN_SRC emacs-lisp
-(sup 'ivy-posframe)
-(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
-
-(setq ivy-posframe-display-functions-alist
-      '((swiper          . ivy-display-function-fallback)
-        (org-ref-insert-link . ivy-display-function-fallback)
-        (t               . ivy-posframe-display)))
-
-(ivy-posframe-mode 1)
-#+END_SRC
+I wrote the meow segment for telephone line, but it has been
+upstreamed now.
 
 ** Indent guides
 #+BEGIN_SRC emacs-lisp
 (sup 'highlight-indent-guides)
 (setq highlight-indent-guides-method 'character)
 ; (add-hook 'prog-mode-hook #'highlight-indent-guides-mode)
-#+END_SRC
-
-** Pixel scrolling
-#+BEGIN_SRC emacs-lisp
-(defun pixel-scroll-setup ()
-  (interactive)
-  (setq pixel-scroll-precision-large-scroll-height 40.0)
-  (setq pixel-scroll-precision-interpolation-factor 10))
-
-(when (boundp 'pixel-scroll-precision-mode)
-  (pixel-scroll-setup)
-  (add-hook 'prog-mode-hook #'pixel-scroll-precision-mode)
-  (add-hook 'org-mode-hook #'pixel-scroll-precision-mode))
 #+END_SRC
 
 * Packages
@@ -375,6 +345,7 @@ dvorak keyboard and is built on meow (hence the name).
        :fetcher github))
 (require 'nyaatouch)
 (turn-on-nyaatouch)
+(meow-normal-define-key '("r" . meow-delete))
 #+END_SRC
 
 Nyaatouch brings in some packages as dependencies: avy, swiper, meow,
@@ -401,7 +372,7 @@ when you have >2 open by providing a letter hint.
 
 I add some extra config for myself
 #+BEGIN_SRC emacs-lisp
-(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+(setq aw-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n ?s))
 (setq aw-scope 'frame)
 (setq aw-background nil)
 (setq aw-ignore-current t)
@@ -431,11 +402,7 @@ Some config
 (setq dashboard-item-names '(("Recent Files:" . "recent:")
                              ("Projects:" . "projects:")
                              ("Agenda for the coming week:" . "agenda:")))
-;; (setq dashboard-banner-logo-title (concat "GNU emacsへようこそ。今日は"
-;;                                           (format-time-string "%m")
-;;                                           "月"
-;;                                           (format-time-string "%e")
-;;                                           "日です"))
+
 (setq dashboard-banner-logo-title "GNU emacsへようこそ。")
 
 (if (or (display-graphic-p) (daemonp))
@@ -465,9 +432,11 @@ The one true autocompleter
 
 ** Searching
 *** Ivy
-I currently use ivy for completions. I’ve used selectrum in the past, but ivy is
-better in my opinion simply because so many packages have built in integrations
-with it.
+I currently use ivy for completions. I’ve used selectrum in the past,
+but ivy is better in my opinion simply because so many packages have
+built in integrations with it. I also use swiper extensively, which is
+why i find it hard to switch.
+
 #+BEGIN_SRC emacs-lisp
 (sup 'ivy)
 (ivy-mode 1)
@@ -487,6 +456,19 @@ An essential addition to the search minibuffer that offers a bit of documentatio
 #+BEGIN_SRC emacs-lisp
 (sup 'marginalia)
 (marginalia-mode)
+#+END_SRC
+
+*** Posframe
+#+BEGIN_SRC emacs-lisp
+(sup 'posframe)
+(sup 'ivy-posframe)
+(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+(setq ivy-posframe-display-functions-alist
+      '((swiper          . ivy-display-function-fallback)
+        (org-ref-insert-link . ivy-display-function-fallback)
+        (t               . ivy-posframe-display)))
+
+(ivy-posframe-mode 1)
 #+END_SRC
 
 ** Helpful
@@ -510,7 +492,6 @@ Override keybindings
 
 #+BEGIN_SRC emacs-lisp
 (sup 'anki-editor)
-(sup 'posframe)
 (sup '(sdcv2 :type git
              :repo "https://github.com/manateelazycat/sdcv"
              :files ("sdcv.el")))
@@ -1039,11 +1020,12 @@ Use evince to view pdfs
                                  '((output-pdf "Evince")))))
 #+END_SRC
 
-I use the digestif LSP. I don’t like the lens in this mode, so I turn it off.
+reftex integration
 #+BEGIN_SRC emacs-lisp
-(add-hook 'tex-mode-hook #'lsp)
-(add-hook 'tex-mode-hook (lambda () (setq lsp-lens-enable nil)))
+(add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+(setq reftex-plug-into-AUCTeX t)
 #+END_SRC
+
 
 *** Python
 #+BEGIN_SRC emacs-lisp
@@ -1080,6 +1062,19 @@ Lispy python. hy-mode will require jedhy for autocomplete.
 #+BEGIN_SRC emacs-lisp
 (sup 'hy-mode)
 (sp-disable 'hy-mode "'")
+#+END_SRC
+
+* Pixel scrolling
+#+BEGIN_SRC emacs-lisp
+(defun pixel-scroll-setup ()
+  (interactive)
+  (setq pixel-scroll-precision-large-scroll-height 30.0)
+  (setq pixel-scroll-precision-interpolation-factor 10))
+
+(when (boundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-setup)
+  (add-hook 'prog-mode-hook #'pixel-scroll-precision-mode)
+  (add-hook 'org-mode-hook #'pixel-scroll-precision-mode))
 #+END_SRC
 
 * Other config and elisp

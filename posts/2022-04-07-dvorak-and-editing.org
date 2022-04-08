@@ -1,0 +1,203 @@
+---
+title: The dvorak keyboard, and the joy of designing your own editing scheme
+---
+
+* Dvorak
+I finally did it, I switched to dvorak on all my computers full
+time. It is definitely up there on my list of most pschologically
+painful things I've ever had the displeasure to experience, as a
+QWERTY touch typer.
+
+I've been aware of the dvorak keyboard (or, the Simplified Keyboard)
+for a long time now, at least since the beginning of high school. I've
+always been kinda interested with micro-optimizing my computer
+interfaces, so I naturally came across it a few times. Each time, I
+was a little more convinced, a little more amazed by fast dvorak
+typing videos, but still found it difficult to prove to myself it was
+worth retraining some 5+ years of muscle memory (I "learned" to touch type
+qwerty in 6th grade, by middle school had a mandatory typing class).
+
+I seriously began thinking about learning dvorak near the beginning of
+march, and started practicing soon after.
+
+** My qwerty is kinda bad
+
+Well, sort of. Before switching I could type at around 120wpm on
+typeracer and burst speeds of up to 140-150 wpm on
+monkeytype.com. Still, I felt like I was held back by accuracy, which
+was regularly below 90% and truly crippled me on typeracer.
+
+The issue is that over the years, qwerty training wore off and was
+replaced by what I felt was marginally more comfortable or faster. I
+used to type qwerty with essentially 8 fingers excluding thumbs, since
+I would never press any keys with my pinkies. I'd instead move my ring
+or middle finger to hit =q= or =p=. Hitting =t= or =y= on qwerty usually
+involved a significant shift of my entire hand. I pressed =b= with my
+right pointer. Obviously, these kind of habits have a serious effect
+on typing accuracy. I believed that dvorak would help remedy this
+problem because this time I'd force myself to be theoretically correct
+all the time.
+
+** The learning experience
+I primarily learnt dvorak using the neat little cli program =dvorak7min=,
+which I now maintain on the AUR because the package didn't compile.
+
+I think the program is a pretty good way to learn dvorak, if my
+experience is worth anything. I can't say anything about it's
+optimality of course, since I can only learn dvorak for the first time
+once, but I also tried ktouch, whose dvorak lessons actually just use
+the dvorak7min lessons. I also tried learn.dvorak.nl, and while I
+think it's a good resource to practice on once you're ok at typing,
+it's not what I'd recommend to people just starting -- it's just too
+hard.
+
+Dvorak7min is more procedural, emphasizes muscle memory practice, and
+eases you into typing on dvorak even if the program takes a bit (a
+lot) longer than 7 minutes to complete.
+
+After finishing all the d7m lessons, I began practicing on
+learn.dvorak.nl and monkeytype.com, which I still do today.
+
+** Dvorak is really fun (once you're good)
+About a month later, I type at around 90 wpm on typeracer AND
+monkeytype, since my accuracy is generally pretty ok (>90-95% on
+monkeytype). I can burst up to around 110-120 on short sprints and
+easy words.
+
+The first few times I got on a tear typing dvorak, the experience was
+fantastic. There's something about rapidly spitting out characters
+while minimally moving your fingers, and pretty much touching keys the
+entire time. It really does feel great, and for that experience alone
+I'd recommend learning the layout. While many top typists use dvorak,
+many top typists don't, so speed isn't a compelling reason to
+switch. What is really compelling though, is that it's really, really
+*fun*.
+
+* Modal editing on dvorak
+One of the biggest obstacles to dvorak isn't in the typing, but in
+keyboard shortcuts and using your computer efficiently. Some keybinds
+just work in my opinion, like =C-c= and =C-v=, which I don't find too
+bad. Also like =C-t= and =C-w= for opening and closing tabs, which end up
+both under the right hand's middle finger.
+
+As an emacs user, some bindings just work as well. Notably, =C-a= and
+=C-e= for beginning and end of line end up on the home row, right next
+to each other and even in order. =C-p= and =C-n= are comfortable, =C-n=, the
+more common of the two is on homerow as well. The =C-c= stem is fine.
+
+Undoubtedly the worst binding I've had to deal with is =C-x= on emacs. I
+took the suggestion from the emacswiki and swapped =C-u= and =C-x=. I
+barely use =C-u= anyway, and this places =C-x= right under the pointer in
+the home row, which is very comfortable. Common sequences like =C-x C-s=
+and =C-x C-e= become optimal homerow rolls.
+
+Now, the issue of the other modal bindings... while some people cope
+and settle with the default qwerty binds, I found both vim bindings
+and meow bindings terrible and utterly unusable. There are just some
+ergonomic compromises that null the benefit of using dvorak in the
+first place to me. It's not comfortable, it's a lot of movement for
+common commands, and it's sure as hell not fun.
+
+I'm aware of programs like =aoeui= which claim to be vim's for dvorak
+keyboards, but I was not convinced by it's bindings either. I decided
+that if I was going to lock myself out of other people's computers
+anyway, I might as well lock myself out of other people's editors as
+well. I set about remapping nearly every key in my editor. I call the
+resulting modal scheme =nyaatouch=, reference to =meow=, the editing
+framework it uses.
+* Nyaatouch
+No guarantees on how up to date this blog post, or the [[https://github.com/eshrh/nyaatouch][repository]] is!
+
+** Ideas
+*** Common things on the home and top row
+This one is a given. The most common actions should be on the top and
+home row, since it feels better to stretch your finger up and press
+down than down. If keys are on the bottom row, they common ones should
+be closer to the center.
+
+My least favorite keys on the entire keyboard have got to be =y= and =f=
+on dvorak. Only rare commands should go here.
+*** Hand alternation
+One of the reasons i think that dvorak has improved my accuracy is
+that letters that are pressed one after another are on opposite
+hands. This leads to a characteristic hand alternation motion while
+typing that is really comfortable and accurate. I want this same idea
+in my editing scheme.
+** Keybinds
+*** Alternation by object and action
+I put all my commonly used objects on the left hand home row.
++ =a= :: selects a sentence
++ =o= :: selects a string
++ =e= :: selects a word
++ =u= :: the one exception, insert. This is a very common action and it
+  doesn't fit anywhere else.
++ =i= :: selects a matching pair of braces
++ =,.<>= :: inner, bounds, beginning and end of things. This is
+  unchanged from stock meow.
+
+Now, actions that work on seletions are on the right hand home row:
++ =d= :: copy
++ =D= :: yank
++ =n= :: change
++ =N= :: replace selection with kill contents
++ =s= :: kill, unchanged from meow
+  
+*** Previous iteration
+Nyaatouch is actually just my personal meow config. The advantage to
+converting it to a package is that it becomes easier to import just
+the keybinds onto a new computer and nothing else.
+
+Originally, I used to put all the movement keys on the top row of the
+keyboard, =fgcr=. Then, more common commands like insert and change come
+to =ht= and you can put other useful commands like open line onto the
+home row as well.
+
+I used this configuration for several weeks, but eventually decided
+that up/down on the home row is just too good to pass up. Furthermore,
+putting insert underneath movement commands actually negatively
+impacts the hand alternation idea, since after moving around the
+cursor to the right place, you most often just want to
+insert. Otherwise, I'd typically use a more efficient movement
+command, like find or avy. This led me to the current configuration
+which has insert under the left hand pointer finger.
+
+*** Meow leader keybinds
+Nyaatouch also introduces a set of leader binds that emphasize home
+row. Commands that open a further prompt are on the left hand, and
+commands that deal with windows are on the right
+
++ =a= :: execute extended command
++ =o= :: C-h
++ =e= :: C-x b
++ =u= :: C-x C-f
++ =h= :: Switch window
++ =t= :: Close window
++ =n= :: Split window
++ =s= :: Kill buffer and close window
+
+There are some more of course, but you can look at the nyaatouch repo
+page or elisp source for them all.
+
+*** Other changes
+**** The parentheses mode
+My biggest [[https://github.com/meow-edit/meow/pull/155][patch]] to meow was to allow the user to easily define custom
+modal states in addition to just insert, normal, beacon, etc. I take
+advantage of this to create the parenthesis state, which offers
+convienient and shallow bindings for many very useful smartparens
+commands. The commands that I use the most regularly are probably for
+transposition, slurping/barfing, raising and absorbing. To be honest,
+I find smartparen navigation really unintuitive and slow, and I don't
+use it that much at all.
+**** Changing the behavior of meow-insert
+Perhaps my biggest gripe with meow-insert is that it always inserts at
+the beginning of a selection. This is theoretically a neat feature,
+but I can say that I've been annoyed by it more than I've been
+thankful for it. If you're finding forward, you have to append to
+insert at your cursor, but if you're finding backward then you have to
+insert. This added mental load was a bit too much for me. In
+nyaatouch, insert just inserts whereever your cursor actually is.
+**** Utility functions
+Nyaatouch also implements some other things I use, like an intelligent
+capitalization function, number manipulation, and also brings in
+swiper and avy as dependencies.
+
