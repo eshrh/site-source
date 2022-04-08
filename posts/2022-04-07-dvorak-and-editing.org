@@ -4,9 +4,9 @@ title: The dvorak keyboard, and the joy of designing your own editing scheme
 
 * Dvorak
 I finally did it, I switched to dvorak on all my computers full
-time. It is definitely up there on my list of most pschologically
+time. It is definitely up there on my list of most psephologically
 painful things I've ever had the displeasure to experience, as a
-QWERTY touch typer.
+qwerty touch typist.
 
 I've been aware of the dvorak keyboard (or, the Simplified Keyboard)
 for a long time now, at least since the beginning of high school. I've
@@ -15,7 +15,7 @@ interfaces, so I naturally came across it a few times. Each time, I
 was a little more convinced, a little more amazed by fast dvorak
 typing videos, but still found it difficult to prove to myself it was
 worth retraining some 5+ years of muscle memory (I "learned" to touch type
-qwerty in 6th grade, by middle school had a mandatory typing class).
+qwerty in 6th grade, my middle school had a mandatory typing class).
 
 I seriously began thinking about learning dvorak near the beginning of
 march, and started practicing soon after.
@@ -43,7 +43,7 @@ I primarily learnt dvorak using the neat little cli program =dvorak7min=,
 which I now maintain on the AUR because the package didn't compile.
 
 I think the program is a pretty good way to learn dvorak, if my
-experience is worth anything. I can't say anything about it's
+experience is worth anything. I can't say anything about its
 optimality of course, since I can only learn dvorak for the first time
 once, but I also tried ktouch, whose dvorak lessons actually just use
 the dvorak7min lessons. I also tried learn.dvorak.nl, and while I
@@ -112,7 +112,7 @@ No guarantees on how up to date this blog post, or the [[https://github.com/eshr
 *** Common things on the home and top row
 This one is a given. The most common actions should be on the top and
 home row, since it feels better to stretch your finger up and press
-down than down. If keys are on the bottom row, they common ones should
+down than down. If keys are on the bottom row, the common ones should
 be closer to the center.
 
 My least favorite keys on the entire keyboard have got to be =y= and =f=
@@ -135,7 +135,7 @@ I put all my commonly used objects on the left hand home row.
 + =,.<>= :: inner, bounds, beginning and end of things. This is
   unchanged from stock meow.
 
-Now, actions that work on seletions are on the right hand home row:
+Now, actions that work on selections are on the right hand home row:
 + =d= :: copy
 + =D= :: yank
 + =n= :: change
@@ -183,7 +183,7 @@ page or elisp source for them all.
 My biggest [[https://github.com/meow-edit/meow/pull/155][patch]] to meow was to allow the user to easily define custom
 modal states in addition to just insert, normal, beacon, etc. I take
 advantage of this to create the parenthesis state, which offers
-convienient and shallow bindings for many very useful smartparens
+convenient and shallow bindings for many very useful smartparens
 commands. The commands that I use the most regularly are probably for
 transposition, slurping/barfing, raising and absorbing. To be honest,
 I find smartparen navigation really unintuitive and slow, and I don't
@@ -200,4 +200,3 @@ nyaatouch, insert just inserts whereever your cursor actually is.
 Nyaatouch also implements some other things I use, like an intelligent
 capitalization function, number manipulation, and also brings in
 swiper and avy as dependencies.
-
