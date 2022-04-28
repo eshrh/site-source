@@ -328,6 +328,19 @@ upstreamed now.
 ; (add-hook 'prog-mode-hook #'highlight-indent-guides-mode)
 #+END_SRC
 
+** Pixel scrolling
+#+BEGIN_SRC emacs-lisp
+(defun pixel-scroll-setup ()
+  (interactive)
+  (setq pixel-scroll-precision-large-scroll-height 30.0)
+  (setq pixel-scroll-precision-interpolation-factor 20))
+
+(when (boundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-setup)
+  (add-hook 'prog-mode-hook #'pixel-scroll-precision-mode)
+  (add-hook 'org-mode-hook #'pixel-scroll-precision-mode))
+#+END_SRC
+
 * Packages
 ** Libraries
 #+BEGIN_SRC emacs-lisp
@@ -346,6 +359,9 @@ dvorak keyboard and is built on meow (hence the name).
 (require 'nyaatouch)
 (turn-on-nyaatouch)
 (meow-normal-define-key '("r" . meow-delete))
+(setq  x-meta-keysym 'super
+       x-super-keysym 'meta)
+
 #+END_SRC
 
 Nyaatouch brings in some packages as dependencies: avy, swiper, meow,
@@ -428,6 +444,16 @@ The one true autocompleter
 (sup 'projectile)
 (projectile-mode +1)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun find-file-or-projectile ()
+  (interactive)
+  (if (projectile-project-p)
+      (call-interactively 'projectile-find-file)
+    (call-interactively 'find-file)))
+
+(global-set-key (kbd "C-x C-f") 'find-file-or-projectile)
 #+END_SRC
 
 ** Searching
@@ -601,15 +627,12 @@ but it hasn’t made it to me yet.
 (add-hook 'emms-browser-mode-hook 'emms-mpd-setup)
 (add-hook 'emms-playlist-cleared-hook 'emms-player-mpd-clear)
 #+END_SRC
+
 ** Highlights
 *** Highlight todos
 #+BEGIN_SRC emacs-lisp
 (sup 'hl-todo)
 (global-hl-todo-mode)
-#+END_SRC
-*** Highlight indent guides
-#+BEGIN_SRC emacs-lisp
-(sup 'highlight-indent-guides)
 #+END_SRC
 
 ** Which-key
@@ -852,25 +875,6 @@ Classic linter framework
 (sup 'flycheck)
 #+END_SRC
 
-** LSP
-#+BEGIN_SRC emacs-lisp
-(sup 'company-lsp)
-(sup 'lsp-mode)
-(sup 'lsp-ui)
-#+END_SRC
-**** Declutter lsp UI
-#+BEGIN_SRC emacs-lisp
-(setq lsp-ui-doc-show-with-mouse nil)
-(setq lsp-ui-sideline-enable nil)
-(setq lsp-modeline-code-actions-enable 1)
-#+END_SRC
-
-**** Code action keybinding
-#+BEGIN_SRC emacs-lisp
-(add-hook 'lsp-mode-hook (lambda ()
-			   (local-set-key (kbd "C-c C-j") 'lsp-execute-code-action)))
-#+END_SRC
-
 ** Magit
 Nothing to be said here
 #+BEGIN_SRC emacs-lisp
@@ -881,18 +885,6 @@ Nothing to be said here
 (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 (setq ediff-split-window-function 'split-window-vertically)
 
-#+END_SRC
-
-** Telega
-telegram client
-#+BEGIN_SRC emacs-lisp
-(sup 'telega)
-#+END_SRC
-
-** Ligatures and symbols
-#+BEGIN_SRC emacs-lisp
-;; custom entry in tex--prettify-symbols-alist. FIXME.
-(global-prettify-symbols-mode)
 #+END_SRC
 
 ** EAF
@@ -920,10 +912,33 @@ telegram client
 (global-prettify-symbols-mode)
 #+END_SRC
 
+** LSP
+#+BEGIN_SRC emacs-lisp
+(sup 'lsp-mode)
+(sup 'lsp-ui)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(sup 'lsp-haskell)
+#+END_SRC
+
+config
+#+BEGIN_SRC emacs-lisp
+(setq lsp-auto-guess-root t)
+(setq lsp-enable-symbol-highlighting nil)
+(setq lsp-lens-enable nil)
+(setq lsp-headerline-breadcrumb-enable nil)
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'python-mode-hook #'lsp-deferred)
+(add-hook 'haskell-mode-hook #'lsp-deferred)
+(add-hook 'c-mode-hook #'lsp-deferred)
+#+END_SRC
+
 ** Language-specific
 *** Java
-I don’t use lsp-java. It’s pretty finicky and doesn’t work how I like it to.
-Meghanada on the other hand works perfectly even if it’s a little less feature-rich.
 #+BEGIN_SRC emacs-lisp
 (sup 'meghanada)
 (add-hook 'java-mode-hook
@@ -932,15 +947,19 @@ Meghanada on the other hand works perfectly even if it’s a little less feature
             (meghanada-mode t)
             (flycheck-mode +1)
             (setq c-basic-offset 4)
-			(setq tab-width 4)))
+			(setq tab-width 4))
+          (lambda ()
+            (add-hook 'before-save-hook #'delete-trailing-whitespace)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
 #+END_SRC
 
 *** Haskell
 #+BEGIN_SRC emacs-lisp
 (sup 'haskell-mode)
-(sup 'lsp-haskell)
-(add-hook 'haskell-mode-hook #'lsp)
-(add-hook 'haskell-literate-mode-hook #'lsp)
+(add-hook 'haskell-mode-hook #'interactive-haskell-mode)
 #+END_SRC
 
 Interactive haskell error customization
@@ -949,8 +968,6 @@ Interactive haskell error customization
 #+END_SRC
 
 *** C++
-I don’t autostart the LSP because i don’t always need it. I enter the lsp manually
-if I need to.
 #+BEGIN_SRC emacs-lisp
 (setq-default tab-width 4
               c-basic-offset 4
@@ -1026,18 +1043,8 @@ reftex integration
 (setq reftex-plug-into-AUCTeX t)
 #+END_SRC
 
-
 *** Python
-#+BEGIN_SRC emacs-lisp
-(sup 'lsp-jedi)
-#+END_SRC
 **** IPython
-#+BEGIN_SRC emacs-lisp
-(sup 'polymode)
-(sup 'ein)
-(setq ein:polymode t)
-#+END_SRC
-
 Make ipython the default shell
 #+BEGIN_SRC emacs-lisp
 (setq python-shell-interpreter "ipython"
@@ -1057,24 +1064,12 @@ Make ipython the default shell
 (sp-disable 'clojure-mode "'")
 #+END_SRC
 
-*** Hy
-Lispy python. hy-mode will require jedhy for autocomplete. 
+*** Other
+Kmonad config lang
 #+BEGIN_SRC emacs-lisp
-(sup 'hy-mode)
-(sp-disable 'hy-mode "'")
-#+END_SRC
-
-* Pixel scrolling
-#+BEGIN_SRC emacs-lisp
-(defun pixel-scroll-setup ()
-  (interactive)
-  (setq pixel-scroll-precision-large-scroll-height 30.0)
-  (setq pixel-scroll-precision-interpolation-factor 10))
-
-(when (boundp 'pixel-scroll-precision-mode)
-  (pixel-scroll-setup)
-  (add-hook 'prog-mode-hook #'pixel-scroll-precision-mode)
-  (add-hook 'org-mode-hook #'pixel-scroll-precision-mode))
+(when (file-exists-p (concat user-emacs-directory "kbd-mode.el"))
+  (load-file "~/.emacs.d/kbd-mode.el")
+  (add-hook 'kbd-mode-hook (lambda () (aggressive-indent-mode -1))))
 #+END_SRC
 
 * Other config and elisp
@@ -1114,17 +1109,6 @@ Taken from [[https://emacs.stackexchange.com/questions/2888/kill-buffer-when-fra
 #+END_SRC
 
 ** Custom keybinds
-*** C-o for execute extended
-M-x sometimes isn’t recognized on the terminal
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-o") 'execute-extended-command)
-#+END_SRC
-
-*** Two keybinds for ace-window switching
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-\;") 'ace-window)
-#+END_SRC
-
 *** Kill both buffer and window keybinding
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-x k") 'kill-buffer)
@@ -1191,7 +1175,6 @@ I make too many changes to type this out every time.
 (define-key emacs-lisp-mode-map (kbd "C-c C-b") 'load-this-file)
 #+END_SRC
 
-
 ** Kill other buffers
 #+BEGIN_SRC emacs-lisp
 (defun kill-other-buffers ()
@@ -1248,4 +1231,19 @@ Rshift on my computer is bound to F19.
 (define-key key-translation-map [?\C-u] [?\C-x])
 #+END_SRC
 
+** Use ripgrep when available
+#+BEGIN_SRC emacs-lisp
+(when (executable-find "rg")
+  (grep-apply-setting
+   'grep-find-command
+   '("rg -n -H --no-heading -e '' $(git rev-parse --show-toplevel || pwd)" . 27)))
+#+END_SRC
+
+** make C-h backspace
+#+BEGIN_SRC emacs-lisp
+(global-set-key [?\C-h] 'delete-backward-char)
+(global-set-key [?\C-x ?h] 'help-command)
+(when (featurep 'vterm)
+  (define-key vterm-mode-map (kbd "C-h") #'vterm-send-backspace))
+#+END_SRC
 
