@@ -237,10 +237,16 @@ startup, using the fact that my first window when starting emacs is dashboard.
 ** Theme
 #+BEGIN_SRC emacs-lisp
 (sup 'gruvbox-theme)
-(load-theme 'gruvbox-dark-hard t nil)
-;; (if (or (display-graphic-p) (daemonp))
-;;     (load-theme 'gruvbox-dark-hard t nil)
-;;     (load-theme 'tsdh-dark t nil))
+(load-theme 'gruvbox-light-hard t nil)
+(setq solarized-high-contrast-mode-line t)
+(setq solarized-use-less-bold t)
+(setq solarized-use-more-italic t)
+(setq solarized-height-minus-1 1.0)
+(setq solarized-height-plus-1 1.0)
+(setq solarized-height-plus-2 1.0)
+(setq solarized-height-plus-3 1.0)
+(setq solarized-height-plus-4 1.0)
+(setq x-underline-at-descent-line t)
 #+END_SRC
 
 ** Frame
@@ -348,6 +354,12 @@ upstreamed now.
   (sup 'dash)
 #+END_SRC
 
+** Neotree
+#+BEGIN_SRC emacs-lisp
+(sup 'neotree)
+(setq neo-theme (if (display-graphic-p) 'ascii))
+#+END_SRC
+
 ** Nyaatouch
 Nyaatouch is my personal modal editing system. It is highly optimized for the
 dvorak keyboard and is built on meow (hence the name).
@@ -376,6 +388,7 @@ smartparens. You can find more information about it at the repo.
 #+BEGIN_SRC emacs-lisp
 (sup 'undo-tree)
 (global-undo-tree-mode)
+(setq undo-tree-auto-save-history nil)
 #+END_SRC
 
 ** Ace-window
@@ -454,6 +467,8 @@ The one true autocompleter
     (call-interactively 'find-file)))
 
 (global-set-key (kbd "C-x C-f") 'find-file-or-projectile)
+(meow-leader-define-key
+ '("U" . find-file))
 #+END_SRC
 
 ** Searching
@@ -711,8 +726,9 @@ Path configuration. I use a directory called org in my home directory to store
 my org files.
 #+BEGIN_SRC emacs-lisp
 (sup 'org)
-(setq org-directory "~/org/")
-(setq org-agenda-files '("~/org/"))
+(when (file-exists-p "~/org/")
+  (setq org-directory "~/org/")
+  (setq org-agenda-files '("~/org/")))
 (setq org-hide-emphasis-markers t)
 (setq org-list-allow-alphabetical t)
 (add-hook 'org-mode-hook (lambda ()
@@ -796,8 +812,13 @@ but adds about 1.5s to my startup time. Not good!
   (make-directory "~/roam"))
 
 (setq org-roam-directory (file-truename "~/roam"))
-;(org-roam-db-autosync-mode)
+(global-set-key (kbd "C-c c i") #'org-roam-node-insert)
+(global-set-key (kbd "C-c c f") #'org-roam-node-find)
+(global-set-key (kbd "C-c c s") #'org-roam-db-sync)
+
+(setq org-return-follows-link t)
 #+END_SRC
+
 *** Anki integration
 #+BEGIN_SRC emacs-lisp
 (defun anki-description-transform ()
@@ -820,6 +841,7 @@ but adds about 1.5s to my startup time. Not good!
     (yas-end)
     (org-backward-element)))
 #+END_SRC
+
 *** Latex
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'ox-latex
@@ -1034,7 +1056,8 @@ Use evince to view pdfs
                            (add-to-list 'TeX-view-program-list
                                         '("Evince" "evince --page-index=%(outpage) %o"))
                            (setq TeX-view-program-selection
-                                 '((output-pdf "Evince")))))
+                                 '((output-pdf "Evince")))
+                           (auto-fill-mode 1)))
 #+END_SRC
 
 reftex integration
@@ -1062,6 +1085,23 @@ Make ipython the default shell
 (sup 'clojure-mode)
 (sup 'cider)
 (sp-disable 'clojure-mode "'")
+#+END_SRC
+
+*** ASM
+#+BEGIN_SRC emacs-lisp
+(defun my-asm-mode-hook ()
+  ;; you can use `comment-dwim' (M-;) for this kind of behaviour anyway
+  
+  ;; asm-mode sets it locally to nil, to "stay closer to the old TAB behaviour".
+  (setq tab-always-indent (default-value 'tab-always-indent)))
+
+(add-hook 'asm-mode-hook
+          (lambda ()
+            (local-unset-key (vector asm-comment-char))
+            (setq tab-always-indent (default-value 'tab-always-indent))))
+
+
+
 #+END_SRC
 
 *** Other
