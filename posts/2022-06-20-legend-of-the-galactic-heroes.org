@@ -1,0 +1,246 @@
+---
+title: Thoughts on probably my favorite anime ever, Legend of the Galactic Heroes
+---
+
+* Introduction
+Recently, I finished 銀河英雄伝説 (ぎんがえいゆうでんせつ), or the Legend
+of the Galactic Heroes (1988). It took me 312 days to finish for 110
+episodes (47.5h)... needless to say, I took /a lot/ of breaks while
+watching the show.
+
+Still, while it definitely is a slow burn, I can pretty confidently
+say that this is my favorite anime I've ever watched. It's truly
+unique to the genre, as far as I've seen, in scale, narrative depth,
+detail, and pure grandeur.
+
+I can't recommend it enough.
+
+I'll try my best not to spoil anything, but there are a few very light
+ones.
+
+* Production
+Being an anime from 1988, the art-style is pretty distinctive compared
+to the moe-brainrot-simple-shapes-degenerated-design I'm typically
+used to watching. I'm not going to lie, I really didn't like it at
+first, but somewhere around 20 episodes or so in, I started to enjoy
+it. Looking back at it now, I can't imagine what I was thinking,
+because I find the character design and visual detail (especially in
+battle scenes) to be extremely beautiful.
+** Art style
+One thing I will mention though, is that I still only really like the
+"classic" art style used in the show. On occasion, the art style
+switches to a more modern, flat-ish style, that I assume is due to
+either different art directors or different animation contracting.
+
+#+attr_html: :width 300px
+[[../images/reinhart_100.jpg]]
+
+Reinhart from episode 100, /Hoch Kaiserin!/.
+
+#+attr_html: :width 300px
+[[../images/reinhart_110.jpg]]
+
+Reinhart from episode 110, /夢, 見果てたり/ (/Seeing a dream through
+the end/)
+
+I vastly prefer the more detailed style, the lines are sharper,
+characters are more emotive, and it's in general nicer to look
+at. It's super jarring whenever they switch art styles, and sometimes
+they use the newer style for episodes at a time. I didn't find it a
+huge issue mainly because so few episodes are animated in the second
+style, but it was something that bothered me a bit.
+
+** Battles
+I have to comment on how brilliantly done battle scenes, especially
+the early ones are done. The art does a great job at conveying a sense
+of absolutely immense scale of these literally galactic battles while
+never losing focus on the individual ship, and the individual soldier.
+
+#+attr_html: :width 300px
+[[../images/logh_ship.jpg]]
+
+#+attr_html: :width 300px
+[[../images/logh_intestine.jpg]]
+
+2D ships being blown up has never looked this good. Shots of hundreds
+of thousands of ship are balanced well by shots of the people
+controlling them. Really three levels are used frequently. The
+"control-panel" level which we spend the most time at, following
+commanders looking at formation shapes on their dashboards. The second
+is the ship level, where we typically see them blown up. The last
+level, and the most detailed and shocking are the ones with nameless
+soldiers. It's always a little jarring to go from these romantic shots
+of commanders and their safety, to soldiers trying to collect their
+intestines, getting impaled by iron struts, or electrocuted
+.
+** Alliance vs Empire design
+In passing, I'd like to mention that I really loved the design
+Alliance places, uniforms, and ship interiors. It contributes
+massively to the masterful worldbuilding, and makes places and through
+them, people and situations feel real and grounded to the planet,
+area, and government.
+*** Alliance
+On the alliance side, design really hold a sense of the values the
+Alliance stands for, like idealism, technology freedom, democracy, and
+so on. The ships look futuristic and practical, using greens and
+blacks, with dangerous looking spikes.
+
+Alliance cities also look modern, with tall spires, glass,
+and metropolitan design.
+
+#+attr_html: :width 300px
+[[../images/logh_alliance_city.jpg]]
+
+What I love about the design is it's consistency and depth. These
+choices aren't skin deep, they pervade the interior of buildings when
+we see characters inside them, and most importantly they actually play
+a role in the world, affecting plot (I'd have to use some spoilers)
+and feel incredibly real in a way that setting has never felt real to
+me in anime before.
+
+#+attr_html: :width 300px
+[[../images/logh_alliance.jpg]]
+
+I find the ship interiors to be particularly special in this
+respect. They're so remarkably unique that the perspective switching
+that happens so often in the show is perfectly fluid.
+*** Empire
+The empire's designs focus on royalty, luxury, dignity, and
+wealth. I'm a big fan of how much respect LOGH gives to buildings in
+general. The construction of a new imperial palace is a great
+undertaking, with architects, interesting characters, discussions, and
+it also actually takes a lot of time, both in the show and in terms of
+episodes.
+
+I struggle to do it justice with just screenshots.
+
+#+attr_html: :width 300px
+[[../images/logh_empire_palace.jpg]]
+
+#+attr_html: :width 300px
+[[../images/logh_empire_interior.jpg]]
+
+Of course the ships, uniforms, and ship interiors also match. It's
+hard to capture in screenshots specifically because what's so special
+about it is its consistency and grandeur. Reinhart's flagship later in
+the show, the Schlossbrand, and Neue Sanssouci are some of my favorite
+locations.
+
+Whats also cool is that when one side manages to capture another
+side's location, which happens *a lot*, they actually make that place
+their headquarters. It's awesome to see different characters in the
+same places, and how the interior of each place changes as a result of
+decorations and portraits (suprisingly, art installations are a big
+focus in interior shots) that the occupiers put up.
+** Music
+No review of this show would be complete without a mention of it's
+fantastic music. Theme songs are changed after each big subarc, and
+each of them are super fitting to their plot sequence.
+
+My favorite OP would definitely have to be "Must be Something" by
+Hitomi Konno. It's as rich and epic as the segment of the show it
+plays in, the last 25 or so episodes.
+
+My favorite ED is the second one, 旅立ちの序曲. I like how the ops
+tend to be more focused on the Emipire, and the EDs give more
+attention to Alliance characters.
+
+In any case, past the theme songs I found the orchestral soundtrack
+amazing, especially during battle scenes. They contribute to a sense
+of scale during these really grand scenes that I really enjoyed.
+
+* Thoughts on the plot
+The narrative in LOGH is absolutely the bread and butter of the
+show. It drives almost every moment of animation.
+
+From a big-picture point of view, we see these two powerful
+governments, the democratic Alliance and the oligarchic Empire. What
+really draws us in though, are these two emerging generals, Yang and
+Reinhart. Their stories and conflicts reflect the larger stories and
+conflicts of their respective governments, and these reflect the
+overarching conflicts of ideals and values.
+
+** Characterization
+In terms of characterization, LOGH is masterful in two respects. The
+first is the buildup of an incredibly rich and fleshed out cast of
+side characters.
+
+Every character, on either side, has a definite purpose on the
+galactic canvas. Each person is given a backstory, and a
+conclusion. Reinhart's admirals stand out to me here, in which each
+admiral is extremely distinct in their plot arcs, personality and
+behavior.
+
+LOGH has a huge cast in total, and each of the characters manages to
+me beatifully unique, either visually, or by some idiosyncrasy, or by
+some unique personality point that matters to the plot.
+
+The two characters that LOGH spends its most time on are certainly Yang
+and Reinhart. They end up being some kind of lenses into the values
+they stand for.
+
+Yang is the laid back character, unambitious to a fault. He sort of
+recognizes the pointlessness and tragedy of violence while simultaneously
+realizing, bitterly, the neccessity of large scale warfare. He holds
+these contradictory views that mirror the contradiction in himself, in
+that he's both a historian and a (reluctant) soldier.
+
+He's obsessed with the grand picture, like the preservation of
+freedom. A selfless individual working for the greater body, a symbol
+of democracy.
+
+Reinhart on the other hand, is the embodiment of ambition. He cares
+about power on a much more personal level. This fact ends up being
+both his greatest weakness as well as his greatest strength. He lives
+for the thrill of the fight and the conquer.
+
+Especially towards the end, Reinhart is sort of idolized in a kind of
+Nazi fashion, as this kind of benevolent dictator working for the
+benefit of their people through world domination. Other than this,
+Yang and Reinhart are evenly matched in ability, and it leads to
+fascinating interactions and developments.
+
+** Pace
+LOGH is a really slow show to be sure, but it never lacks energy. What
+I mean is that while the plot is slow to develop, the audience never
+forgets where they are, how they got here, and finds it difficult to
+stop trying to predict where they're going.
+
+There is a truly absurd amount of dialogue, political intrigue, and
+military discussion. However, it's exactly this buildup that makes the
+flashpoints, the battles, and the action so utterly exciting.
+
+** Thoughtfulness
+If I had to describe the core of LOGH in a word, it would be
+"thoughtful."
+
+It's really thoughtful in several ways. Mainly though, I say this with
+respect to its discussion of political history and ethics. A big theme
+throughout the show is the ambiguity of true justice with respect to
+perspective. It's treatment of that topic is made possible only by a
+deep, but equal characterization of people on both sides of a very
+fundamental and historied conflict.
+
+The main characters are exceptionally thoughtful. Both recognize the
+faults of each others and their own governments, and both are
+completely resolute in their own beliefs. To me, their actual
+low-level tactics on the battlefield are cool, but not the focus of
+the show.
+
+Reinhart is a strong and capable leader, bringing about reforms,
+progress, and social improvement with the speed and energy that only
+one person in complete power could do. He realizes though, that the
+dynastic method of the Empire's succession tradition mean that his
+children or their children may not be as capable as him. This
+thoughtfulness results in a deep conflict in his character that we
+follow towards the end of the series, and without spoiling much, has a
+profound outcome on the plot.
+
+Similarly, Yang is also an extremely capable general and
+leader. However, he's tied down by the bureaucracy and corrupt
+politics of the Alliance's democracy. As an idealist though, he
+refuses to align the military against his government, even when it's
+clearly for the betterment of the people. Yang's thinking about
+democracy, in its flaws and in its ultimate superiority in the grand
+scheme is really interesting and the show spends a lot of time on
+it.
