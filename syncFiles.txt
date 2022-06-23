@@ -1,2 +1,1 @@
-~/.emacs.d/init.org ./posts/2021-11-27-emacs-config.org
 ~/docs/school/resume/resume.pdf ./files/resume.pdf
