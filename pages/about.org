@@ -13,4 +13,5 @@ Some extra files are hosted on this website. For instance, a [[../files/iosevka-
 of my programming monospace font, a custom version of Iosevka.
 
 This website runs on Hakyll, with some build scripts written in my
-customized scripting language, [[https://github.com/eshrh/matsurika][matsurika]].
+customized scripting language, [[https://github.com/eshrh/matsurika][matsurika]]. You can find the source for
+this website on [[https://github.com/eshrh/site-source][this repository.]]
