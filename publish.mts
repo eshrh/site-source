@@ -1,7 +1,7 @@
 (defun build []
   ($*
-   (stack build)
-   (stack exec site build)))
+   (ghc site.hs -dynamic)
+   (./site build)))
 
 (defun upload []
   (build)
@@ -24,11 +24,10 @@
 
 (defun run []
   (build)
-  ($ stack exec -- site watch --port 8001 :sh))
+  ($ ./site watch --port 8001 :sh))
 
 (defun main [& args]
   (match (in args 1)
     "upload" (upload)
     "run" (run)
     _ (print "did nothing.")))
-
