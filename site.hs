@@ -15,6 +15,7 @@ import Skylighting.Styles
 import System.Directory
   ( copyFile,
     getHomeDirectory,
+    doesFileExist
   )
 import System.FilePath (FilePath, joinPath)
 import System.Posix.Internals (newFilePath)
@@ -53,7 +54,12 @@ expandHome home s
   | otherwise = s
 
 syncOne :: FilePath -> [String] -> IO ()
-syncOne home item = copyFile (expandHome home (head item)) (last item)
+syncOne home item = do
+  let path = (expandHome home (head item))
+  exists <- doesFileExist path
+  if exists
+    then copyFile path (last item)
+    else return ()
 
 main :: IO ()
 main = do
