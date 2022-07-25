@@ -402,7 +402,7 @@ this.
 [[../images/ofdm_sc.png]]
 
 You can observe a graph showing autocorrelation peaks like the above
-by defining the flag SYNC_ADD_DEBUG_OUTPUT in the source file
+by defining the flag =SYNC_ADD_DEBUG_OUTPUT= in the source file
 =ofdm_sync_sc_cfb_impl.cc=, editing the corresponding block =.yml=
 file, and recompiling gnuradio. This is handy for fine tuning the
 necessary threshold for plateau detection. The graph above is recorded
@@ -524,8 +524,8 @@ items) into the header port, and switches to the msg wait port.
 
 Here, we wait for a message to be sent to the message in port. This
 state does nothing, and will not be exited until
-parse_header_data_msg() is called to set the state to either
-HEADER_RX_FAIL or HEADER_RX_SUCCESS.
+~parse_header_data_msg()~ is called to set the state to either
+=HEADER_RX_FAIL= or =HEADER_RX_SUCCESS=.
 
 This method waits for a PMT (polymorphic type) dictionary, where the
 key is an interned string corresponding to the length_tag_key and the
@@ -535,7 +535,7 @@ you may also just send a single PMT long, in which case this is
 interpreted as the length of the payload. A PMT that is parsed in
 either way sends us to the success state.
 
-A PMT that is instead PMT_F (the token failure placeholder) sends us
+A PMT that is instead =PMT_F= (the token failure placeholder) sends us
 to the failure state. Two extra cases can send us to the failure
 state, one in which the payload length is negative, and one in which
 the payload length is greater than the half the output buffer. By
@@ -623,7 +623,7 @@ frequencies. Because everything else is 0s, the channel taps
 interpolate, GR uses the naive strategy of setting every odd frequency
 to the even frequency immediately behind it.
 
-In the source file for ofdm_chanest_vcvc, there's a TODO left for
+In the source file for =ofdm_chanest_vcvc=, there's a TODO left for
 implementing red noise thresholding.
 ** Header chain: Frame equalizer
 This block equalizes an OFDM frame (a sequence of OFDM symbols) using
@@ -646,9 +646,10 @@ Before using the equalizer object, a few things are done:
 *** Phase correction due to offset
 The carrier offset (an offset in frequency) will also result in a
 phase offset. This is also corrected. For each OFDM symbol, every item
-is multiplied by a factor of $\exp{j-2\pi g (i + 1) \frac{N_{gi}}/{N}}$
-where $g$ is the offset, $N_{gi}$ is the length of the guard interval,
-$N$ is the fft size, and $i$ is the index of the current OFDM symbol.
+is multiplied by a factor of $\exp\left(j-2\pi g (i + 1)
+\frac{N_{gi}}{N}\right)$ where $g$ is the offset, $N_{gi}$ is the
+length of the guard interval, $N$ is the fft size, and $i$ is the
+index of the current OFDM symbol.
 
 Looking at this phase correction, the point to notice is the the phase
 correction for each OFDM symbol changes over time, and indeed
@@ -710,7 +711,7 @@ I'll try to be very specific.
 This block takes in two different length tags.
 - "length tag key" is the tag that is /used/. The previous block
   writes a tag
-- "packet length tag key" (packet_len_tag_key) and this refers to the
+- "packet length tag key" (=packet_len_tag_key=) and this refers to the
   /stream length/ of the output stream. This block is a subclass of
   the tagged stream block, which adds a tag to denote groups just like
   it was done in the tx section. This tag only matters for the output!

@@ -7,6 +7,7 @@ import Data.Functor.Identity (runIdentity)
 import Data.List (isPrefixOf)
 import Data.Monoid (mappend)
 import Data.Text (Text)
+import Data.Set (insert)
 import qualified Data.Text as T
 import Hakyll
 import Hakyll.Web.Html (demoteHeaders)
@@ -19,8 +20,11 @@ import System.Directory
   )
 import System.FilePath (FilePath, joinPath)
 import System.Posix.Internals (newFilePath)
-import Text.Pandoc.Options (ReaderOptions (..), WriterOptions (..))
+import Text.Pandoc.Options (ReaderOptions (..),
+                            WriterOptions (..),
+                            HTMLMathMethod (..))
 import Text.Pandoc.Templates (compileTemplate)
+import Text.Pandoc.Extensions
 import qualified Text.Pandoc.Templates (Template)
 
 --------------------------------------------------------------------------------
@@ -37,15 +41,26 @@ tocTemplate =
         "$body$"
       ]
 
+extraExts :: Extensions
+extraExts = extensionsFromList
+            [Ext_tex_math_dollars,
+             Ext_tex_math_double_backslash,
+             Ext_inline_code_attributes]
+
 pandocCompilerWithOpts :: Compiler (Item String)
 pandocCompilerWithOpts =
   pandocCompilerWith
     defaultHakyllReaderOptions
+      { readerExtensions = (readerExtensions defaultHakyllReaderOptions)
+                           <> extraExts
+      }
     defaultHakyllWriterOptions
       { writerTableOfContents = True,
         writerNumberSections = True,
         writerTOCDepth = 2,
-        writerTemplate = Just tocTemplate
+        writerTemplate = Just tocTemplate,
+        writerHTMLMathMethod = MathJax "",
+        writerExtensions = getDefaultExtensions "ipynb"
       }
 
 expandHome :: FilePath -> String -> FilePath
