@@ -23,6 +23,10 @@ body {
     color: var(--fg);
 }
 
+img {
+    align: right;
+}
+
 .tocheader {
   font-weight: bold;
 }
@@ -180,5 +184,5 @@ a:visited {
     float: left;
     font-size: 1.8rem;
   }
- 
+
 }

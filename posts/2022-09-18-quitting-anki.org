@@ -1,0 +1,182 @@
+---
+title: Why I quit Anki & thoughts about pitch accent
+---
+
+For the past two years, Anki has been a fairly significant part of my
+life. It was a consistent part of my day throughout the pandemic and
+stayed with me as I moved to college. I managed to set a pretty decent
+streak of around 480 days on the program, and I wrote another [[https://esrh.me/posts/2022-02-17-400-days-of-spaced-repetition.html][post]] in
+February about my experiences with Anki in general.
+
+In August, I moved to Japan to work on a research internship at NTT,
+and it's mad me rethink my Anki habit. Currently, I don't do Anki
+regularly, but still occasionally catch up on a deck or two once every
+few weeks. Here are a few extremely shallow and obvious insights:
+
+* You don't actually need to know that many words
+Shockingly, you DON'T have to memorize thousands of rare archaic words
+with a fancy spaced repetition program to order food at a restaurant!
+Who could've guessed...
+
+With respect to work, it's definitely important to learn words in your
+specific domain, but if your domain is technology-related like mine,
+then conversations end up being half English anyway. Investing time
+into getting really good at converting technical english words into
+native-sounding Japan-glish has had extremely high returns for me.
+
+A LOT of words currently in my primary mining deck are from older
+stories I typically read on [[https://www.aozora.gr.jp/][aozora]], and unsurprisingly these words
+have practically zero value except for occasionally impressing people
+with cool sounding words. Currently, I don't see any value in
+preserving my memory of these words.
+
+* Immersion is spaced repetition
+Probably the biggest reason I don't find using Anki appealing anymore
+is because I realized that actually using the language on a daily
+basis is in some ways also a form of spaced repetition. You'll hear
+the words that you actually need to remember over and over again, and
+at the end of the day, you don't need to remember something you've
+only heard once in your life.
+
+I think it would really be quite sad to continue grinding out reviews
+while you could instead engage with the language by /going outside!/
+
+* Speaking fluently is tricky
+Having the opportunity to use Japanese a lot has made me quite aware
+of the ideas of an "English-brain" and a "Japanese-brain."
+
+There's a kind of zone I sometimes experience after immersing AND
+speaking exclusively Japanese for a while where I instantly comprehend
+what someone is saying, and think about my response in Japanese as
+well. Typically, this only happens with simple small-talk
+conversations, as thinking about anything even mildly technical forces
+my brain into English nearly immediately.
+
+Similarly, after speaking or typing English for a while, I find myself
+thinking in English and having to translate back and forth fairly
+often. For instance, I think exclusively in English while programming
+and read English documentation, and I've noticed that speaking
+Japanese immediately after is unusually difficult and choppy.
+
+I imagine this issue will probably get better with time, but I believe
+that it'll take specifically speaking more to reduce the inertia that
+comes with moving from thinking in English to thinking in Japanese.
+
+As things stand, I'm personally not particularly happy with my
+speaking ability in Japanese. Part of this is because of extremely mid
+pitch accent which I'll cover shortly, but also because of the
+uncomfortable feeling of my brain straining to function in English
+during even mildly complicated conversations that need any critical
+thinking at all.
+* Pitch accent
+I first became interested in pitch accent last summer. In case you're
+not familiar with the idea, it's essentially where words in Japanese
+fall into one of four categories based on how pitch varies across the
+word. Check out this [[https://en.wikipedia.org/wiki/Japanese_pitch_accent][Wikipedia]] article for a basic overview.
+
+I can confirm from my experience at least, that pitch is /extremely/
+important. Phonetics and pitch together are by far (compared to say,
+how comprehensible/fluent you are) more important to sound native-like
+and to make people think you're better than you are.
+
+By phonetics I of course mean your actual mouth position and
+individual sound accuracy, which is definitely the most important
+component of pronunciation but really doesn't take too long to learn
+if you put your mind to it. Think of it like the kana of
+pronunciation: essential, but you can probably learn it in a week or
+two.
+
+Pitch on the other hand, is like kanji: thousands of words that you
+have to brute-force memorize until your brain starts to pick up on
+some patterns to help you out. As a beginner English-native, you're in
+for a world of hurt.
+
+Getting perfect pitch for even just the most common words has HUGE
+returns to how you sound to natives. If there's even a small
+possibility you'll have to speak to native Japanese people, I believe
+that learning pitch is super essential. I can't claim to be really
+good at it, but I had an interesting idea last summer to acquire pitch
+more effectively which I believe is original, and I've had decent results.
+
+** Step 1: Learning to hear pitch
+This is the common step to all pitch approaches. As an English native
+speaker, your brain isn't really "tuned" to pay attention to pitch
+accent. The "native-ness" of a word's pronunciation is
+typically unaffected by pitch and instead determined by [[https://www.yaxaccent.com/magazine/the-english-stress-system][stress]].
+
+The typically recommended approach is to use https://kotu.io/ to
+build up your pitch recognition. I did this, but I don't believe it's
+really necessary. What is necessary though, is first
+
+1. Learning about pitch
+2. Focusing really intently on slow-spoken Japanese
+
+For instance, I found it helpful to listen to readings of children's
+stories and mentally classify the pitch of every word I heard.
+** Step 2: Memorizing pitch patterns and transform rules
+
+The classic approach to this is typically just to read something like
+the NHK accent dictionary. While I'm sure that might work, I came up
+with a slightly different idea.
+
+Japanese learning in general traditionally also uses textbooks and
+focuses on memorizing rules, but so far I've learned the language
+using immersion and natural content. What if the same approach worked
+for pitch acquisition?
+
+Similarly, using word-front Anki cards might be detrimental for
+beginner learners because they lack the context that's necessary for
+one to use that word naturally. The alternative is sentence-front
+cards, which I used extensively while starting out.
+
+My idea was to instead of memorizing the pitch of words individually,
+to try to memorize the pitch of whole sentences at a time. I created a
+[[https://ankiweb.net/shared/info/1928141023][deck]] based on this idea, using source code you can find [[https://github.com/eshrh/sentence-pitch-accent-anims][here]]. It's not
+perfect, but it's usable.
+
+The idea is to read the sentence on the front out loud, and then
+compare what you said to the real audio. To make this comparison
+easier, the back includes an animation of the pitch contour generated
+with [[https://www.fon.hum.uva.nl/praat/][praat]] and the dictionary pitch of every word from the NHK accent
+dictionary.
+***  My results
+Because pitch was fairly low priority for me before coming to Japan, I
+only did around 5 new cards a day or so, and was never quite
+consistent about it.
+
+Currently, I have gone through around 1.5/2k cards in the deck. The
+difficulty in being objective about anything language-learning-related
+from a personal standpoint is that I have no clue what my results
+would've looked like had I used any other method, like memorizing the
+pitch of words individually.
+
+One big success of the deck was that I was able to pick up pitch rules
+quite intuitively and unconsciously. For instance, the rule that
+transforms 尾高 words into 平板 words when they are succeeded by a の,
+or the various rules that determined pitch accent transformations
+across conjugations.
+
+While my recall of individual words isn't great, when I have to use
+them in context pronouncing the right pitch feels quite fluid and
+natural. Of course, this is in part also because the words in the
+pitch accent deck are fairly simple and I'm already able to use them
+in the right /context/.
+
+While the first 1.5k cards have definitely had big returns on my
+accent, I quite often stumble while speaking because I'm trying to
+recall the pitch of word that I'm sure I've seen. This involves kind
+of replaying the word in my head with different pitches and listening
+for which one "sounds" right. When this doesn't work, I usually just
+ask someone or look it up on the spot. As you might imagine, most
+people I talk to regularly are familiar with this behavior by now.
+
+I'm quite sure that I make still make subtle pitch errors every other
+sentence or so, and it gets worse the less standard the conversation
+gets. Fortunately, a good chunk of the language that I use on a daily
+basis is /extremely/ standard, so I make an effort to be confident in
+the pitch of these phrases.
+
+#+attr_html: :width 400px
+[[../images/yokosuka.jpg]]
+
+/横須賀市, Pentax MZ-10, Fujicolor 100/
