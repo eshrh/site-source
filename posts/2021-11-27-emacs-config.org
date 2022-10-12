@@ -1133,6 +1133,11 @@ Kmonad config lang. Only load when the file exists.
 
 (add-hook 'kbd-mode-hook (fn (aggressive-indent-mode -1)))
 #+END_SRC
+**** Matsurika
+#+BEGIN_SRC emacs-lisp
+(sup '(matsurika-mode :host github :repo "eshrh/matsurika-mode" :files ("*.el" "docs.txt")))
+#+END_SRC
+
 * Other config and elisp
 ** User information
 Add some variables that various programs, especially mail programs
