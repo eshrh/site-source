@@ -11,7 +11,7 @@ import Data.Set (insert)
 import qualified Data.Text as T
 import Hakyll
 import Hakyll.Web.Html (demoteHeaders)
-import Skylighting (styleToCss, zenburn)
+import Skylighting (styleToCss, monochrome)
 import Skylighting.Styles
 import System.Directory
   ( copyFile,
@@ -28,9 +28,9 @@ import Text.Pandoc.Extensions
 import qualified Text.Pandoc.Templates (Template)
 
 --------------------------------------------------------------------------------
-pandocCodeStyle = zenburn
+pandocCodeStyle = monochrome
 
-tocTemplate :: Text.Pandoc.Templates.Template Text
+-- tocTemplate :: Text.Pandoc.Templates.Template Text
 tocTemplate =
   either error id . runIdentity . compileTemplate "" $
     T.unlines
@@ -83,7 +83,7 @@ main = do
   let syncFiles = map words (lines syncFilesList)
   mapM_ (syncOne homedir) syncFiles
 
-  writeFile "_site/css/syntax.css" $ styleToCss zenburn
+  writeFile "_site/css/syntax.css" $ styleToCss pandocCodeStyle
 
   hakyll $ do
     match "images/*" $ do

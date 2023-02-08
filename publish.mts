@@ -1,6 +1,6 @@
 (defun build []
   ($*
-   (ghc site.hs -dynamic)
+   (stack ghc site.hs)
    (./site build)))
 
 (defun upload []
