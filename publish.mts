@@ -6,7 +6,8 @@
 (defun upload []
   (build)
   ($*
-   (git add *)
+   (git add css files favicon.ico images pages posts
+        publish.mts site.hs templates)
    (git commit -m "website update")
    (git push origin master))
 
