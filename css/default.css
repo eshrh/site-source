@@ -119,11 +119,11 @@ a {
 }
 
 a:link {
-    color: var(--acc1);
+    color: var(--acc2);
 }
 
 a:visited {
-    color: var(--acc2);
+    color: var(--acc1);
 }
 
 .sourceCode {
