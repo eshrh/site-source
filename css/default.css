@@ -2,7 +2,7 @@
     --bg:#FDFBEA;
     --fg:#622F2C;
     --acc1:#B55D39;
-    --acc2:#E75A73;
+    --acc2:#2f6b8e;
     --acc3:#669B95;
     --menu-gap:15px;
 }
@@ -26,6 +26,9 @@ body {
 
 img {
     align: right;
+}
+
+.animation {
 }
 
 .tocheader {
