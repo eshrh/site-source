@@ -16,7 +16,8 @@ import Skylighting.Styles
 import System.Directory
   ( copyFile,
     getHomeDirectory,
-    doesFileExist
+    doesFileExist,
+    createDirectoryIfMissing
   )
 import System.FilePath (FilePath, joinPath)
 import System.Posix.Internals (newFilePath)
@@ -83,6 +84,8 @@ main = do
   let syncFiles = map words (lines syncFilesList)
   mapM_ (syncOne homedir) syncFiles
 
+
+  createDirectoryIfMissing True "_site/css"
   writeFile "_site/css/syntax.css" $ styleToCss pandocCodeStyle
 
   hakyll $ do
