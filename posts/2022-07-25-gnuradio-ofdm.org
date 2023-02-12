@@ -31,7 +31,7 @@ sub-carriers spaced apart by a little bit of bandwidth.
 
 The core of the idea that makes OFDM special is the technique by which
 it makes these subcarriers independent (or, orthogonal), which boils
-down to computing the IFFT of the signal at the reciever and adding a
+down to computing the IFFT of the signal at the receiver and adding a
 cyclic prefix in between each set (determined by the size of the FFT)
 of data pieces. I go into much more detail about why this leads to
 interesting properties in [[https://notes.esrh.me/orthogonal_frequency_division_multiplexing.html][another article]] I wrote about
@@ -65,7 +65,7 @@ The technique for doing this is attaching a "tag" every $n$
 samples,. This tag says nothing but the length of the group following
 it. Really the reason this is necessary is so that C++ programs can
 allocate memory for a buffer large enough to do processing on that
-group, before recieving the data. See the [[https://wiki.gnuradio.org/index.php/Stream_Tags][GRwiki article]] on tagged
+group, before receiving the data. See the [[https://wiki.gnuradio.org/index.php/Stream_Tags][GRwiki article]] on tagged
 streams. Stream tags are quite flexible, and we'll see them again for
 other uses. Fundamentally, tags are just a pair of key and value,
 where both are polymorphic-types ([[https://wiki.gnuradio.org/index.php?title=Polymorphic_Types_(PMTs)][PMT's]]).
@@ -757,12 +757,12 @@ the stream as tags, and then send a message containing every tag as a
 PMT dictionary. These tags are not all necessary, but the payload
 length one is essential for the HPD to continue operating.
 ** Payload chain
-The payload chain operates in pratically the exact same was the header
+The payload chain operates in practically the exact same was the header
 chain, so I won't duplicate that writing.
 
 The only difference to speak of is that the channel estimation block
 is not used. The reason is that the tag containing the channel's
-frequency response is preserved through the header/paylod
+frequency response is preserved through the header/payload
 demux. Therefore, we can just use the data on the tag.
 ** Repack bits
 Every byte received only contains one bit of information, as a result

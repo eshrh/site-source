@@ -141,7 +141,7 @@ Now, actions that work on selections are on the right hand home row:
 + =n= :: change
 + =N= :: replace selection with kill contents
 + =s= :: kill, unchanged from meow
-  
+
 *** Previous iteration
 Nyaatouch is actually just my personal meow config. The advantage to
 converting it to a package is that it becomes easier to import just
@@ -195,7 +195,7 @@ but I can say that I've been annoyed by it more than I've been
 thankful for it. If you're finding forward, you have to append to
 insert at your cursor, but if you're finding backward then you have to
 insert. This added mental load was a bit too much for me. In
-nyaatouch, insert just inserts whereever your cursor actually is.
+nyaatouch, insert just inserts where ever your cursor actually is.
 **** Utility functions
 Nyaatouch also implements some other things I use, like an intelligent
 capitalization function, number manipulation, and also brings in

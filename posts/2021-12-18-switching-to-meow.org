@@ -113,7 +113,7 @@ Meow has an elegant solution. You press =x= to select one sentence, and
 then it prompts you on the screen, avy-style, with numbers at the
 start of every next object you can select. You then press a number, it
 expands the selection visually, and finally you supply the verb,
-delete, =s= to delete the whole region. In practice, it works aburdly
+delete, =s= to delete the whole region. In practice, it works absurdly
 smoothly and lowers cognitive load significantly.
 *** Dwimmy behavior
 Many commands in meow have do-what-i-mean behavior. For example, the =c=

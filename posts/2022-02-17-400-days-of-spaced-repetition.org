@@ -8,7 +8,7 @@ things, primarily Japanese vocabulary. I've also used it temporarily
 for a few memorization-oriented exams, and recently I've begun to
 study Mandarin. While I started to use Anki seriously around May 2020,
 my current streak only began at the top of 2021. In any sense, I've
-had a pretty long relationship with the program, and I feel like i've
+had a pretty long relationship with the program, and I feel like I've
 learned some valuable things other than a lot of Japanese words.
 
 * Timeline
@@ -112,7 +112,7 @@ think that's a topic for another post.
 Over the summer, I began to get interested in another topics, and
 supplemented Anki with a few miscellaneous decks. For instance, i
 memorized [[https:ankiweb.net/shared/info/1036098926][counters]], [[https://ankiweb.net/shared/info/1658750019][food]], [[https://ankiweb.net/shared/info/2639768625][prefectures]], [[https://ankiweb.net/shared/info/888837927][poems]] and some other decks that might
-have totalled to maybe 1k extra cards. I didn't keep a lot of these
+have totaled to maybe 1k extra cards. I didn't keep a lot of these
 cards, because I mostly matured them all and didn't want to have
 clutter every day. I also got really interested in [[https://en.wikipedia.org/wiki/Japanese_pitch_accent][pitch accent]] around
 this time, which led to me adding pitch information retroactively to
@@ -188,7 +188,7 @@ This is why card design is so critically important, and why you should
 almost always customize cards how you like them, and even better, make
 cards yourself whenever you can. Learn to recognize when the
 brute-force approach is not going to work and where you can optimize
-for your brain's subconcious pattern recongition, which is almost
+for your brain's subconscious pattern recognition, which is almost
 always more powerful than you realize. The key to this kind of
 optimization is to ensure that cards have consistent, meaningful
 patterns that are ideally connected to other cards, emotional
