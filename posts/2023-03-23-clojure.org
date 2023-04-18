@@ -1,0 +1,462 @@
+---
+title: Webscraping in clojure and learning clojurescript
+---
+
+* Introduction
+I enjoy lisp. There's something really comfy about the whole
+repl-driven-programming workflow and the code-is-data mindset that
+make lisp dialects my first choices for nearly any task that isn't
+particularly important (that's python).
+
+I currently live on the Miura peninsula, which means that my primary
+method of transportation is via [[https://en.wikipedia.org/wiki/Keikyu][Keikyuu railways]], namely the mainline
+and the Kurihama line. I've never liked the way that timetables are
+laid out, both in real life and online. So, I thought I'd set up my
+own timetable viewer, and do so using some lisp.
+
+** Problems with timetables, and what we can do better
+Here are my gripes with timetables.
+
+Timetables in real life are usually laid out like this:
+[[../images/timetable.jpg]]
+
+- Finding the next train, the most important task is now a three step
+  process. First, check your watch to find the current time, then
+  locate the correct chart (weekday/holiday), and then find
+  the correct hour row. Typically, *I'm only interested in the next few trains!*
+- With real charts, you can't know when a particular train will arrive
+  at the stop you want to go to.
+- This one's obvious, but these timetables are printed at the
+  platforms, you'd have to use the internet to look up the timetable
+  before you actually get to the station.
+
+On the internet side, plenty of sites exist like [[https://ekitan.com/][ekitan]] that lay out a
+bunch of information.
+
+- Switching between stations is a PITA, and requires loading >2 new
+  purely navigational pages. This is annoying when I'm just trying to
+  decide which station to walk towards.
+- Checking train info (when a particular train will reach every stop)
+  requires a new page load.
+- There is no functionality to find the last (single) train from some station
+  to another station. The best tool I know for this is google maps,
+  which I don't like to use for several unrelated reasons.
+
+** Goals
+Here's what I wanted to do:
+
+1. Scrape some online rail site for the train information
+2. Make a simple single page application that loads all the necessary
+   data *once* and then does the computations fast, client-side.
+3. Easy to read stop information *relative to the current time*
+4. Easy to read arrival time
+5. Easy to read last train time
+6. Auto selects the current schedule (weekday/holiday)
+
+This culminated in [[https://rail.esrh.me][rail.esrh.me]] which I believe accomplishes all of
+these goals. This blog post is something like a recap of the lisp
+programming challenges and process that got me there.
+
+* Webscraping in clojure
+** Objective
+The objective here, is to scrape a page like this
+https://ekitan.com/timetable/railway/line/8200 into a list of trains
+containing
+- What kind of train service it is (express, normal, etc)
+- The list of stops the train makes, where a stop is a station name
+  and a time.
+
+The data we /want/ to see is the trains arriving *per station*.
+However, storing all that data takes too much space, which is a
+problem because that data will need to be sent to the client.
+
+This wouldn't be a problem with a backend that only returns the
+portion of the data necessary, but I knew that I would be hosting the
+site statically with Netlify, so I had to make sure the data was as
+small as possible.
+
+Given the list of trains, and the stops each train makes, you can
+compute the trains stop times at a given station by just iterating
+through all the trains.
+
+Therefore, all we need to do is look through all the stations, and
+only scrape the trains that /start/ at that station.
+** Data representation
+Clojure has a neat record syntax:
+
+#+begin_src clojure
+(defrecord Stop [station time])
+(defrecord Train [stop-list type direction])
+#+end_src
+
+~defrecord~ here automatically creates functions like ~(->Stop STATION
+TIME)~ which we can conveniently use later. However, there's one
+really fatal flaw to using records for this that we'll get to later.
+
+** Hickory in clojure
+I opted for [[https://github.com/clj-commons/hickory][hickory]] as my scraping tool of choice. The way hickory
+works is that you first construct a selector that accurately describes
+the element you're trying to access, and then apply
+~hickory.select/select~ onto the selector and the hickory data.
+
+Something neat to note from a functional programming perspective is
+how hickory represents the html tree with zippers. The selectors,
+which we'll be using shortly, are functions that take /zippers/ as
+arguments and return /zippers/ if a condition is met. The resulting
+tree-like composability with selector-combinators is quite nice.
+
+Obtaining hickory data from a url is simple using clj-http.
+#+begin_src clojure
+(require '[clj-http.client :as http])
+(defn to-hickory [url]
+  (-> (http/get url)
+      :body parse as-hickory))
+#+end_src
+
+If you're not familiar with the ~->~ macro, it inserts each form as
+the first argument of the next form. So, the body of the function is
+equivalent to
+
+#+begin_src clojure
+(as-hickory (parse (:body (http/get url))))
+#+end_src
+
+Much harder to read, right? The threading macro lets you write the
+functions in the "correct" order, i.e the order they're applied.
+
+** Scraping
+[[https://ekitan.com/timetable/railway/line-station/250-1/d2?view=list][Here's]] a single view of a station page in a single direction on a
+single schedule. We're interested in scraping each train that is
+marked with 当駅始発 ("starting at this station").
+
+Here's how I do this:
+
+#+begin_src clojure
+(require '[hickory.select :as s])
+(s/select (s/descendant
+           (s/and (s/class "tab-content-inner")
+                  (s/class "active"))
+           (s/class "ek-train-link")) station)
+#+end_src
+
+Here, I make a selector by combining several ~selector-combinators~
+- ~s/descendant~ verifies if the order of the arguments are
+  hierarchical, skipping generations. The direct-children version
+  would be ~s/children~.
+- ~s/and~ does what you'd expect
+
+The reason I think it's cool is because this allows you to describe
+what you'd typically do with CSS selectors with *lisp syntax* and the
+full expressive power of trees -- which is an excellently ergonomic
+fit for a lisp language.
+
+The CSS equivalent would be =.ek-train-link .tab-content-inner.active=
+which is IMO, tougher to read, especially given the space vs no-space
+change in semantic meaning.
+
+Skipping some similar scraping, I produce a list of the trains with
+#+begin_src clojure
+(map #(->Train
+           ((comp train->stop-list to-hickory :link) %)
+           (:type %)
+           direction)
+         train-info)
+#+end_src
+
+Where ~train->stop-list~ does some similar hickory selections.
+** Ad-hoc-ing keikyuu data
+There are two degrees of freedom for a train.
+- The direction of a train, =up= or =down=
+- The schedule of a train, =weekday= or =holiday=
+
+Therefore, I represent this with a simple map:
+#+begin_src clojure
+{:up {:weekday up-weekday-trains
+      :holiday up-holiday-trains}
+ :down {:weekday down-weekday-trains
+        :holiday down-holiday-trains}}
+#+end_src
+
+I suspect the OOP technique might be to abstract away the pair of
+weekday and holiday into a =Direction= and then abstract the pair of
+directions into =Timetable= or some BS like that, but the power of
+Clojure's functional approach lets us preserve syntax elegance without
+the extra bloat.
+
+Applying a function to both branches is
+#+begin_src clojure
+(defn apply-both-schedules [func]
+  {:weekday (apply func [0])
+   :holiday (apply func [1])})
+
+#+end_src
+
+Which I use like this:
+#+begin_src clojure
+(def kurihamasen {:up (apply-both-schedules
+                       #(get-all-trains 679 [0 9] 1 %))
+                  :down (apply-both-schedules
+                         #(get-all-trains 679 [0 9] 2 %))})
+#+end_src
+
+The function ~get-all-trains~ is applied with the % replaced with 1
+and 2.
+
+Reading a particular trainlist is
+#+begin_src clojure
+(defn indexer [data dir day]
+  (day (dir data)))
+;; usage:
+(indexer kurihamasen :up :weekday)
+#+end_src
+Which saves a few parens.
+** Saving data
+Once all the data's been scraped, we need to save it somewhere so that
+it can be used in the frontend.
+
+I opted for using the [[https://github.com/edn-format/edn][Extensible Data Notation (edn)]] format. The nice
+thing about edn is that it is /literally clojure!!/.
+
+Simply printing out the data, using yes, ~(print)~ or ~(pr-str)~ gives
+valid edn! It is a dead-simple implementation that powerfully
+leverages the whole "code is data and data is code" idea that lisp
+enables. We don't /need/ an extra serialization format like how
+javascript needs json to transmit data.
+
+The downside to using edn is that it's bloated and not portable as a
+result of my decision to use records.
+
+You see, if I store a record (which /is/ a map) into edn by printing
+it, I get something like =timetable.core.Stop{:station "xxx" :time
+"xxx"}=. There are two big issues here
+
+- Bloat :: The :station and :time text is unnecessary for me to
+  recover the data on the CLJS side. The whole class name is also
+  unnecessary. This text is there for /every single stop/ in the data,
+  which easily bloats up the keikyuu data.
+- Loss of portability :: If you were to try to read this data via
+  ~read-string~ in another clojure project, you'd get an error unless
+  you required the timetable library, since the data is now tied to
+  the record name.
+
+The second issue is pretty unacceptable, so I decided to convert
+the data into plain maps just before writing it to disk.
+
+#+begin_src clojure
+(->> (:stop-list train)
+     (map (partial into {})))
+#+end_src
+
+Gzip or brotli compression do a sufficiently good job at
+bringing down the bloat to an acceptable 200kb or so.
+* Clojurescript frontend
+** Objective
+The second component to this is to use the list of
+trains we scraped and display them in a convenient way.
+
+The task is straightforward. For every station, look through
+the train list and find the next few trains coming through.
+
+The big issue... is that I don't know javascript, and I sure as hell don't know
+any frontend frameworks like react or whatever people are using these days.
+
+Luckily, clojure can be compiled to javascript via
+[[https://clojurescript.org/][clojurescript (cljs)!]] Clojure code
+outputs javascript code which is then optimized with Google's closure
+compiler that finally outputs obfuscated (not a good thing), minimized
+(not a good thing), and performant (good thing) javascript.
+
+The other big issue is that I didn't (still
+don't?) know how to use clojurescript either.
+
+What follows may very well be terribly not idiomatic, but I'd still like
+to document some of the challenges I faced as a web-development
+beginner, and what I learned.
+** Reading in the data
+"So this is an easy first step, right?" I thought to myself.
+
+*Wrong. So wrong.*
+
+I need to fetch the data in an edn file via a GET request, and a quick
+DDG search suggests [[https://github.com/r0man/cljs-http][cljs-http]] as the way to go about this.
+
+However, it doesn't just block and return your data, but it returns a
+~core.async~ channel...
+
+I really struggled with this for a good while, looking for blocking
+alternatives, wondering if this was really worth the trouble to not just
+embed the data into the source code before I decided to sit down and
+figure out what CLJ(S)' async is all about.
+
+*** Cljs async in a nutshell
+The core of async is the channel, which is a fifo queue.
+
+#+begin_src clojure
+(ns test.core
+  (:require [cljs.core.async :as async])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
+
+(def channel (async/chan))
+#+end_src
+
+We (synchronously!) put something on the queue via =async/put!=:
+#+begin_src clojure
+(async/put! channel true)
+#+end_src
+The second arg can be anything!
+
+And now comes the tricky part, the =go= macro.
+#+begin_src clojure
+(go (js/alert (async/<! channel))))
+#+end_src
+
+To put it simply, the go macro *rewrites at compile time* your
+synchronous-looking code into a state machine that pauses whenever it
+hits a =<!=. This is why =<!= can only be used inside the go
+block. The above code won't block the whole website, it just waits for
+something to appear on =channel= and only then proceeds with the rest
+of the code.
+
+The equivalent of =async/put!= in a go block is =async/<!=.
+
+**** Simple example
+A complete example, say to have two buttons that each cause a
+different alert, would look something like this:
+
+First in html, assuming we have
+#+begin_src html
+<button id="button1"> button 1 </button>
+<button id="button2"> button 2 </button>
+#+end_src
+
+We can easily get an object via its id with something like
+#+begin_src clojure
+(-> js/document
+    (.getElementById id))
+#+end_src
+Here, =->= is the thread-first macro that inserts each form as the
+first argument of the next, so it could be rewritten like
+#+begin_src clojure
+(.getElementbyId js/document id)
+#+end_src
+
+If you're unfamiliar with clojure, the =.= syntax is how interop is
+used with the host language (either js or java). You can mentally swap
+the order of the s-exp, =(.method object arg)= is the same as
+=object.method(arg)=.
+
+Using this interop, we can add two listeners:
+#+begin_src clojure
+(-> js/document
+    (.getElementById "button1")
+    (.addEventListener "click" #(go (>! button-channel "Button 1 was clicked!"))))
+
+(-> js/document
+    (.getElementById "button2")
+    (.addEventListener "click" #(go (>! button-channel "Button 2 was clicked!"))))
+#+end_src
+What's nice about this architecture is that both buttons publish on
+the **same channel** allowing us to write one handler that
+*dispatches* based on the value in the channel.
+
+#+begin_src clojure
+(go
+  (while true
+    (js/alert (<! button-channel))))
+#+end_src
+
+Even though this looks like an infinite loop, it async pauses on the
+channel poll.
+
+This pattern of go + looping (maybe infinitely) is common, so there
+exists a =go-loop= macro in =core.async= as well.
+*** Pub-sub channels
+In my use case, the train data kicks everything off, but takes a
+significant amount of time to load.
+
+What might have been possible was to make a single channel for the
+train data, get the train data via XHR and put it onto the
+channel. However, it turned out while I was writing the program that a
+lot of different processes needed access to the same data. For
+example, the radio-button listeners that reload the data, the
+listeners for the user clicking on a specific train, and the main
+thread that loads the data for the first time. You can't just "peek" a
+channel in cljs, reading the data pops it.
+
+The solution I found for this was to make a pub-sub channel, where you
+publish to one channel and then several subscribing children automatically copy
+the data onto their own (single-read) channels.
+
+#+begin_src clojure
+(def publish-data-channel (async/chan 1))
+(def sub-data-channel (async/pub publish-data-channel :data))
+
+(def subscriber-for-radio-buttons (async/chan 1))
+(async/sub sub-data-channel :all subscriber-for-radio-buttons)
+
+(def subscriber-for-train-info (async/chan 1))
+(async/sub sub-data-channel :all subscriber-for-train-info)
+
+(def subscriber-for-last-trains (async/chan 1))
+(async/sub sub-data-channel :all subscriber-for-last-trains)
+#+end_src
+
+Each subscriber channel is used like a normal one in a go
+block. Pushing to all three channels can then be done in one shot by
+pushing to =publish-data-channel=.
+** Displaying the data
+Everything from here on was pretty straightforward to write, since it
+involved minimal new ideas.
+
+*** Issues with dates and times
+One immediate issue is that I'd like to consider all the trains that
+start some time after midnight as part of the same "day", since some
+trains will leave the station shortly after midnight.
+
+My hack for this was to sort the trains by a new field,
+=:sort-field= which shows the minutes after 3am,
+
+#+begin_src clojure
+(defn minutes-after-three [h m]
+  (let [minutes (+ m (* h 60))]
+    (- (+ (if (< minutes 180) 1440 0)
+          minutes)
+       180)))
+
+(defn get-time-after-three []
+  (let [time (new js/Date)]
+    (minutes-after-three
+     (.getHours time)
+     (.getMinutes time))))
+#+end_src
+
+*** Finding last trains
+Something of (very practical) importance to me is making sure I don't
+miss the last direct train to somewhere (excluding changes).
+
+Specifically, given a station name (=station=), the list of stations
+(=stations=), the train data (=trains=), and the direction (=(:dir
+state)=), give me the departure time of the last train bound for every
+station after the current one in the direction.
+
+My purely functional solution to this was:
+#+begin_src clojure
+(defn find-last-trains [station stations trains state]
+  (let [stations-in-dir ((if (= (:dir state) :up)
+                           take-while drop-while)
+                         (partial not= station) stations) ; take or drop until
+        trains-at-sta (->> trains
+                           (index state)
+                           (filter #(in? station
+                                         (map :station (:stop-list %))))
+                           (sort-by #(time-after-three  ; sort by the shifted time
+                                      (:time (find-in-stop-list station %))) >))]
+    (map (fn [sta]
+           {:dest sta
+            :depart (->> (filter #(some? (find-in-stop-list sta %)) trains-at-sta)
+                         first
+                         (find-in-stop-list station)
+                         :time)})
+         stations-in-dir)))
+#+end_src
+In some cute arrow-heavy, lambdas-everywhere style.

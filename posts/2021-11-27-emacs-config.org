@@ -56,6 +56,9 @@ called. The second line is so that I don’t see annoying popups every time.
 (setq warning-suppress-log-types '((comp)))
 #+END_SRC
 
+If the variable doesn't exist, setq won't error (it'll make and intern
+the new variable) and it'll do nothing.
+
 ** Macros
 Some macros that are used in this file:
 *** Better hooks
@@ -130,7 +133,8 @@ code from his 2018 proposal to dash.el. Kind of bummed this never got merged.
 ** Libraries
 Classic libraries I use regularly.
 + s :: good string manipulation
-+ dash :: functional programming essentials like threading and
++ dash :: functional programming essentials like threading (piping,
+  not multithreading) and
   recursive style list manipulation
 #+BEGIN_SRC emacs-lisp
 (sup 's)
@@ -138,7 +142,7 @@ Classic libraries I use regularly.
 #+END_SRC
 
 ** Readline muscle memory compatibility
-Too used to readline, make C-h backspace and C-x h help.
+Too used to the command line, make C-h backspace and C-x h help.
 
 #+BEGIN_SRC emacs-lisp
 (global-set-key [?\C-h] 'delete-backward-char)
@@ -175,9 +179,9 @@ to me.
 
 ** Better parenthesis location
 
-I can’t count parentheses. I use an advice override to change how the parenthesis
-locating functionality works. This is because I use a block cursor with meow,
-which makes cursor position slightly deceptive.
+I can’t count parentheses. I use an advice override to change how the
+parenthesis locating functionality works. This is because I use a block
+cursor with meow, which makes cursor position slightly deceptive.
 
 Basically, the block cursor by default highlights the parenthesis when
 your cursor is immediately AFTER the parenthesis in question, because
@@ -186,9 +190,9 @@ really right after the parenthesis as well). So, if you have nested
 parentheses, as we often do, it's strange to see the "wrong
 parenthesis" highlighted.
 
-This advice first checks before the point and only then after the
-point for a parenthesis. I think this behavior is very intuitive. The
-defined function overrides the internal function used to find parentheses.
+This advice first checks before the point and only then after the point
+for a parenthesis. I think this behavior is very intuitive. The defined
+function overrides the internal function used to find parentheses.
 
 #+BEGIN_SRC emacs-lisp
 (column-number-mode)
@@ -233,9 +237,10 @@ computers to do repetitive stuff for us??
 #+END_SRC
 
 ** Fonts
+
 My default fonts. Iosevka Meiseki is a customized version of [[https://github.com/be5invis/iosevka][iosevka]]
-font. You can find a copy of it on my website, somewhere, probably
-(maybe the about page).
+font. You can find a copy of it [[https://esrh.me/files/iosevka-meiseki-sans-regular.ttf][here]].
+
 #+BEGIN_SRC emacs-lisp
 (defvar emacs-english-font "Iosevka Meiseki Sans")
 (defvar emacs-cjk-font "IPAGothic")
@@ -254,7 +259,7 @@ version's warm and retro-y feel, its visually distinct and comfy.
 #+BEGIN_SRC emacs-lisp
 (sup 'gruvbox-theme)
 
-(load-theme 'modus-vivendi t nil)
+(load-theme 'gruvbox-light-hard t nil)
 #+END_SRC
 
 ** Frame
@@ -273,19 +278,21 @@ modularity, design, and visual appeal right now.
 (sup 'telephone-line)
 #+END_SRC
 
-Use a neat cubic curved shape to separate segments. The last line with
-~evil-use-short-tag~ makes telephone-line's meow segment, which I wrote
-and upstreamed, use single letters to show meow state instead of the
-whole word, so like "N" instead of "NORMAL".
+Use a neat cubic curved shape to separate segments.
 #+BEGIN_SRC emacs-lisp
 (require 'telephone-line)
 (setq telephone-line-primary-left-separator 'telephone-line-cubed-left
       telephone-line-secondary-left-separator 'telephone-line-cubed-hollow-left
       telephone-line-primary-right-separator 'telephone-line-cubed-right
       telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-right)
+(setq telephone-line-height 24)
+#+END_SRC
 
-(setq telephone-line-height 24
-      telephone-line-evil-use-short-tag t)
+~evil-use-short-tag~ makes telephone-line's meow segment, which I wrote
+and upstreamed, use single letters to show meow state instead of the
+whole word, so like "N" instead of "NORMAL".
+#+BEGIN_SRC emacs-lisp
+(setq telephone-line-evil-use-short-tag t)
 #+END_SRC
 
 *** Custom segments
@@ -297,22 +304,23 @@ defining new segments that look nice as hell.
   (concat "["
           (if (listp mode-name)
               (car mode-name)
-            mode-name) "]"))
+            mode-name)
+          "]"))
 #+END_SRC
 
-This segment is a simpler indicator of position. I don't use line
-numbers on the side of my screen, so it's pretty neccessary for me to
-quickly parse my position at a glance. Column numbers are on the left
-since they change more often, and this segment is the leftmost element
-on the right side of my bar. This means that there's no unnecessary
-movement.
+This segment is a simpler indicator of position. I don't use line numbers on
+the side of my screen, so it's pretty neccessary for me to quickly parse my
+position at a glance. Column numbers are on the left since they change more
+often, and this segment is the leftmost element on the right side of my bar.
+This means that there's no unnecessary movement.
 
 #+BEGIN_SRC emacs-lisp
 (telephone-line-defsegment* telephone-line-simple-pos-segment ()
-  (concat "%c : " "%l/" (number-to-string (count-lines (point-min) (point-max))) ))
+  (concat "%c : " "%l/" (number-to-string (count-lines (point-min) (point-max)))))
 #+END_SRC
 
 *** Segment setup
+The meat of my line config.
 #+BEGIN_SRC emacs-lisp
 (setq telephone-line-lhs
       '((nil . (telephone-line-projectile-buffer-segment))
@@ -332,8 +340,8 @@ function only activates when possible.
 #+BEGIN_SRC emacs-lisp
 (defun pixel-scroll-setup ()
   (interactive)
-  (setq pixel-scroll-precision-large-scroll-height 30.0)
-  (setq pixel-scroll-precision-interpolation-factor 30))
+  (setq pixel-scroll-precision-large-scroll-height 1)
+  (setq pixel-scroll-precision-interpolation-factor 1))
 
 (when (boundp 'pixel-scroll-precision-mode)
   (pixel-scroll-setup)
@@ -355,32 +363,38 @@ dvorak keyboard and is built on meow (hence the name).
 
 Nyaatouch brings in some packages as dependencies: avy, swiper, meow,
 smartparens. You can find more information about it at the repo.
-I really don't want to add vterm as a dependency of nyaatouch, but I
-use it a lot and want it on my leader in a convenient location.
+*** Just exchange point and mark
+I use C-x C-x to return to a point more than I use it to reverse
+selection. Meow uses kmacros, so I have to redefine the macro used
+when meow-reverse is called as well.
+
 #+BEGIN_SRC emacs-lisp
-(meow-leader-define-key
- '("d" . vterm-toggle-cd))
+(defun just-exchange-point-and-mark ()
+  (interactive)
+  (call-interactively #'exchange-point-and-mark)
+  (deactivate-mark))
+
+(global-set-key (kbd "C-x C-x") #'just-exchange-point-and-mark)
+(global-set-key (kbd "C-x 9 1") #'exchange-point-and-mark) ; unused key
+(setq meow--kbd-exchange-point-and-mark "C-x 9 1")
 #+END_SRC
 
-Some ideas in nyaatouch spend some time in incubation in my personal
-config before I spin them off there. One of those is a key for
-deleting a single character
+
+** Far
+
+Add a meow keybind for paragraph filling.
 
 #+BEGIN_SRC emacs-lisp
-(meow-normal-define-key '("r" . meow-delete))
-#+END_SRC
+(straight-use-package
+ '(far :type git
+       :repo "https://github.com/eshrh/far.el"))
 
-Add a character for the fill-paragraph command
-#+BEGIN_SRC emacs-lisp
 (meow-normal-define-key
- '("`" . fill-paragraph))
+ '("`" . far-fill-paragraph))
 #+END_SRC
 
-Make sure the esc key in the terminal key never acts as meta.
-#+BEGIN_SRC emacs-lisp
-(unless (display-graphic-p)
-  (setq meow-esc-delay 0))
-#+END_SRC
+Far.el is an implementation of [[https://stephen-huan.github.io/blog/far/][far]], a DP-based paragraph filling
+algorithm that minimizes variance of line lengths.
 
 ** Undo-tree
 Better undo for emacs. I really enjoy the tree visualization feature
@@ -397,10 +411,22 @@ when you have >2 open by providing a letter hint.
 #+BEGIN_SRC emacs-lisp
 (sup 'ace-window)
 (global-set-key [remap other-window] 'ace-window)
-(setq aw-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n ?s)) ;; dvorak moment
-(setq aw-scope 'frame) ;; don't hint me for things outside the frame
-(setq aw-background nil) ;; don't change the buffer background
-(setq aw-ignore-current t) ;; i never want to select the current buffer
+#+END_SRC
+
+dvorak moment
+#+BEGIN_SRC emacs-lisp
+(setq aw-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n ?s))
+#+END_SRC
+
+don't hint me for things outside the frame
+#+BEGIN_SRC emacs-lisp
+(setq aw-scope 'frame)
+#+END_SRC
+
+I never want to switch to the current buffer
+#+BEGIN_SRC emacs-lisp
+(setq aw-ignore-current t)
+(setq aw-background nil)
 #+END_SRC
 
 ** Dashboard
@@ -425,14 +451,14 @@ Startup to the dashboard
 (setq initial-buffer-choice (get-buffer "*dashboard*"))
 #+END_SRC
 
-Self explanatory config
 #+BEGIN_SRC emacs-lisp
 (setq dashboard-center-content t)
 (setq dashboard-show-shortcuts nil)
 (setq dashboard-set-footer nil)
 #+END_SRC
 
-Declutter the items shown on the dashboard
+Declutter the items shown on the dashboard and change the section
+names to be hip (lower case) and cool (shorter)
 #+BEGIN_SRC emacs-lisp
 (setq dashboard-items '((recents  . 5)
                         (projects . 5)
@@ -488,26 +514,19 @@ find file function, only when I'm in a project.
 #+END_SRC
 
 ** Searching
-*** Ivy
-I currently use ivy for completions. I’ve used selectrum and vertico in the
-past, but ivy is better in my opinion simply because so many packages have built
-in integrations with it. I also use swiper extensively.
-
+*** Vertico
 #+BEGIN_SRC emacs-lisp
-(sup 'ivy)
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq ivy-count-format "(%d/%d) ")
+(sup '(vertico :files (:defaults "extensions/*")
+               :includes (vertico-directory)))
+(vertico-mode)
 #+END_SRC
 
-Typing things over and over again is hard. Prescient keeps track of command
-history and makes recent commands appear higher up.
-
+When using the find-file dialog, pressing backspace should take you
+back up to the parent, not just delete one character.
 #+BEGIN_SRC emacs-lisp
-(sup 'prescient)
-(sup 'ivy-prescient)
-(ivy-prescient-mode)
+(define-key vertico-map (kbd "DEL") #'vertico-directory-delete-char)
 #+END_SRC
+
 
 *** Marginalia
 An essential addition to the completing-read buffer that offers a bit of
@@ -520,29 +539,42 @@ documentation to entries.
 *** Posframe
 In GUI mode, I like to have all completing-read queries come up in a new frame
 in the middle of my screen. Posframe does this with a child frame. I like how it
-looks. However, I don't want org-ref or swiper in the middle, so I add exceptions.
+looks.
 
 #+BEGIN_SRC emacs-lisp
-(sup 'posframe)
-(sup 'ivy-posframe)
+(when (display-graphic-p)
+  (sup 'vertico-posframe)
+  (vertico-posframe-mode 1))
+#+END_SRC
 
-(setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+Specifically in gruvbox, the border is the same color as the
+background for some silly reason. I intend to submit an issue for
+this.
 
-(setq ivy-posframe-display-functions-alist
-      '((swiper          . ivy-display-function-fallback)
-        (org-ref-insert-link . ivy-display-function-fallback)
-        (t               . ivy-posframe-display)))
+#+BEGIN_SRC emacs-lisp
+(when (display-graphic-p)
+  (set-face-background 'vertico-posframe-border
+                       (face-attribute 'region :background)))
+#+END_SRC
 
-(ivy-posframe-mode 1)
+
+*** Orderless completion
+#+BEGIN_SRC emacs-lisp
+(sup 'orderless)
+(setq completion-styles '(orderless basic)
+      completion-category-defaults nil
+      completion-category-overrides '((file (styles partial-completion))))
 #+END_SRC
 
 ** Helpful
 Better describe* functions that have more information and look neater.
+For example helpful's describe-function includes the source code of
+the function itself, which is very useful when writing elisp.
 #+BEGIN_SRC emacs-lisp
 (sup 'helpful)
 #+END_SRC
 
-Override keybindings
+Override keybindings.
 #+BEGIN_SRC emacs-lisp
 (-map (lambda (pair) (global-set-key
                  (kbd (concat "C-x h " (car pair))) (cdr pair)))
@@ -550,6 +582,73 @@ Override keybindings
             '(helpful-callable helpful-variable helpful-key)))
 #+END_SRC
 
+** Dired
+Dired jump opens dired to the directory of the file visited by the
+current buffer. Typically this is set to =C-x C-j= but this is mildly
+uncomfortable to type on dvorak. =C-x d= is where dired with prompt is
+originally.
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x d") #'dired-jump)
+(global-set-key (kbd "C-x C-j") #'dired)
+#+END_SRC
+
+With two dired panes open, any command in one pane will autocomplete
+to the path in the second pane.
+#+BEGIN_SRC emacs-lisp
+(setq dired-dwim-target t)
+#+END_SRC
+
+Don't show owner and perms by default. Pressing =(= toggles this off again.
+#+BEGIN_SRC emacs-lisp
+(add-fs-to-hook 'dired-mode-hook (dired-hide-details-mode 1))
+#+END_SRC
+
+Use only one dired directory at a time.
+#+BEGIN_SRC emacs-lisp
+(setq dired-kill-when-opening-new-dired-buffer t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+  (add-fs-to-hook 'dired-mode-hook
+                  (define-key dired-mode-map (kbd "-") #'swiper)
+                  (define-key dired-mode-map (kbd "<") #'beginning-of-buffer)
+                  (define-key dired-mode-map (kbd ">") #'end-of-buffer))
+#+END_SRC
+
+** Tree-sitter
+Introduced in emacs 30.
+
+#+BEGIN_SRC emacs-lisp
+(setq treesit-available (and (fboundp 'treesit-available-p)
+                             (treesit-available-p)))
+#+END_SRC
+
+Create a list of grammar urls.
+#+BEGIN_SRC emacs-lisp
+(when treesit-available
+  (defun treesitter-grammar-url (lang)
+    (concat "https://github.com/tree-sitter/tree-sitter-" lang))
+  (setq treesit-langs
+        '(bash c cpp haskell html java javascript julia rust python))
+  (setq treesit-language-source-alist
+        (--map `(,it . (,(treesitter-grammar-url (symbol-name it)))) treesit-langs)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun treesit-ensure (lang)
+  (unless (treesit-language-available-p lang)
+    (treesit-install-language-grammar lang)))
+#+END_SRC
+
+*** Combobulate
+#+BEGIN_SRC emacs-lisp
+(when treesit-available
+  (sup '(combobulate :repo "https://github.com/mickeynp/combobulate"
+                     :files ("*.el")))
+  (add-fs-to-hook 'python-ts-mode-hook (progn (require 'combobulate)
+                                              (combobulate-mode))))
+#+END_SRC
 ** Highlights
 *** Lisp highlighting
 Install a bunch of Fanael’s visual packages to make lisp source editing much
@@ -571,11 +670,17 @@ programming, but maybe just because I'm so used to them.
   (highlight-numbers-mode)
   (highlight-defined-mode)
   (rainbow-delimiters-mode))
+#+END_SRC
 
+The function ~highlight-lisp-things-generic~ does *not* include
+highlight-quoted, which only makes sense for emacs lisp
+
+#+BEGIN_SRC emacs-lisp
 (add-hook 'emacs-lisp-mode-hook #'highlight-quoted-mode)
 (add-to-hooks #'highlight-lisp-things-generic 'lisp-data-mode-hook 'clojure-mode-hook)
 #+END_SRC
 
+Most lisp modes inherit from lisp-data-mode. Clojure-mode does not.
 *** Highlight todos
 #+BEGIN_SRC emacs-lisp
 (sup 'hl-todo)
@@ -589,16 +694,10 @@ There are too many emacs keybindings and life is too short.
 (which-key-mode)
 #+END_SRC
 
-** Format-all
-All-purpose code formatter for when things break
-#+BEGIN_SRC emacs-lisp
-(sup 'format-all)
-#+END_SRC
-
 ** Terminal and shell config
-Undoubtedly the best terminal in emacs. Depends on the module libvterm, which
-means your emacs has to be compiled with module support enabled (damn you
-Ubuntu!!).
+Vterm is undoubtedly the best terminal in emacs. Depends
+on the module libvterm, which means your emacs has to be
+compiled with module support enabled (damn you Ubuntu!!).
 
 #+BEGIN_SRC emacs-lisp
 (sup 'vterm)
@@ -615,6 +714,10 @@ Make hl-line-mode turn off in vterm-mode.
 Kill the buffer when ~C-d~ is pressed to exit the shell.
 #+BEGIN_SRC emacs-lisp
 (setq vterm-kill-buffer-on-exit t)
+#+END_SRC
+
+Change the name of the buffer
+#+BEGIN_SRC emacs-lisp
 (setq vterm-buffer-name-string "vt")
 #+END_SRC
 
@@ -631,12 +734,13 @@ Toggles a window with a re-usable vterm. Good for reducing buffer clutter.
 (setq vterm-toggle-hide-method 'delete-window)
 (setq vterm-toggle-fullscreen-p nil)
 (add-to-list 'display-buffer-alist
-             '((lambda (bufname _)
-                 (with-current-buffer bufname (equal major-mode 'vterm-mode)))
-                (display-buffer-reuse-window display-buffer-at-bottom)
-                (dedicated . t)
-                (reusable-frames . visible)
-                (window-height . 0.4)))
+             '((lambda (buffer-or-name _)
+                 (let ((buffer (get-buffer buffer-or-name)))
+                   (equal major-mode 'vterm-mode)))
+               (display-buffer-reuse-window display-buffer-at-bottom)
+               (dedicated . t)
+               (reusable-frames . visible)
+               (window-height . 0.3)))
 #+END_SRC
 
 *** Kill vterm buffer and window
@@ -654,6 +758,12 @@ Toggles a window with a re-usable vterm. Good for reducing buffer clutter.
 (add-fs-to-hook 'vterm-mode-hook
                 (set-process-sentinel (get-buffer-process (buffer-name))
                                       #'vterm--kill-vterm-buffer-and-window))
+#+END_SRC
+*** Keybindings
+
+#+BEGIN_SRC emacs-lisp
+(meow-leader-define-key
+ '("d" . vterm-toggle-cd))
 #+END_SRC
 
 ** Org-mode
@@ -795,39 +905,6 @@ makes the filenames just the titles.
          :unnarrowed t)))
 #+END_SRC
 
-*** Anki integration
-Anki-editor lets you push notes to [[https://apps.ankiweb.net/][anki]] from emacs. My most common use case for
-this is to quickly write up some property list in the from ~- key :: value~ and
-then use this quick function to transform an entry into an anki card that can
-then be pushed with anki editor with ~anki-editor-push-notes~.
-
-I'm sorry this function depends on a snippet that may or may not be available to
-you wherever you are reading this. I plan to improve the code soon.
-
-#+BEGIN_SRC emacs-lisp
-(sup 'anki-editor)
-;; TODO improve this code!!!
-(defun anki-description-transform ()
-  (interactive)
-  (let* ((begin (re-search-backward "^-"))
-         (end (forward-sentence))
-         (raw (buffer-substring-no-properties
-               begin
-               end))
-         (split (s-split "::" raw))
-         (q (substring (s-trim (car split)) 2))
-         (a (s-trim (cadr split)))
-         (depth (org-current-level)))
-    (yas-expand-snippet
-     (yas-lookup-snippet "anki-editor card")
-     begin end)
-    (insert q)
-    (yas-next-field-or-maybe-expand)
-    (insert a)
-    (yas-end)
-    (org-backward-element)))
-#+END_SRC
-
 *** Latex
 Adds my favorite document class, IEEE transactions to the org latex export.
 #+BEGIN_SRC emacs-lisp
@@ -895,65 +972,61 @@ hook.
                 (push '("fn" . ?∅) prettify-symbols-alist))
 #+END_SRC
 
-My font uses ligatures. Ligature.el adds support for this on emacs 28+
-compiled with harfbuzz and cairo.
-
+Ligature.el provides true ligatures.
 #+BEGIN_SRC emacs-lisp
-(sup '(ligature
-       :type git
-       :repo "https://github.com/mickeynp/ligature.el"))
+(sup 'ligature)
 (ligature-set-ligatures
  'prog-mode
- '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
-   ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
-   "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "-<<"
-   "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
-   "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
-   "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
-   "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
-   "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
-   ">=" ">>" ">-" "-~" "-|" "->" "-<" "<~" "<*" "<|" "<:"
-   "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
-   "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
-   "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
-   "\\\\" "://"))
+ '(  "|||>" "<|||" "<==>" "<!--" "~~>" "***" "||=" "||>"   "://"
+     ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+     "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+     "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+     "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+     "..." "+++" "/==" "///" "_|_" "&&" "^=" "~~" "~@" "~="
+     "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+     "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+     ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+     "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+     "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+     "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"))
 (global-ligature-mode)
 #+END_SRC
 
 ** LSP
+eglot is built into emacs 29. install if not found.
 #+BEGIN_SRC emacs-lisp
-(sup 'lsp-mode)
-(sup 'lsp-ui)
+(unless (boundp 'eglot)
+  (sup 'eglot))
+
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs '(python-ts-mode . ("pylsp"))))
+(add-to-hooks #'eglot-ensure 'python-mode-hook 'python-ts-mode-hook)
+#+END_SRC
+
+turn off bold symbol highlighting
+
+#+BEGIN_SRC emacs-lisp
+(custom-set-faces
+ '(eglot-highlight-symbol-face ((t (:inherit nil)))))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(sup 'lsp-haskell)
+(add-fs-to-hook 'flymake-mode-hook (define-key flymake-mode-map (kbd "C-c C-n") #'flymake-goto-next-error))
 #+END_SRC
 
-Don't ask for project root config when opening files
-#+BEGIN_SRC emacs-lisp
-(setq lsp-auto-guess-root t)
-#+END_SRC
+** Grep
+Deadgrep offers (imo) the best interface to ripgrep, a fast text
+searcher. In the interest of portability, it is only installed if the
+ripgrep binary, "rg" is also installed
 
-Debloat the UI
 #+BEGIN_SRC emacs-lisp
-(setq lsp-enable-symbol-highlighting nil)
-(setq lsp-lens-enable nil)
-(setq lsp-headerline-breadcrumb-enable nil)
-#+END_SRC
-
-Turn on the lsp by default for some languages only.
-#+BEGIN_SRC emacs-lisp
-(add-to-hooks #'lsp-deferred
-              'python-mode-hook
-              'haskell-mode-hook
-              'c-mode-hook
-              'c++-mode-hook)
+(when (executable-find "rg")
+  (sup 'deadgrep))
 #+END_SRC
 
 ** Language-specific config
 *** Java
-Meghanada has better integration with emacs than the lsps i've tried.
 #+BEGIN_SRC emacs-lisp
 (sup 'meghanada)
 (add-fs-to-hook 'java-mode-hook
@@ -975,11 +1048,19 @@ Interactive haskell error customization
 (setq haskell-interactive-popup-errors t)
 #+END_SRC
 
-*** C++
+*** C
 #+BEGIN_SRC emacs-lisp
+(when treesit-available
+  (treesit-ensure 'c)
+  (treesit-ensure 'cpp)
+  (treesit-ensure 'rust)
+  (add-to-list 'major-mode-remap-alist
+               '(c-mode . c-ts-mode)))
+
 (setq-default c-basic-offset 4
               kill-whole-line t
               indent-tabs-mode nil)
+
 #+END_SRC
 
 *** Lisp
@@ -1047,18 +1128,7 @@ emacs, I do believe that sioyek is sufficiently popular.
 #+BEGIN_SRC emacs-lisp
 (setq my-pdf-viewer (-first #'executable-find
                             '("sioyek" "evince" "okular" "zathura" "firefox")))
-
-(setq TeX-view-program-list nil)
-(add-to-list
- 'TeX-view-program-list
- `("sioyek" ("sioyek %o" (mode-io-correlate
-                          ,(concat
-                            " --reuse-instance"
-                            " --forward-search-file \"%b\""
-                            " --forward-search-line %n"
-                            " --inverse-search \"emacsclient +%2 %1\"")))
-   "sioyek"))
-
+(when (string= my-pdf-viewer "sioyek") (setq my-pdf-viewer "Sioyek"))
 (add-fs-to-hook 'LaTeX-mode-hook
                 (setq TeX-view-program-selection
                       `((output-pdf ,my-pdf-viewer)
@@ -1080,12 +1150,108 @@ Make <tab> cycle sections just like in org mode
 (add-fs-to-hook 'LaTeX-mode-hook (define-key outline-minor-mode-map (kbd "<tab>") 'outline-cycle))
 #+END_SRC
 
+**** Japanese latex mode use dvipdfmx
+Some journal templates for japanese organizations use [[https://github.com/texjporg/platex][platex]] rather
+than latex. =japanese-latex-mode= tries to choose the correct
+compilers, but for whatever reason fails to use dvipdfmx to convert
+dvi to pdf.
+
+#+BEGIN_SRC emacs-lisp
+(advice-add #'japanese-latex-mode :after
+            (lambda () (setq TeX-PDF-from-DVI "Dvipdfmx")))
+#+END_SRC
+
+
 *** Python
+#+BEGIN_SRC emacs-lisp
+(when treesit-available
+  (treesit-ensure 'python)
+  (add-to-list 'major-mode-remap-alist
+               '(python-mode . python-ts-mode)))
+(setq python-mode-hook-alias
+      (if treesit-available
+          'python-ts-mode-hook
+        'python-mode-hook))
+(setq python-mode-map-alias
+      (if treesit-available
+          'python-ts-mode-map
+        'python-mode-map))
+#+END_SRC
+
 **** IPython
 Make ipython the default shell
 #+BEGIN_SRC emacs-lisp
 (setq python-shell-interpreter "ipython"
       python-shell-interpreter-args "-i --simple-prompt --InteractiveShell.display_page=True")
+#+END_SRC
+
+conda env management
+#+BEGIN_SRC emacs-lisp
+(sup 'conda)
+#+END_SRC
+
+**** Campus
+A small package I wrote to make repl interaction cleaner
+#+BEGIN_SRC emacs-lisp
+(sup '(campus
+       :type git
+       :fetcher github
+       :repo "https://github.com/eshrh/campus-emacs"
+       :files ("*.el")))
+
+(if treesit-available
+    (add-fs-to-hook 'python-ts-mode-hook
+                    (define-key python-ts-mode-map (kbd "C-c C-l")
+                                #'python-shell-send-buffer)
+                    (define-key python-ts-mode-map (kbd "C-c C-c")
+                                #'campus-send-region))
+    (add-fs-to-hook 'python-mode-hook
+                    (define-key python-mode-map (kbd "C-c C-l")
+                                #'python-shell-send-buffer)
+                    (define-key python-mode-map (kbd "C-c C-c")
+                                #'campus-send-region)))
+#+END_SRC
+
+**** Make describe at point functional
+Default describe at point function sends the symbols to the python
+process as a string. This means it will never work for functions
+imported from somewhere. I therefore redefine this function here
+
+#+BEGIN_SRC emacs-lisp
+(defun python-describe-at-point1 (symbol process)
+  (interactive (list (python-info-current-symbol)
+                     (python-shell-get-process)))
+  (comint-send-string process (concat "help(" symbol ")\n")))
+
+(advice-add #'python-describe-at-point :override #'python-describe-at-point1)
+#+END_SRC
+
+**** Extra convenience bindings
+Ipython with =%matplotlib= QtAgg lets you throw up a window and
+repeatedly reuse it for different figures. This is a cool feature, but
+it leads to me calling =plt.clf()= really often.
+
+#+BEGIN_SRC emacs-lisp
+(defun python-clear-matplotlib ()
+  (interactive)
+  (python-shell-send-string-no-output "plt.clf()")
+  (message "Matplotlib plot cleared."))
+
+(if treesit-available
+    (add-fs-to-hook 'python-ts-mode-hook
+                (define-key python-ts-mode-map (kbd "C-c C-,")
+                  #'python-clear-matplotlib))
+  (add-fs-to-hook 'python-mode-hook
+                (define-key python-mode-map (kbd "C-c C-,")
+                  #'python-clear-matplotlib)))
+#+END_SRC
+
+**** Symbols via prettify
+Some people will call this deranged. I don't care.
+#+BEGIN_SRC emacs-lisp
+(add-fs-to-hook (if treesit-available 'python-ts-mode-hook 'python-mode-hook)
+                (push '("None" . ?∅) prettify-symbols-alist)
+                (push '("return" . ?») prettify-symbols-alist)) ;❱)
 #+END_SRC
 
 *** Clojure
@@ -1118,12 +1284,6 @@ The default asm indentation style is completely deranged.
 #+END_SRC
 
 *** Other
-**** J
-#+BEGIN_SRC emacs-lisp
-(sup 'j-mode)
-(require 'j-mode)
-#+END_SRC
-
 **** Kmonad
 Kmonad config lang. Only load when the file exists.
 #+BEGIN_SRC emacs-lisp
@@ -1133,9 +1293,14 @@ Kmonad config lang. Only load when the file exists.
 
 (add-hook 'kbd-mode-hook (fn (aggressive-indent-mode -1)))
 #+END_SRC
+
 **** Matsurika
 #+BEGIN_SRC emacs-lisp
-(sup '(matsurika-mode :host github :repo "eshrh/matsurika-mode" :files ("*.el" "docs.txt")))
+(sup '(matsurika-mode
+       :type git
+       :host github
+       :repo "eshrh/matsurika-mode"
+       :files ("*.el" "docs.txt")))
 #+END_SRC
 
 * Other config and elisp
@@ -1245,7 +1410,6 @@ Taken from [[https://emacs.stackexchange.com/questions/2888/kill-buffer-when-fra
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c /") #'comment-or-uncomment-region)
 #+END_SRC
-
 ** Spellcheck locale
 Taken from here: http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs/
 #+BEGIN_SRC emacs-lisp
@@ -1309,7 +1473,7 @@ I don’t like tabs
 
 ** Final newline
 #+BEGIN_SRC emacs-lisp
-(setq mode-require-final-newline nil)
+(setq mode-require-final-newline t)
 #+END_SRC
 
 ** Aggressive indenting
@@ -1341,13 +1505,14 @@ above.
 (define-key key-translation-map [?\C-u] [?\C-x])
 #+END_SRC
 
-** Use ripgrep when available
-grep-find is a cool feature, but grep is sometimes slow. Use ripgrep
-if available. I'm aware that separate packages exist for ripgrep, but
-this works completely fine for me.
+** Don't confirm exiting when active processes exist
 #+BEGIN_SRC emacs-lisp
-(when (executable-find "rg")
-  (grep-apply-setting
-   'grep-find-command
-   '("rg -n -H --no-heading -e '' $(git rev-parse --show-toplevel || pwd)" . 27)))
+(setq confirm-kill-processes nil)
+#+END_SRC
+
+** Comint keybindings
+#+BEGIN_SRC emacs-lisp
+(define-key comint-mode-map (kbd "C-p") #'comint-previous-input)
+(define-key comint-mode-map (kbd "C-n") #'comint-next-input)
+(define-key comint-mode-map (kbd "C-w") #'backward-kill-word)
 #+END_SRC
