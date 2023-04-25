@@ -13,7 +13,7 @@ decidedly more efficient editing
 
 Over the years, the vi style of editing and specific, opinionated
 keybinds and patterns became muscle memory. Actions like =ciw= or =2dd=
-are remarkably powerful primary because of the so called "grammar" of
+are remarkably powerful primarily because of the so called "grammar" of
 the vim language: verb -> adjective -> noun.
 
 * Switching to emacs and evil
