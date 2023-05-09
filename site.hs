@@ -154,6 +154,10 @@ main = do
       compile $ do
         makeItem $ styleToCss pandocCodeStyle
 
+    match "_headers" $ do
+      route idRoute
+      compile copyFileCompiler
+
 --------------------------------------------------------------------------------
 
 postCtx :: Context String
