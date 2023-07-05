@@ -85,6 +85,12 @@ nav p a {
 
 .mobile-nav {
     display: none;
+    border-bottom: 0.2rem solid var(--fg);
+    float: left;
+}
+
+.mobile-nav .logo a {
+    font-size: 3rem;
 }
 
 @media screen and (max-width: 480px) {
