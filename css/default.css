@@ -151,8 +151,42 @@ a:visited {
     display: block;
     margin: auto;
     margin-top: 1rem;
-    box-shadow: 4px 4px 8px 0 #2f6b8e;
+    box-shadow: 4px 4px 8px 0 var(--acc2);
     max-width: 90%;
+}
+
+blockquote {
+    border-left: 8px solid var(--acc2);
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    box-shadow: 2px 2px 8px 0 var(--acc2);
+}
+
+blockquote cite{
+    display:block;
+    font-weight: bold;
+    margin-top:0.5em;
+    text-align: right;
+    font-size-adjust: 0.4;
+}
+
+blockquote cite:before {
+    content: "- ";
+}
+
+.quote-page-link:visited, .quote-page-link:link{
+    text-decoration: none;
+    color: var(--fg);
+}
+
+.quote-page-link blockquote {
+    transition: all 0.5s;
+}
+
+.quote-page-link blockquote:hover {
+    border-left-color: var(--fg);
+    box-shadow: 2px 2px 8px 0 var(--fg);
+
 }
 
 /* @media screen and (max-width: 480px) { */
