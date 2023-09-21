@@ -1,7 +1,5 @@
 (defun build []
-  (if (= "helianthus" (first ($ hostname)))
-    ($ ghc site.hs -dynamic)
-    ($ stack ghc site.hs))
+  ($ ghc site.hs -dynamic)
   ($ ./site build))
 
 (defun upload []
