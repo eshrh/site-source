@@ -29,3 +29,14 @@ meaning in the phrase /to live like men/.
 <cite>R. Tagore, Gitanjali</cite>
 #+END_export
 #+end_quote
+
+#+begin_quote
+    If by eternity is understood not endless temporal duration but
+    timelessness, then he lives eternally who lives in the present. Our
+    life is endless in the way that our visual field is without limit.
+
+#+BEGIN_export html
+<cite>L. Wittgenstein, Tractatus Logico-Philosophicus (6.4311)</cite>
+#+END_export
+#+end_quote
+
