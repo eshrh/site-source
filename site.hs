@@ -118,6 +118,7 @@ main = do
       compile $
         pandocCompilerWithOpts
           >>= loadAndApplyTemplate "templates/post.html" postCtx . fmap demoteHeaders
+          >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/default.html" postCtx
           >>= relativizeUrls
 
@@ -158,3 +159,20 @@ main = do
     match "_headers" $ do
       route idRoute
       compile copyFileCompiler
+
+    create ["feed"] $ do
+      route idRoute
+      compile $ do
+        let feedCtx = postCtx <> bodyField "description"
+        posts <- fmap (take 3) . recentFirst =<<
+          loadAllSnapshots "posts/*" "content"
+        renderRss feedConfig feedCtx posts
+          where
+            feedConfig =
+              FeedConfiguration
+              { feedTitle       = "esrh.me"
+              , feedAuthorEmail = "esrh@gatech.edu"
+              , feedRoot        = "https://esrh.me"
+              , feedDescription = "my blog!"
+              , feedAuthorName = "Eshan Ramesh"
+              }
