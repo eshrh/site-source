@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
 
-import Control.Monad (mapM_)
+import Control.Monad (mapM_, when)
 import Data.Functor
 import Data.Functor.Identity (runIdentity)
 import Data.List (isPrefixOf)
@@ -14,16 +14,16 @@ import Hakyll.Web.Html (demoteHeaders)
 import Skylighting (styleToCss, monochrome)
 import Skylighting.Styles
 import System.Directory
-  ( copyFile,
-    getHomeDirectory,
-    doesFileExist,
-    createDirectoryIfMissing
+  ( copyFile
+  , getHomeDirectory
+  , doesFileExist
+  , createDirectoryIfMissing
   )
 import System.FilePath (FilePath, joinPath)
 import System.Posix.Internals (newFilePath)
-import Text.Pandoc.Options (ReaderOptions (..),
-                            WriterOptions (..),
-                            HTMLMathMethod (..))
+import Text.Pandoc.Options ( ReaderOptions (..)
+                           , WriterOptions (..)
+                           , HTMLMathMethod (..))
 import Text.Pandoc.Templates (compileTemplate)
 import Text.Pandoc.Extensions
 import qualified Text.Pandoc.Templates (Template)
@@ -35,33 +35,34 @@ pandocCodeStyle = monochrome
 tocTemplate =
   either error id . runIdentity . compileTemplate "" $
     T.unlines
-      [ "<h2 class=\"tocheader\">Contents</h2>",
-        "<div class=\"toc\">",
-        "$toc$",
-        "</div>",
-        "$body$"
+      [ "<h2 class=\"tocheader\">Contents</h2>"
+      , "<div class=\"toc\">"
+      , "$toc$"
+      , "</div>"
+      , "$body$"
       ]
 
 extraExts :: Extensions
 extraExts = extensionsFromList
-            [Ext_tex_math_dollars,
-             Ext_tex_math_double_backslash,
-             Ext_inline_code_attributes]
+            [ Ext_tex_math_dollars
+            , Ext_tex_math_double_backslash
+            , Ext_inline_code_attributes
+            ]
 
 pandocCompilerWithOpts :: Compiler (Item String)
 pandocCompilerWithOpts =
   pandocCompilerWith
     defaultHakyllReaderOptions
-      { readerExtensions = (readerExtensions defaultHakyllReaderOptions)
+      { readerExtensions = readerExtensions defaultHakyllReaderOptions
                            <> extraExts
       }
     defaultHakyllWriterOptions
-      { writerTableOfContents = True,
-        writerNumberSections = True,
-        writerTOCDepth = 2,
-        writerTemplate = Just tocTemplate,
-        writerHTMLMathMethod = MathJax "",
-        writerExtensions = getDefaultExtensions "ipynb"
+      { writerTableOfContents = True
+      , writerNumberSections = True
+      , writerTOCDepth = 2
+      , writerTemplate = Just tocTemplate
+      , writerHTMLMathMethod = MathJax ""
+      , writerExtensions = getDefaultExtensions "ipynb"
       }
 
 expandHome :: FilePath -> String -> FilePath
@@ -71,11 +72,12 @@ expandHome home s
 
 syncOne :: FilePath -> [String] -> IO ()
 syncOne home item = do
-  let path = (expandHome home (head item))
+  let path = expandHome home (head item)
   exists <- doesFileExist path
-  if exists
-    then copyFile path (last item)
-    else return ()
+  when exists (copyFile path (last item))
+
+postCtx :: Context String
+postCtx = dateField "date" "%Y / %m / %d" <> defaultContext
 
 main :: IO ()
 main = do
@@ -83,7 +85,6 @@ main = do
   syncFilesList <- readFile "./syncFiles.txt"
   let syncFiles = map words (lines syncFilesList)
   mapM_ (syncOne homedir) syncFiles
-
 
   createDirectoryIfMissing True "_site/css"
   writeFile "_site/css/syntax.css" $ styleToCss pandocCodeStyle
@@ -157,10 +158,3 @@ main = do
     match "_headers" $ do
       route idRoute
       compile copyFileCompiler
-
---------------------------------------------------------------------------------
-
-postCtx :: Context String
-postCtx =
-  dateField "date" "%Y / %m / %d"
-    <> defaultContext
