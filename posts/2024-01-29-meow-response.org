@@ -1,0 +1,168 @@
+---
+title: Meow response to a critique of kakoune-style editing
+---
+
+* Introduction
+A few days ago, my [[./2021-12-18-switching-to-meow.html][article]] was [[https://lobste.rs/s/lb2eld/switching_meow_modal_editing_system_from][posted]] to lobste.rs and it got a
+[[https://lobste.rs/s/lb2eld/switching_meow_modal_editing_system_from#c_dfs8sq][comment]] from Celeritas linking me to [[https://github.com/noctuid/dotfiles/blob/master/emacs/editing.org#why-not-kakoune][this]] argument in favor of
+vim-style editing rather than kakoune-style editing. I was typing up a
+response in the thread, but it ended up getting pretty long, so I
+decided to turn it into a sort of follow-up post.
+
+That article is written by noctuid, a pretty prolific emacs community member
+(i remember reading their evil guide when I first started using doom something
+like 6 years ago now). I've never used kakoune, but even though I ultimately
+disagree with their take I can relate to many parts of it. Meow fixes many of
+the issues they mention with kakoune. I think that with editor discussions in
+general there's an exceptional amount of subjective bias because of the cost
+it takes to learn new things. I'll be biased because I sunk the cost to learn
+kakoune grammar, and that's what I currently use. I don't think there are many
+people who've switched the other way.
+
+In this post I'd like to comment on some of the critiques noctuid
+makes about kakoune, especially with regards to navigation and
+selection and how meow seems to address many of their points. In some
+sense, this is a bit more of a sobered take compared to my post 2
+years ago. It comes with a bit more experience and knowledge of how
+meow works internally.
+
+* Critique points
+** Reverse grammar hurts key reuse
+The idea is that operator-pending mode is a separate context in which
+keys can be re-used, like how =w= means "word" after =d= but "next
+word" in general. Noctuid takes issue with having to use a modifier to
+select text objects.
+
+I think it's really just a layout issue -- indeed
+in meow we use =,= and =.= on the recommended layout. When you're
+selecting a text object, that *is* a separate context in which keys
+are interpreted differently. You can reuse every key to select a text
+object. I might be misunderstanding what was meant by this part, but
+as I see it you're losing nothing.
+
+** Navigation vs Selection
+When I first started using meow, I might have agreed that automatic
+selections were a bit distracting, but once you start ignoring them it
+really becomes a non-issue. In meow, any movement key or command that
+does not act on a selection cancels the active selection, meaning that
+if you make a motion without wanting to act on it the selection will
+probably disappear on your very next command. However, it probably is a
+very valid observation that most people will very rarely make a motion
+and THEN realize they want to act on it. I just think that there is a
+real benefit to automatic selections, and it's worth it for the cases
+where you select intending to act.
+
+** Visual selections don't prevent mistakes; overlays do
+Noctuid correctly points out that visual selections don't really
+prevent you from /making/ mistakes, they only make it obvious and easy
+to fix when you /do/.
+
+Luckily meow has visual selections *and* overlays. Meow implements nearly
+exactly what noctuid describes, but with great integration (compared to avy) and
+really smooth ergonomics for the vast majority of everyday editing use
+cases. In short, most movement commands in meow trigger overlays over
+the target locations of all possible repetitions of that command,
+letting you quickly and visually repeat a command some number of times.
+
+I don't agree that visual selections don't prevent mistakes -- I
+couldn't tell you how many times I've fat fingered 8 instead of 7 or
+simply changed my mind after making a selection. Additionally, having
+both gives you two options: either press the right number by reading
+the hints, or spam. Some commands in meow reuse keys for their expand
+versions. For instance, if you select a line with =meow-line= (=x=),
+pressing the same key again selects one more line. If you mark a whole
+word with =meow-mark-word= (=w=), pressing =meow-next-word= (=e=)
+expands by one word instead of selecting the next word only.
+
+A subtle point which even many long time users of meow might not know
+the specifics of is this expandable selections. Every time you make a
+selection in meow, it is marked with some information that informs
+meow what to do on a repeat: whether it is an "expand" selection or a
+"select" selection, and what object the selection is targeting. The
+commands that make an "expand" selections are
+- up/down/right/left expansions
+- word/symbol based expansions
+- line expansions
+- block expansions (paren/bracket pairs, =meow-block= expands
+up the tree).
+
+The commands that make "select" selections and therefore do not reuse
+keys are
+- find/till character
+- general text-objects (perhaps might change in the future, there's a
+  lot of discussion about this on github)
+- meow-visit
+
+This whole setup makes expanding selections much easier, and basically gives you same
+user experience as highlighting text with a mouse: choosing your
+selection one object at a time. In my experience, I tend to spam
+keys to select <5 text objects, it's just faster and takes less
+thought. In this "spam" selection mode, visual selection indeed does
+prevent selection errors, it's slower and less efficient but exact.
+
+** Visual confirmation is unnecessary
+From the article:
+
+#+BEGIN_QUOTE
+Furthermore, the effect of many motions and text objects is obvious;
+visual confirmation is often completely unnecessary. Deleting the
+current word, sentence, or parentheses block does not involve
+uncertainty. t and f are basically the “dumbest” motions in that they
+don’t move by clear units like paragraphs or words but instead jump to
+arbitrary characters. The majority of my operator usage has no
+possibility for mistakes apart from mistyping.It doesn’t make sense to
+me to optimize a modal model around rarer cases like the dtf example,
+even if I thought a visual selection was the ideal way to handle these
+cases.
+#+END_QUOTE
+
+I mostly agree with this point. A lot of my editing tasks are just
+"delete this word" or "change inside parens" which are so fast I
+barely see the selection before it's gone. In this case though, visual
+selections cost nothing. So, I don't agree with is
+the tradeoff part of their argument. It *does* make sense to optimize
+modal models around error prone cases, especially when there is
+minimal (and to me, mostly aesthetic) cost for doing so. I don't think
+these cases are that rare; jumping to the =n= th occurrence of a
+character or selecting =n= lines is quite common!
+** Evil integration is better
+In the "why not other emacs packages?" section, noctuid mentions that
+emacs packages use different keybindings for different actions, and
+that modal editing packages face a fundamental convention difference
+for motion keys (jk vs C-n, C-p). This is a good point to mention
+meow's "motion" state, meant to address exactly this.
+
+Essentially, it lets you override your motion keys in /every/ mode that steals them
+from you /automatically/. Evil expects you to remap your keys in every
+one of your modes. Meow decides which modes to use motion in using a
+[[https://github.com/meow-edit/meow/blob/3247b9d4f2b46bcf8d216857a59d67dd416dcdb9/meow-helpers.el#L237-L261][funny little heuristic]] that checks whether keys self-insert into the
+buffer and recursively against a predefined list of parent modes. Any
+command that's hidden is rebound under the =Hyper= modifier, So, if
+you need to use the command that used to be bound to your motion keys, you
+can bind =H-<key>= under your leader prefix. It's a dead simple idea,
+and it'll always work.
+
+While motion works for interaction-style packages like elfeed and
+magit, unfortunately, this is ultimately a valid criticism. Meow is
+forced to adapt to packages that nontrivially change your /editing/
+experience itself, like company, polymode, sly and cider to name a
+few. For these, meow comes with some "shims" that mostly just turn on
+the motion mode when its needed. Inevitably, this leads to bad user
+experience with some missed packages -- but luckily, most
+compatibility issues are trivially solved by just turning on motion
+mode when it's necessary, and indeed most shims that meow has do just
+that.
+
+* Ending thoughts
+Noctuid's post is 6 years old, and my response is obviously unfair
+they're writing about kakoune, and I'm talking about a modern package
+that has had the chance to learn from the many modal editing
+packages. Still, many of the critiques are about kakoune's model
+itself, which meow uses. I still think it's a good idea, or at least
+surely not a "a broken solution to a non-issue." The instantaneous
+feedback and visual selections cost is mostly aesthetic, with a
+benefit of making selection errors trivial to notice and fix before
+acting on them.
+
+At the end of the day, people edit differently -- editors should be
+molded to the desires of the users, not the other way around.
