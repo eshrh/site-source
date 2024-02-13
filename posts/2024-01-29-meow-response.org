@@ -154,7 +154,7 @@ mode when it's necessary, and indeed most shims that meow has do just
 that.
 
 * Ending thoughts
-Noctuid's post is 6 years old, and my response is obviously unfair
+Noctuid's post is 6 years old, and my response is obviously unfair since
 they're writing about kakoune, and I'm talking about a modern package
 that has had the chance to learn from the many modal editing
 packages. Still, many of the critiques are about kakoune's model
