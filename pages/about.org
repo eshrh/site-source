@@ -1,13 +1,18 @@
-I am an undergraduate student at Georgia Tech with many interests. Some of them include
-+ GNU/Linux
-+ GNU Emacs
-+ Poetry
+I am an undergraduate student at Georgia Tech with many
+interests. Some of them include:
+
++ GNU/Linux, free/libre and open source software
++ Interesting human-computer interaction methods
+  - Text editors, mainly Emacs
+  - Efficient and unusual keyboards
+  - Highly customizable hardware and software
++ Wireless communication and signal processing
 + Machine learning
 + Anime/manga/light novels
-+ Language learning
-  - Japanese: nearly fluent
-  - French: beginner
-  - Mandarin: know almost nothing
++ Languages
+  - Learning natural languages
+  - Philosophical interpretations of language
+  - CS/NLP perspectives
 
 Some extra files are hosted on this website. For instance, a [[../files/iosevka-meiseki-sans-regular.ttf][ttf copy]]
 of my programming monospace font, a custom version of Iosevka.
