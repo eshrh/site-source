@@ -31,6 +31,12 @@ img {
 .animation {
 }
 
+/* Posted on: date */
+.header {
+    color: var(--acc3);
+    font-weight: bold;
+}
+
 .tocheader {
     font-weight: bold;
 }
@@ -160,6 +166,14 @@ blockquote {
     margin: 1.5em 10px;
     padding: 0.5em 10px;
     box-shadow: 2px 2px 8px 0 var(--acc2);
+}
+
+.ITALICIZE, .line-block {
+    font-style: italic;
+}
+
+.notes {
+    font-size: 0.8rem;
 }
 
 blockquote cite{

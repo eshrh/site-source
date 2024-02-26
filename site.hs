@@ -21,6 +21,9 @@ import System.Directory
   )
 import System.FilePath (FilePath, joinPath)
 import System.Posix.Internals (newFilePath)
+
+import Text.Pandoc.Definition
+import Text.Pandoc.Walk
 import Text.Pandoc.Options ( ReaderOptions (..)
                            , WriterOptions (..)
                            , HTMLMathMethod (..))
@@ -35,8 +38,8 @@ pandocCodeStyle = monochrome
 tocTemplate =
   either error id . runIdentity . compileTemplate "" $
     T.unlines
-      [ "<h2 class=\"tocheader\">Contents</h2>"
-      , "<div class=\"toc\">"
+      [ "<div class=\"toc\">"
+      , "$if(toc)$<h2 class=\"tocheader\">Contents</h2>$endif$"
       , "$toc$"
       , "</div>"
       , "$body$"
@@ -51,7 +54,7 @@ extraExts = extensionsFromList
 
 pandocCompilerWithOpts :: Compiler (Item String)
 pandocCompilerWithOpts =
-  pandocCompilerWith
+  pandocCompilerWithTransform
     defaultHakyllReaderOptions
       { readerExtensions = readerExtensions defaultHakyllReaderOptions
                            <> extraExts
@@ -64,6 +67,13 @@ pandocCompilerWithOpts =
       , writerHTMLMathMethod = MathJax ""
       , writerExtensions = getDefaultExtensions "ipynb"
       }
+    (walk $ raiseItalicBlock)
+
+
+raiseItalicBlock :: Block -> Block
+raiseItalicBlock (CodeBlock _ contents) = Para [Str contents]
+raiseItalicBlock x = x
+
 
 expandHome :: FilePath -> String -> FilePath
 expandHome home s
@@ -116,8 +126,8 @@ main = do
     match "posts/*" $ do
       route $ setExtension "html"
       compile $
-        pandocCompilerWithOpts
-          >>= loadAndApplyTemplate "templates/post.html" postCtx . fmap demoteHeaders
+        fmap demoteHeaders <$> pandocCompilerWithOpts
+          >>= loadAndApplyTemplate "templates/post.html" postCtx
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/default.html" postCtx
           >>= relativizeUrls
