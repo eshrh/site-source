@@ -92,8 +92,6 @@ expressible), but like that which cannot be pictured by in our
 minds. All I can give is a projection, like a lower dimensional slice
 of a deeper world. This is what she sees:
 
---
-
 #+BEGIN_VERSE
 the universe begins. nothing. a planet passes by a star.
 its orbit is very long.
@@ -172,8 +170,6 @@ nothing if not predetermined,
 nothing if not a drop in the river to heaven.
 #+END_VERSE
 
---
-
 And her world goes black, pure black. She struggles to open her eyes
 only to realize they were already open as she regains feeling in her
 limbs. Her proto-vision will not return to her for several days. She feels
@@ -197,10 +193,10 @@ be, and what she feels as the new Prima-Intendant is fact.
 Somewhere above her, she senses a gate opening, and her field of
 vision is washed away by the most beautiful colors she has never seen.
 
---
+---
 
 #+BEGIN_notes
-- thanks to [[https:cgdct.moe][stephen]] and my friends for reading early drafts
+- thanks to [[https://cgdct.moe][stephen]] and my friends for reading early drafts
 - inexpressibility of what gives logic to the world (and is outside
   the world) is an idea from [[https://www.kfs.org/jonathan/witt/t641en.html][tractatus (6.41)]]
 - the world being [[https://people.idsia.ch/~juergen/computeruniverse.html][simulated]] by a machine that prioritizes speed,
