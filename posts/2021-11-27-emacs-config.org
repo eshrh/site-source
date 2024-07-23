@@ -242,7 +242,7 @@ My default fonts. Iosevka Meiseki is a customized version of [[https://github.co
 font. You can find a copy of it [[https://esrh.me/files/iosevka-meiseki-sans-regular.ttf][here]].
 
 #+BEGIN_SRC emacs-lisp
-(defvar emacs-english-font "Iosevka Meiseki Sans")
+(defvar emacs-english-font "monospace")
 (defvar emacs-cjk-font "IPAGothic")
 (setq my-font (concat emacs-english-font "-12"))
 
@@ -378,7 +378,6 @@ when meow-reverse is called as well.
 (global-set-key (kbd "C-x 9 1") #'exchange-point-and-mark) ; unused key
 (setq meow--kbd-exchange-point-and-mark "C-x 9 1")
 #+END_SRC
-
 
 ** Far
 
@@ -1065,6 +1064,13 @@ The best common lisp ide!
 (add-hook 'lisp-mode-hook #'flycheck-mode)
 #+END_SRC
 
+Keeps code indented no matter what. This package is extremely broken
+for most block based languages, but works like a charm for lisps.
+#+BEGIN_SRC emacs-lisp
+(sup 'aggressive-indent-mode)
+(add-hook 'lisp-data-mode-hook #'aggressive-indent-mode 1)
+#+END_SRC
+
 **** Smartparens
 #+BEGIN_SRC emacs-lisp
 (smartparens-global-mode)
@@ -1083,6 +1089,20 @@ Disable single quote pairing in lisp-data modes
 (sp-disable 'lisp-data-mode "'")
 #+END_SRC
 
+**** Racket
+#+BEGIN_SRC emacs-lisp
+(sup 'racket-mode)
+(sup 'scribble-mode)
+#+END_SRC
+
+**** Clojure
+Cider is really good
+#+BEGIN_SRC emacs-lisp
+(sup 'clojure-mode)
+(sup 'cider)
+(sp-disable 'clojure-mode "'")
+#+END_SRC
+
 **** Elisp
 #+BEGIN_SRC emacs-lisp
 (sup 'elisp-format)
@@ -1090,14 +1110,6 @@ Disable single quote pairing in lisp-data modes
 (sp-disable 'emacs-lisp-mode "'")
 (sp-disable 'emacs-lisp-mode "`")
 (sp-disable 'org-mode "'")
-#+END_SRC
-
-**** Aggressive indenting
-Keeps code indented no matter what. This package is extremely broken
-for most block based languages, but works like a charm for lisps.
-#+BEGIN_SRC emacs-lisp
-(sup 'aggressive-indent-mode)
-(add-hook 'lisp-data-mode-hook #'aggressive-indent-mode 1)
 #+END_SRC
 
 *** TeX
@@ -1161,7 +1173,6 @@ dvi to pdf.
 (advice-add #'japanese-latex-mode :after
             (lambda () (setq TeX-PDF-from-DVI "Dvipdfmx")))
 #+END_SRC
-
 
 *** Python
 #+BEGIN_SRC emacs-lisp
@@ -1263,14 +1274,6 @@ Some people will call this deranged. I don't care.
                 (push '("return" . ?») prettify-symbols-alist)) ;❱)
 #+END_SRC
 
-*** Clojure
-Cider is really good
-#+BEGIN_SRC emacs-lisp
-(sup 'clojure-mode)
-(sup 'cider)
-(sp-disable 'clojure-mode "'")
-#+END_SRC
-
 *** Julia
 Julia-snail is a cider-flavor ide environment for julia. I find it's
 dwim send-to-repl feature nice. This package depends on both standard
@@ -1310,6 +1313,10 @@ Kmonad config lang. Only load when the file exists.
        :host github
        :repo "eshrh/matsurika-mode"
        :files ("*.el" "docs.txt")))
+#+END_SRC
+**** Nix
+#+BEGIN_SRC emacs-lisp
+(sup 'nix-mode)
 #+END_SRC
 
 * Other config and elisp

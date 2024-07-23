@@ -1,5 +1,5 @@
-I am an undergraduate student at Georgia Tech with many
-interests. Some of them include:
+Hi! Welcome to my website! I'm not sure what I post about (when I do
+post), but they're probably related to one of my interests:
 
 + GNU/Linux, free/libre and open source software
 + Interesting human-computer interaction methods
@@ -14,9 +14,10 @@ interests. Some of them include:
   - Philosophical interpretations of language
   - CS/NLP perspectives
 
-Some extra files are hosted on this website. For instance, a [[../files/iosevka-meiseki-sans-regular.ttf][ttf copy]]
-of my programming monospace font, a custom version of Iosevka.
-
+* about this site
 This website runs on Hakyll, with some build scripts written in my
 customized scripting language, [[https://github.com/eshrh/matsurika][matsurika]]. You can find the source for
 this website on [[https://github.com/eshrh/site-source][this repository.]]
+
+Some extra files are hosted on this website. For instance, a [[../files/iosevka-meiseki-sans-regular.ttf][ttf copy]]
+of my programming monospace font, a custom version of Iosevka ([[https://github.com/eshrh/nixos-config/blob/master/nixos/fonts/iosevka.nix][nix derivation]]).

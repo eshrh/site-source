@@ -1,12 +1,12 @@
 (defun build []
-  ($ ghc site.hs -dynamic)
-  ($ ./site build))
+  ($ stack run -- build))
 
 (defun upload []
   (build)
   ($*
    (git add css files favicon.ico images pages posts
-        publish.mts site.hs templates index.html)
+        publish.mts site.hs templates index.html
+        stack.yaml package.yaml nix)
    (git commit -m "website update")
    (git push origin master))
 
@@ -24,7 +24,7 @@
 
 (defun run []
   (build)
-  ($ ./site watch --port 8001 :sh))
+  ($ stack run -- watch --port 8001 :sh))
 
 (defun main [& args]
   (match (in args 1)
