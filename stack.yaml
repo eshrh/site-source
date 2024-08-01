@@ -8,5 +8,5 @@ extra-deps:
 allow-newer: true
 
 nix:
-  enable: true
+  enable: false
   shell-file: nix/stack-integration.nix
