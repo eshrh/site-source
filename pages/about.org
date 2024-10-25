@@ -14,6 +14,21 @@ post), but they're probably related to one of my interests:
   - Philosophical interpretations of language
   - CS/NLP perspectives
 
+* abridged timeline of my life
+- 2004.3: born in Orlando, Florida
+- 2014._: started learning python
+- 2017.8: enter high school
+- 2018._: start using GNU/linux (and emacs around the same time)
+- 2020.5: start learning japanese
+- 2021.8: graduate HS and enter Georgia Tech in Atlanta, Georgia
+- 2021.9: start working on wireless communication (ACA VIP,
+  Dr. Matthieu Bloch)
+- 2022.8 - 2023.8: left school to intern at NTT in Japan, working on 5G
+  throughput forecasting research
+- 2023.8: return to GT to complete my degree
+- 2024.8: graduate from GT
+- 2024.10: enter the Institute of Science Tokyo (formerly Tokyo Tech) for my MS degree
+
 * about this site
 This website runs on Hakyll, with some build scripts written in my
 customized scripting language, [[https://github.com/eshrh/matsurika][matsurika]]. You can find the source for
