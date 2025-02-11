@@ -12,7 +12,7 @@ But first of all, I'd like to update my dear readers of this website
 on where I've been! It's been just about a year since my last post,
 and longer since the last redesign of the site design (if memory
 serves me right, we're on the third or fourth iteration at the
-moment). My [[photos.esrh.me][photos]] site is updated every so often, but I rarely take
+moment). My [[https://photos.esrh.me][photos]] site is updated every so often, but I rarely take
 many photos unless I'm travelling -- I plan to change this in the near
 future!
 
@@ -27,7 +27,7 @@ really did come to like Atlanta and the people I spent my time with
 there. I changed considerably from 2021-2024, broadly attributable to
 two experiences. One was the year I lived in Japan, which gave me a bit a
 of a bigger picture about life and deeply influenced my sense of
-aesthetics; but the other was living in close proximity with [[brown.ee][Daniel]]
+aesthetics; but the other was living in close proximity with [[https://brown.ee][Daniel]]
 and Stephen -- who influenced everything from my sense of humor to my
 thoughts on programming languages (ostensibly, the topic of this
 post). My friends at GT were honestly one of a kind and had such
@@ -115,7 +115,7 @@ syntactic freedom one has with lisp -- the lisp influence is markedly
 clear in many aspects of that language: metaprogramming, multiple
 dispatch, flexible typing, repl interactivity, etc.
 
-Anyway, I become involved with the [[github.com/meow-edit/meow][meow]] project in my first year of
+Anyway, I become involved with the [[https://github.com/meow-edit/meow][meow]] project in my first year of
 college as well, and that marked my full immersion into elisp. My
 emacs config became filled with functional commands like those from
 =dash= and weird macros. This was really the point of no return for

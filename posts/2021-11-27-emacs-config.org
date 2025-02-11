@@ -40,7 +40,6 @@ fork emacs packages on a somewhat regular basis.
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-(setq straight-built-in-pseudo-packages '(project))
 #+end_src
 
 straight-use-package is a bit of a keyful to type, especially interactively.
@@ -155,15 +154,6 @@ systems typically kills backward only.
 #+BEGIN_SRC emacs-lisp
 (global-set-key [?\C-z] #'kill-whole-line)
 #+END_SRC
-** Tramp config
-Some tramp-specific config mainly to make it smoother/faster.
-
-#+BEGIN_SRC emacs-lisp
-(setq vc-handled-backends '(Git))
-(setq remote-file-name-inhibit-locks t)
-(setq remote-file-name-inhibit-cache nil)
-#+END_SRC
-
 
 * Visual configuration
 ** Disable bell
@@ -768,6 +758,9 @@ Toggles a window with a re-usable vterm. Good for reducing buffer clutter.
 #+END_SRC
 
 ** Org-mode
+#+BEGIN_SRC emacs-lisp
+(sup 'org)
+#+END_SRC
 
 Path configuration. I use a directory called org in my home directory to store
 my org files.
@@ -1024,11 +1017,6 @@ ripgrep binary, "rg" is also installed
 #+END_SRC
 
 ** Language-specific config
-*** Rust
-#+BEGIN_SRC emacs-lisp
-(sup 'rust-mode)
-(setq rust-mode-treesitter-derive t)
-#+END_SRC
 *** Java
 #+BEGIN_SRC emacs-lisp
 (sup 'meghanada)
