@@ -54,7 +54,7 @@ extraExts = extensionsFromList
 
 pandocCompilerWithOpts :: Compiler (Item String)
 pandocCompilerWithOpts =
-  pandocCompilerWithTransform
+  pandocCompilerWith
     defaultHakyllReaderOptions
       { readerExtensions = readerExtensions defaultHakyllReaderOptions
                            <> extraExts
@@ -66,14 +66,8 @@ pandocCompilerWithOpts =
       , writerTemplate = Just tocTemplate
       , writerHTMLMathMethod = MathJax ""
       , writerExtensions = getDefaultExtensions "ipynb"
+      , writerHighlightStyle   = Just pandocCodeStyle
       }
-    (walk $ raiseItalicBlock)
-
-
-raiseItalicBlock :: Block -> Block
-raiseItalicBlock (CodeBlock _ contents) = Para [Str contents]
-raiseItalicBlock x = x
-
 
 expandHome :: FilePath -> String -> FilePath
 expandHome home s
@@ -126,7 +120,7 @@ main = do
     match "posts/*" $ do
       route $ setExtension "html"
       compile $
-        fmap demoteHeaders <$> pandocCompilerWithOpts
+        pandocCompilerWithOpts
           >>= loadAndApplyTemplate "templates/post.html" postCtx
           >>= saveSnapshot "content"
           >>= loadAndApplyTemplate "templates/default.html" postCtx

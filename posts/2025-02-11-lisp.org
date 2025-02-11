@@ -1,0 +1,259 @@
+---
+title: Why I love lisp, among other topics
+---
+
+* Introduction
+So far, I've usually written posts here when I feel I have something atomic
+and at least somewhat unique to say, but this one will be a bit more
+personal, retrospective, meandering and kinda pointless. I'd like to
+talk about something that's quite dear to my heart, lisp.
+
+But first of all, I'd like to update my dear readers of this website
+on where I've been! It's been just about a year since my last post,
+and longer since the last redesign of the site design (if memory
+serves me right, we're on the third or fourth iteration at the
+moment). My [[photos.esrh.me][photos]] site is updated every so often, but I rarely take
+many photos unless I'm travelling -- I plan to change this in the near
+future!
+
+I spent the summer 2024 taking the last classes I'd kept until
+the end, working on an SDR time-of-flight estimation project, playing
+lots of badminton with [[https://sidongg.github.io/][Sidong]] (now ECE PhD at GaTech) and of course -- as
+we did for 2 years -- watching anime and yapping way too much with
+[[https://cgdct.moe/][Stephen]] (now CS PhD at CMU). Excluding the year I
+spent interning at NTT, I was at Georgia Tech for 2 years. I'd rather
+not comment about the state of the admin, CS classes, or housing, but I
+really did come to like Atlanta and the people I spent my time with
+there. I changed considerably from 2021-2024, broadly attributable to
+two experiences. One was the year I lived in Japan, which gave me a bit a
+of a bigger picture about life and deeply influenced my sense of
+aesthetics; but the other was living in close proximity with [[brown.ee][Daniel]]
+and Stephen -- who influenced everything from my sense of humor to my
+thoughts on programming languages (ostensibly, the topic of this
+post). My friends at GT were honestly one of a kind and had such
+strong, bright and interesting personalities, I'm so glad I got to
+know them :)
+
+I was always vaguely amused by cool programming languages, but I
+started seriously programming lisp in my first year of undergrad to
+prove to my neovim-using friends that emacs was way cooler. I say
+"amused" because really I'm just interested in alternate ways of
+thinking about computing, since I don't know much about PLT or
+compilers. I had briefly interacted with Haskell in high school, but
+hadn't ever written anything in it. Daniel and I learned Haskell again
+together in my first year, doing the [[https://mightybyte.github.io/monad-challenges/][monad challenges]] and a bunch of
+advent of code problems, although my main use for Haskell was for
+configuring Xmonad and Hakyll. Daniel was (and
+is) very good at functional programming, and these moments are fond
+memories to me. I remember particularly well getting badly stuck deriving
+=liftM2= while he cruised along ahead. I highly recommend that
+challenge set if you're interested in learning Haskell. Haskell was the first time I was exposed to FP proper,
+and all the abstractions built up with types and higher order functions --
+things like functors/applicative/monads, arrows, zippers, etc. What
+caught my interest was the way that Haskell programmers continue
+making abstractions until the actual problem to be solved appears
+syntactically trivial -- and relatedly, why the code of some Haskell projects
+are practically DSLs. But this post isn't about Haskell, and I don't think
+any of my friends from then had any love for lisp, but Haskell
+forever changed the way I wrote lisp (and all other languages too).
+
+** Some rambling
+One of the many magical things about lisp is that it's the *only*
+language that can claim to be truly multi-paradigm -- because it has
+minimal syntax. The more syntactical rules are baked into the language
+(like, for instance the way Python deals with generators), the more
+the language guides people into a certain idiomatic way of
+programming. Lisp on the other hand, is only a few macro expansions
+away from raw abstract syntax tree. This is what makes lisp so
+powerful in my eyes; it can implement a huge variety of ideas
+elegantly. Lisps can have GC or no GC, lazy eval or strict eval,
+object oriented systems, imperative [[https://www.lispworks.com/documentation/HyperSpec/Body/m_loop.htm#loop][loop]] facilities, [[https://github.com/coalton-lang/coalton][and even static
+types]]. All this power, is of course due to macros, which rewrite code
+at compile-time.
+
+For instance, the commonly used =when= macro from many languages
+adds a new syntactical construct:
+#+BEGIN_SRC scheme
+(define-macro (when cond exp . rest)
+  `(if ,cond
+       (begin ,exp . ,rest)))
+#+END_SRC
+Which lets you run any number of forms when a condition is true. This
+means you can write
+#+BEGIN_SRC scheme
+(when (at-war?)
+  (display "Lauching missiles!")
+  (display "Attack at dawn!"))
+#+END_SRC
+instead of
+#+BEGIN_SRC scheme
+(if (at-war?)
+    (begin
+      (display "Lauching missiles!")
+      (display "Attack at dawn!")))
+#+END_SRC
+Since the first one gets compiled to exactly the second one. Obivously
+this is a trivial (but useful!) example, but macros become more complex when code is
+generated /programmatically/ rather than just by mechanical
+substitution into a template. The =loop= macro from common lisp is a
+good example of another commonly used macro with a very complex
+implementation. In common lisp, a for loop can be written with the
+loop macro:
+#+BEGIN_SRC lisp
+(loop for i from 0 to 10 do (pprint i))
+#+END_SRC
+The loop macro has a [[https://cl-cookbook.sourceforge.net/loop.html][quite intricate natural-language syntax]].
+
+Of course, macros aren't unique to lisp by any means, but the degree
+of freedom and ease of definition of macros in lisp is due exactly to
+the homoiconicity; code is data, so manipulating code is just as easy
+as manipulating data! In other languages, like rust, c++, defining
+macros is limited, dangerous, difficult, and thus rarely done. In lisp, defining and
+using macros is natural. I will point out a notable exception to the
+"other languages" scope: Julia, which is remarkably close to the
+syntactic freedom one has with lisp -- the lisp influence is markedly
+clear in many aspects of that language: metaprogramming, multiple
+dispatch, flexible typing, repl interactivity, etc.
+
+Anyway, I become involved with the [[github.com/meow-edit/meow][meow]] project in my first year of
+college as well, and that marked my full immersion into elisp. My
+emacs config became filled with functional commands like those from
+=dash= and weird macros. This was really the point of no return for
+me, and I started writing much more lisp -- but ran into
+the classic issue: you're spoiled for choice. There are tons of
+different lisp dialects, some with tons of different
+implementations. I finally settled on [[https://github.com/janet-lang/janet][janet]] for scripting needs, it
+was small, fast, and had a convenient standard library. But after
+touring clojure, emacs lisp, common lisp, and scheme, I kept feeling
+like I was missing some feature from some language, or preferring some
+naming scheme that I was used to. This sparked [[https://github.com/eshrh/matsurika][matsurika]], a fork of
+janet with additional functions and macros wrapped up in the
+binary. Essentially, every helper or abstraction I wanted to write
+while actually solving a problem I'd generalize as best as possible
+and put it into the interpreter instead of that particular
+script. It's very powerful to be able to modify your interpreter as
+you go; and when you can do this freely knowing nobody will ever read
+your scripts, and nobody will ever use your fork, it leads to
+extremely concise and clean programs with a lot of hidden complexity.
+
+Some of the macros added to matsurika include:
+- =$=, which runs a shell command and returns the output -- very
+  useful to hack quickly, by using unix commands when convenient. For
+  example, getting python files in the current directory:
+  =(filter |(s-suffix? ".py" $) ($ ls))=
+- =cli=, a concise way to define a main function make the args accessible
+- =s+=, a string concatenation facility with constants in scope:
+   =(s+ qt "hello" s "world" qt nl)= to print ="hello world"\n= which
+- =awk=, which runs lisp forms on every line of a string/file that
+  matches a PEG (CFG-like grammar) -- ported from [[https://www.nongnu.org/txr/txr-manpage.html#N-179D63DE][TXR lisp's awk macro]]
+- =->>=, chains a sequence of computations by threading a value as the
+  last argument of each form... =(->> 5 (+ 1) (- 5) (* 100))= evals to
+  -100. However, it is sometimes convenient to change the arg order
+  for only one computation in the chain. In my version of the threaded
+  macro, prefixing a form with =*= reverses the order of the args. So,
+  =(->> 5 (+ 1) *(- 5) (* 100))= evals to 100. I am a big fan of these
+  threading macros, I used them first in Clojure, but find myself
+  wanting them everywhere. My favorite macro library is [[https://github.com/rplevy/swiss-arrows][swiss-arrows]],
+  which invents some new kinds of arrows with... rather odd
+  names. I ported several of them to matsurika and use them
+  surprisingly often. Actually, this is a good example of the
+  contrast between a lisp-enabled "abstraction by rewriting" approach
+  and a traditional fp "abstraction by higher order functions". =->>= can
+  be easily interpreted as =foldl const= over a list of partial
+  functions, or composing partial functions. This has effectively been turned
+  into a new convenient syntactical construct with a macro. Similarly,
+  the "Nil-shortcutting diamond wand" (??) from swiss-arrows, which
+  ends the chain early if any intermediate value is nil, is equivalent
+  to chaining =Maybe= computations with =>>== in Haskell.
+
+I've written a number of scripts that use reasonably often in
+janet/matsurika, and in general it's been fun. However, I don't think
+that choosing janet was the right choice in retrospect. This is for a
+number of reasons. First, janet (and by extension, clojure) is already
+too opinionated, and is not a good base to mold to your tastes. I like some of those opinions (for
+instance, the PEGs, the table syntax) but don't like some
+others. Second, the maintainance cost of having to hack on the janet
+source code, combined with the fact that since its forked i will need
+to periodically rebase to get the latest changes (with manual merge
+conflicts), turned out to be nontrivial. Finally, needing your own
+deranged binary to run your scripts is a bit awkward. One of Janet's
+biggest differentiators, and indeed a project goal is that it's small,
+written in C, has no dependencies, and is embeddable. My goals include
+only "small." Everything new in matsurika could easily have
+implemented as a library providing new macros and functions. In the
+near future, I plan to implement this for either r5rs scheme or
+racket. Racket seems particularly appealing, since it has explicit
+support for other lisp dialects using the =#lang= keyword. I do enjoy
+clojure as a language, but for mostly superficial reasons: it tends to
+encourage a stateless pure FP style, and the standard library is pretty
+good (batteries included). However, I'm not a huge fan of some of the
+modern clojureisms like the square brackets; one might argue that
+clojure is not a lisp at all because the code is not linked lists and
+there are no cons cells; one of the minimal specifications for a lisp
+according to the [[https://www-formal.stanford.edu/jmc/recursive.pdf][original paper]] by John McCarthy.
+
+* Other
+
+I graduated college in August 2024 -- and I'm now doing my Masters at
+the Institute of Science Tokyo (formerly Tokyo Tech). I love it here!
+I'm working on using using diffusion models with wireless data at
+[[https://nishio-laboratory.github.io/][Nlab]]. I'm living a lot slower than I did the last time I was here;
+there's not much local tourism left to do, and it feels normal rather than
+magical as it once did. I bike a lot around the city, and it's become
+one of my favorite hobbies.
+
+I've been using emacs for a long time now, but lately I've been
+keeping my on [[https://github.com/lem-project/lem][lem]]; I think it's a matter of time before I switch
+(probably after I port the core of meow to CL). I no longer believe as
+strongly as I once did in the future of emacs, but I do still feel
+that my current keybinding scheme on meow's editing model is really
+close to optimal for me. I'm sure that emacs and its religious users
+will continue to hack away underground long after the nukes fall and
+wipe out surface life, but there are fundamental flaws that need to be
+fixed:
+- emacs-lisp is really not that good
+- decades of cruft has led to bad performance
+  - [[https://200ok.ch/posts/2020-09-29_comprehensive_guide_on_handling_long_lines_in_emacs.html][the epic long lines problem]]
+  - single-threaded
+  - the epic GC hanging problem
+  - relatively slow start up time
+With a project of emacs age and popularity obviously there have been a
+number of attempts to hack it: GNU Emacs is itself a
+reimplementation for one (1984), Lucid emacs (late 80s), [[https://github.com/emacs-ng/emacs-ng][emacs-ng]],
+[[https://github.com/remacs/remacs][remacs]], [[https://github.com/commercial-emacs/commercial-emacs][commercial-emacs]], etc that I'm probably forgetting. I like
+lem mainly because it makes the step of finally ditching
+emacs lisp for common lisp. It's much better suited for developing
+editor packages, and cl compilers are more performant. I think of lem
+to emacs as perhaps neovim to vim; a tight, modern reimplementation
+that doesn't forget the culture and soul of the original project.
+
+No matter how much I wax about lisp, I write mainly python on a day to
+day basis. That's why the "soul" (as I like to call it) of the
+language/ecosystem and the experience of writing in lisp is so
+important to me; it's my reprieve. I've wasted more time than most
+readers could possibly imagine trying to convince people that lisp is
+the best programming language ever (true), literally goated (also
+true), [[https://youtu.be/HM1Zb3xmvMc][alien tech]] from
+the future (so timeless!), divinely inspired (it's said God came to
+JMC in his sleep) etc but it really doesn't matter. What matters is
+that writing lisp is truly fun! It's a joy to iterate and organically
+build up a solution, testing as you go in the repl, precisely
+manipulating the code with sophisticated tools (structural
+editing! paredit!). Lisp dialect tooling (especially CL, Schemes,
+Clojure) is blissful to use -- the very first language servers were
+for lisps! The monkey-wrench move-fast-break-things attitude
+encouraged by dynamically typed lisp combined with the patterns of
+interactivity, self-documentation, and hot-swappability is to me, at the
+very core of hacker culture. If you spend enough time with lisp, the
+parentheses fade out with the stars and you're left to admire the
+raw, pulsating heart of computation.
+
+As Stallman puts it:
+#+begin_quote
+The most powerful programming language is Lisp. If you don't know Lisp
+(or its variant, Scheme), you don't know what it means for a
+programming language to be powerful and elegant. Once you learn Lisp,
+you will see what is lacking in most other languages.
+#+end_quote
+
+=Y F = F (Y F)=

@@ -21,6 +21,8 @@ the standard texts in telecom certainly do a better job. I'll try to
 include a bare minimum here, and link to my wiki articles or other key
 sources when possible. [[https://notes.esrh.me/orthogonal_frequency_division_multiplexing.html][Start here]].
 
+*note: all code and flowgraphs shown here can be found in [[https://github.com/eshrh/ofdm_gr][this repo]]*
+
 ** High level introduction to the OFDM idea
 Orthogonal frequency division multiplexing is a multi-carrier scheme
 that's fairly widely used today, especially in WiFi and LTE.

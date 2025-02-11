@@ -6,7 +6,7 @@
   ($*
    (git add css files favicon.ico images pages posts
         publish.mts site.hs templates index.html
-        stack.yaml package.yaml nix)
+        package.yaml nix)
    (git commit -m "website update")
    (git push origin master))
 
