@@ -108,6 +108,18 @@ nav p a {
     }
 }
 
+.index-gif {
+    display:block;
+    margin:auto;
+    box-shadow: 4px 4px 8px 0 #2f6b8e;
+}
+
+@media screen and (max-width: 480px) {
+    .index-gif {
+        width:95%;
+    }
+}
+
 main {
     float: left;
     max-width: 60rem;
