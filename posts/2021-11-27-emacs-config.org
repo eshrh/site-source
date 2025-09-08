@@ -40,6 +40,7 @@ fork emacs packages on a somewhat regular basis.
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+(setq straight-built-in-pseudo-packages '(project))
 #+end_src
 
 straight-use-package is a bit of a keyful to type, especially interactively.
@@ -766,9 +767,6 @@ Toggles a window with a re-usable vterm. Good for reducing buffer clutter.
 #+END_SRC
 
 ** Org-mode
-#+BEGIN_SRC emacs-lisp
-(sup 'org)
-#+END_SRC
 
 Path configuration. I use a directory called org in my home directory to store
 my org files.
@@ -1338,6 +1336,11 @@ Some people will call this deranged. I don't care.
                 flycheck-mode
                 (setq c-basic-offset 4)
                 (setq tab-width 4))
+
+
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-to-hooks #'eglot-ensure 'tsx-ts-mode-hook)
+(setq js-indent-level 4)
 #+END_SRC
 
 * Other config and elisp

@@ -1,5 +1,6 @@
-A collection of quotes that I like, which doubles as a list of
-literature recommendations:
+The following is a collection of quotes that I like, which doubles as a list of
+literature recommendations. Each of these at one point featured on my
+home page; when I put a new one up I move the old one here.
 
 #+begin_quote
 裸の天の河は夜の大地を素肌で巻こうとして、すぐそこに降りて来ている。
@@ -36,7 +37,6 @@ meaning in the phrase /to live like men/.
     life is endless in the way that our visual field is without limit.
 
 #+BEGIN_export html
-<cite>L. Wittgenstein, Tractatus Logico-Philosophicus (6.4311)</cite>
+<cite>L. Wittgenstein (t. Ramsey), Tractatus Logico-Philosophicus (6.4311)</cite>
 #+END_export
 #+end_quote
-
