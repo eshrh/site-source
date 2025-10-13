@@ -15,6 +15,7 @@ file is updated by the website’s build script.
 Increase gc threshold. This is at the top of the file to ensure that
 it benfits startup time of stuff later on.
 #+BEGIN_SRC emacs-lisp
+;; -*- lexical-binding: t; -*-
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 (setq gc-cons-threshold 100000000)
 #+END_SRC

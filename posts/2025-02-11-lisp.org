@@ -43,19 +43,20 @@ compilers. I had briefly interacted with Haskell in high school, but
 hadn't ever written anything in it. Daniel and I learned Haskell again
 together in my first year, doing the [[https://mightybyte.github.io/monad-challenges/][monad challenges]] and a bunch of
 advent of code problems, although my main use for Haskell was for
-configuring Xmonad and Hakyll. Daniel was (and
-is) very good at functional programming, and these moments are fond
-memories to me. I remember particularly well getting badly stuck deriving
-=liftM2= while he cruised along ahead. I highly recommend that
-challenge set if you're interested in learning Haskell. Haskell was the first time I was exposed to FP proper,
-and all the abstractions built up with types and higher order functions --
-things like functors/applicative/monads, arrows, zippers, etc. What
-caught my interest was the way that Haskell programmers continue
-making abstractions until the actual problem to be solved appears
-syntactically trivial -- and relatedly, why the code of some Haskell projects
-are practically DSLs. But this post isn't about Haskell, and I don't think
-any of my friends from then had any love for lisp, but Haskell
-forever changed the way I wrote lisp (and all other languages too).
+configuring Xmonad and Hakyll. Daniel was (and is) very good at
+functional programming, and these moments are fond memories to me. I
+remember particularly well getting badly stuck deriving =liftM2= while
+he cruised along ahead. I highly recommend that challenge set if
+you're interested in learning Haskell. Haskell was the first time I
+was exposed to FP proper, and all the abstractions built up with types
+and higher order functions -- things like functors/applicative/monads,
+arrows, zippers, etc. What caught my interest was the way that Haskell
+programmers continue making abstractions until the actual problem to
+be solved appears syntactically trivial -- and relatedly, why the code
+of some Haskell projects are practically DSLs. But this post isn't
+about Haskell, and I don't think any of my friends from then had any
+love for lisp, but Haskell forever changed the way I wrote lisp (and
+all other languages too).
 
 ** Some rambling
 One of the many magical things about lisp is that it's the *only*
@@ -66,10 +67,9 @@ the language guides people into a certain idiomatic way of
 programming. Lisp on the other hand, is only a few macro expansions
 away from raw abstract syntax tree. This is what makes lisp so
 powerful in my eyes; it can implement a huge variety of ideas
-elegantly. Lisps can have GC or no GC, lazy eval or strict eval,
-object oriented systems, imperative [[https://www.lispworks.com/documentation/HyperSpec/Body/m_loop.htm#loop][loop]] facilities, [[https://github.com/coalton-lang/coalton][and even static
-types]]. All this power, is of course due to macros, which rewrite code
-at compile-time.
+elegantly. Macros enable features that require deep changes in other
+languages, like [[https://en.wikipedia.org/wiki/Common_Lisp_Object_System][object oriented systems]], [[https://clojure.org/guides/spec][runtime data validation]],
+[[https://clojure.github.io/core.async/walkthrough.html][async programming]], crazy [[https://www.lispworks.com/documentation/HyperSpec/Body/m_loop.htm#loop][loop]] facilities, and even [[https://github.com/coalton-lang/coalton][static types]].
 
 For instance, the commonly used =when= macro from many languages
 adds a new syntactical construct:
