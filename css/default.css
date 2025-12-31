@@ -173,6 +173,12 @@ a:visited {
     max-width: 90%;
 }
 
+figure img, .post-image {
+    display: block;
+    margin: auto;
+    max-width: 50%;
+}
+
 blockquote {
     border-left: 8px solid var(--acc2);
     margin: 1.5em 10px;

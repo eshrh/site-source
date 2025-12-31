@@ -250,19 +250,10 @@ computers to do repetitive stuff for us??
 #+END_SRC
 
 ** Fonts
-
-My default fonts. Iosevka Meiseki is a customized version of [[https://github.com/be5invis/iosevka][iosevka]]
-font. You can find a copy of it [[https://esrh.me/files/iosevka-meiseki-sans-regular.ttf][here]].
-
 #+BEGIN_SRC emacs-lisp
-(defvar emacs-english-font "monospace")
-(defvar emacs-cjk-font "IPAGothic")
-(setq my-font (concat emacs-english-font "-12"))
-
-(add-to-list 'default-frame-alist `(font . ,my-font))
-(set-face-attribute 'default t :font my-font)
+(add-to-list 'default-frame-alist '(font . "monospace-12"))
+(set-face-attribute 'default t :font "monospace-12")
 #+END_SRC
-
 ** Theme
 I've tried countless other themes, but somehow I just keep coming back
 to gruvbox. I switch between ~gruvbox-light-hard~ and ~gruvbox-dark-hard~
@@ -1069,26 +1060,29 @@ for most block based languages, but works like a charm for lisps.
 
 **** Smartparens
 #+BEGIN_SRC emacs-lisp
+(require 'smartparens-config)
 (smartparens-global-mode)
-#+END_SRC
-
-Define a function to disable auto quote-completion. This is
-annoying in lisplike languages.
-
-#+BEGIN_SRC emacs-lisp
-(defun sp-disable (mode str)
-  (sp-local-pair mode str nil :actions nil))
-#+END_SRC
-
-Disable single quote pairing in lisp-data modes
-#+BEGIN_SRC emacs-lisp
-(sp-disable 'lisp-data-mode "'")
 #+END_SRC
 
 **** Racket
 #+BEGIN_SRC emacs-lisp
-(sup 'racket-mode)
-(sup 'scribble-mode)
+(sup 'racket-mode 'scribble-mode)
+(sup 'geiser-racket)
+#+END_SRC
+
+I use [[https://docs.racket-lang.org/qi/index.html][qi]], a dsl for piping. This introduces several new syntactical
+constructs I use frequently:
+
+#+BEGIN_SRC emacs-lisp
+(put 'switch 'racket-indent-function 1)
+(put 'switch-lambda 'racket-indent-function 1)
+(put 'on 'racket-indent-function 1)
+(put 'π 'racket-indent-function 1)
+(put 'try 'racket-indent-function 1)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(add-fs-to-hook 'racket-mode-hook aggressive-indent-mode rainbow-delimiters-mode)
 #+END_SRC
 
 **** Clojure
@@ -1096,18 +1090,14 @@ Cider is really good
 #+BEGIN_SRC emacs-lisp
 (sup 'clojure-mode)
 (sup 'cider)
-(sp-disable 'clojure-mode "'")
 #+END_SRC
 
 **** Elisp
 #+BEGIN_SRC emacs-lisp
 (sup 'elisp-format)
 (setq elisp-format-column 80)
-(sp-disable 'emacs-lisp-mode "'")
-(sp-disable 'emacs-lisp-mode "`")
-(sp-disable 'org-mode "'")
-#+END_SRC
-
+#+END_SR
+C
 *** TeX
 AuCTeX offers a lot of sweet features that I’ve come to take for granted
 #+BEGIN_SRC emacs-lisp
@@ -1342,6 +1332,9 @@ Some people will call this deranged. I don't care.
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
 (add-to-hooks #'eglot-ensure 'tsx-ts-mode-hook)
 (setq js-indent-level 4)
+
+(sup 'fstar-mode)
+(setq-default fstar-executable "fstar")
 #+END_SRC
 
 * Other config and elisp
