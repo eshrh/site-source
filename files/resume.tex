@@ -1,0 +1,96 @@
+\documentclass[11pt, a4paper, sans]{moderncv}
+\usepackage[utf8]{inputenc}
+\usepackage[top=2cm, bottom=2cm]{geometry}
+\usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage{CJKutf8}
+\moderncvtheme{classic}
+\moderncvcolor{cerulean}
+
+\firstname{Eshan}
+\familyname{Ramesh}
+
+\email{esrh@esrh.me}
+\homepage{esrh.me}
+
+\renewcommand{\emailsymbol}{}
+\renewcommand{\homepagesymbol}{}
+
+\AtBeginDocument{
+  \hypersetup{
+    breaklinks=false,
+    baseurl={https://},
+    pdfborder={0 0 1},
+    allbordercolors={color1},
+  }
+}
+
+\begin{document}
+\makecvtitle
+
+\section{Education}
+\cventry{2024-Present}{M.S Information and Communications Engineering}
+{Tokyo Institute of Technology}{Tokyo, Japan} {}{}
+
+\cventry{2021-2024 [2yr]}{B.S Computer Science}
+{Georgia Institute of Technology}{Atlanta, GA} {
+  Specialization in AI and CS theory
+}{}
+
+\section{Experience}
+\cventry{2024-Present}{Research Assistant}{Nishio Laboratory}{Tokyo,
+  Japan}{} {
+  Generating camera images from WiFi CSI. Developed a new fast
+  latent-space method, and built a practical, scalable, distributed
+  prototype.\\
+  \textbf{[Linux WiFi firmware/networking, Rust, Python ML]}
+  \begin{itemize}
+    \item High-resolution efficient image generation from
+      WiFi CSI using a pretrained latent diffusion model
+      \href{https://esrh.me/files/pub3.pdf}{(IEEE Globecom
+      2025/11)}
+    \item LatentCSI demo proposal
+      \href{https://esrh.me/files/pub4_demo.pdf}{(ACM Mobicom 2025/12)}
+  \end{itemize}
+}
+
+\cventry{2022-2023}{Intern}
+{NTT Network Innovation lab \begin{CJK}{UTF8}{ipxm}(未来ねっと研究所)
+  \end{CJK}}
+{Yokosuka, Japan}{}{
+  Utilized physical information to make inferences about wireless
+  conditions with machine learning. Worked on an automatic data generation
+  testbed with moving humanoid robots carrying commerical 5G terminals. \\
+  \textbf{[Panasonic 5G, ROS (Lisp; Python), LiDAR, Python ML]}
+  \begin{itemize}
+    \item 5G throughput prediction using LiDAR
+      \href{https://esrh.me/files/pub1.pdf}{(IEICE SeMI 2023/5)}
+    \item 5G throughput
+      prediction in 28GHz cells using physical information
+      \href{https://esrh.me/files/pub2.pdf}{(Japanese; IEICE SeMI 2023/7)}
+  \end{itemize}
+}
+
+\cventry{2021-2022}{Research Assistant}
+{Communications architectures group}{Atlanta, GA}{}{
+  Worked on single-access-point active localization with software
+  defined radio. Low level radio hacking. Work sponsored by NSF.\\
+\textbf{[GNUradio (C++), NI USRP, Python ML]}}
+
+\subsection{Projects {\small \href{https://github.com/eshrh}{\texttt{[gh:eshrh]}}}}
+
+\cvline{\httplink[inori]{https://github.com/eshrh/inori}}
+{TUI music player [Rust, 80 stars]}
+
+\cvline{\httplink[ames]{https://github.com/eshrh/ames}}
+{Generates audiovisual context for spaced-repetition flashcards automatically. [POSIX shell, 70 stars]}
+
+\section{Computer skills}
+\cvline{Languages}{\textbf{Python, Shell, Lisp dialects (Clojure, Common Lisp, Racket), C++}}
+\cvline{Technology}{\textbf{GNU/Linux, SDR, Git, \LaTeX, Emacs}}
+
+\section{Natural Languages}
+\cvlanguage{Native}{English \cvskill{5}}{}
+\cvlanguage{Proficient}{Japanese \cvskill{4}, Kannada \cvskill {3}}{}
+\cvlanguage{Basic}{Mandarin \cvskill{1}, French \cvskill{1}}{}
+\end{document}
