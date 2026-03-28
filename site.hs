@@ -5,6 +5,7 @@ import Control.Monad (mapM_, when)
 import Data.Functor
 import Data.Functor.Identity (runIdentity)
 import Data.List (isPrefixOf)
+import Data.Maybe (mapMaybe)
 import Data.Monoid (mappend)
 import Data.Text (Text)
 import Data.Set (insert)
@@ -13,13 +14,26 @@ import Hakyll
 import Hakyll.Web.Html (demoteHeaders)
 import Skylighting (styleToCss, monochrome)
 import Skylighting.Styles
+import Data.Time
+  ( Day
+  , UTCTime(..)
+  , ZonedTime
+  , defaultTimeLocale
+  , formatTime
+  , getCurrentTime
+  , hoursToTimeZone
+  , parseTimeM
+  , secondsToDiffTime
+  , utcToZonedTime
+  )
 import System.Directory
   ( copyFile
   , getHomeDirectory
   , doesFileExist
   , createDirectoryIfMissing
+  , listDirectory
   )
-import System.FilePath (FilePath, joinPath)
+import System.FilePath (FilePath, joinPath, takeBaseName, takeExtension)
 import System.Posix.Internals (newFilePath)
 
 import Text.Pandoc.Definition
@@ -80,8 +94,63 @@ syncOne home item = do
   exists <- doesFileExist path
   when exists (copyFile path (last item))
 
+formatIsoWithColon :: ZonedTime -> String
+formatIsoWithColon zt =
+  let raw = formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%S%z" zt
+   in if length raw > 2
+        then take (length raw - 2) raw <> ":" <> drop (length raw - 2) raw
+        else raw
+
+parsePostDay :: FilePath -> Maybe Day
+parsePostDay path =
+  parseTimeM True defaultTimeLocale "%Y-%m-%d" (take 10 (takeBaseName path))
+
+latestPostTime :: IO (Maybe UTCTime)
+latestPostTime = do
+  files <- listDirectory "posts"
+  let candidates =
+        filter
+          (\path -> takeExtension path == ".org" || takeExtension path == ".md")
+          files
+  let days = mapMaybe parsePostDay candidates
+  case days of
+    [] -> return Nothing
+    _ -> return $ Just $ UTCTime (maximum days) (secondsToDiffTime 0)
+
+pageTitleField :: Context String
+pageTitleField = field "pageTitle" $ \item -> do
+  metadata <- getMetadata (itemIdentifier item)
+  case lookupString "title" metadata of
+    Just title -> return title
+    Nothing ->
+      return $ takeBaseName $ toFilePath $ itemIdentifier item
+
+statusCtx :: Context String
+statusCtx =
+  field "lastPostIso" (\_ -> unsafeCompiler $ do
+    latest <- latestPostTime
+    case latest of
+      Just utc -> do
+        let jst = utcToZonedTime (hoursToTimeZone 9) utc
+        return $ formatIsoWithColon jst
+      Nothing -> return ""
+  )
+    <> field "syncIso" (\_ -> unsafeCompiler $ do
+      now <- getCurrentTime
+      let jst = utcToZonedTime (hoursToTimeZone 9) now
+      return $ formatIsoWithColon jst
+    )
+
 postCtx :: Context String
-postCtx = dateField "date" "%Y / %m / %d" <> defaultContext
+postCtx =
+  dateField "date" "%Y-%m-%d"
+    <> pageTitleField
+    <> statusCtx
+    <> constField "relay" "SLAVE"
+    <> defaultContext
+
+siteCtx :: Context String
+siteCtx = pageTitleField <> statusCtx <> constField "relay" "MASTER" <> defaultContext
 
 main :: IO ()
 main = do
@@ -94,28 +163,25 @@ main = do
   writeFile "_site/css/syntax.css" $ styleToCss pandocCodeStyle
 
   hakyll $ do
-    match "images/*" $ do
+    match "images/**" $ do
       route idRoute
       compile copyFileCompiler
 
-    match "favicon.ico" $ do
+    match "favicon.svg" $ do
       route idRoute
       compile copyFileCompiler
 
     match "css/*" $ do
       route idRoute
-      compile compressCssCompiler
+      compile copyFileCompiler
+
+    match "js/*" $ do
+      route idRoute
+      compile copyFileCompiler
 
     match "files/*" $ do
       route idRoute
       compile copyFileCompiler
-
-    match "pages/*" $ do
-      route $ setExtension "html"
-      compile $
-        pandocCompiler
-          >>= loadAndApplyTemplate "templates/default.html" defaultContext
-          >>= relativizeUrls
 
     match "posts/*" $ do
       route $ setExtension "html"
@@ -126,6 +192,13 @@ main = do
           >>= loadAndApplyTemplate "templates/default.html" postCtx
           >>= relativizeUrls
 
+    match "pages/*" $ do
+      route $ setExtension "html"
+      compile $
+        pandocCompilerWithOpts
+          >>= loadAndApplyTemplate "templates/default.html" siteCtx
+          >>= relativizeUrls
+
     create ["archive.html"] $ do
       route $ constRoute "pages/archive.html"
       compile $ do
@@ -133,7 +206,9 @@ main = do
         let archiveCtx =
               listField "posts" postCtx (return posts)
                 <> constField "title" "archives"
-                <> defaultContext
+                <> constField "pageTitle" "archives"
+                <> constField "relay" "ARCHIVE"
+                <> siteCtx
 
         makeItem ""
           >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
@@ -143,10 +218,12 @@ main = do
     match "index.html" $ do
       route idRoute
       compile $ do
-        posts <- recentFirst =<< loadAll "posts/*"
+        posts <- fmap (take 5) . recentFirst =<< loadAll "posts/*"
         let indexCtx =
               listField "posts" postCtx (return posts)
-                <> defaultContext
+                <> constField "isIndex" "true"
+                <> constField "relay" "MASTER"
+                <> siteCtx
 
         getResourceBody
           >>= applyAsTemplate indexCtx
@@ -175,8 +252,8 @@ main = do
             feedConfig =
               FeedConfiguration
               { feedTitle       = "esrh.me"
-              , feedAuthorEmail = "esrh@gatech.edu"
+              , feedAuthorEmail = "esrh@esrh.me"
               , feedRoot        = "https://esrh.me"
-              , feedDescription = "my blog!"
+              , feedDescription = "esrh blog feed"
               , feedAuthorName = "Eshan Ramesh"
               }

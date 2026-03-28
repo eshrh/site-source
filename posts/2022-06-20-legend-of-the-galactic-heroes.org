@@ -33,12 +33,12 @@ switches to a more modern, flat-ish style, that I assume is due to
 either different art directors or different animation contracting.
 
 #+attr_html: :width 300px
-[[../images/reinhart_100.jpg]]
+[[../images/logh/reinhart_100.jpg]]
 
 Reinhart from episode 100, /Hoch Kaiserin!/.
 
 #+attr_html: :width 300px
-[[../images/reinhart_110.jpg]]
+[[../images/logh/reinhart_110.jpg]]
 
 Reinhart from episode 110, /夢, 見果てたり/ (/Seeing a dream through
 the end/)
@@ -57,10 +57,10 @@ of absolutely immense scale of these literally galactic battles while
 never losing focus on the individual ship, and the individual soldier.
 
 #+attr_html: :width 300px
-[[../images/logh_ship.jpg]]
+[[../images/logh/logh_ship.jpg]]
 
 #+attr_html: :width 300px
-[[../images/logh_intestine.jpg]]
+[[../images/logh/logh_intestine.jpg]]
 
 2D ships being blown up has never looked this good. Shots of hundreds
 of thousands of ship are balanced well by shots of the people
@@ -89,7 +89,7 @@ Alliance cities also look modern, with tall spires, glass,
 and metropolitan design.
 
 #+attr_html: :width 300px
-[[../images/logh_alliance_city.jpg]]
+[[../images/logh/logh_alliance_city.jpg]]
 
 What I love about the design is it's consistency and depth. These
 choices aren't skin deep, they pervade the interior of buildings when
@@ -99,7 +99,7 @@ and feel incredibly real in a way that setting has never felt real to
 me in anime before.
 
 #+attr_html: :width 300px
-[[../images/logh_alliance.jpg]]
+[[../images/logh/logh_alliance.jpg]]
 
 I find the ship interiors to be particularly special in this
 respect. They're so remarkably unique that the perspective switching
@@ -115,10 +115,10 @@ episodes.
 I struggle to do it justice with just screenshots.
 
 #+attr_html: :width 300px
-[[../images/logh_empire_palace.jpg]]
+[[../images/logh/logh_empire_palace.jpg]]
 
 #+attr_html: :width 300px
-[[../images/logh_empire_interior.jpg]]
+[[../images/logh/logh_empire_interior.jpg]]
 
 Of course the ships, uniforms, and ship interiors also match. It's
 hard to capture in screenshots specifically because what's so special

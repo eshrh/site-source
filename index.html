@@ -1,21 +1,40 @@
-<a class="quote-page-link" href="./pages/quotes.html">
-
-<blockquote>
-<!-- Never is a person, or a deed, purely Sansara or purely Nirvana, never -->
-<!-- is a person utterly holy or utterly sinful. It only seems so because -->
-<!-- we are subject to the illusion that time exists as something real. -->
-Time is not real, Govinda. I have experienced this again and
-again. And if time is not real, then the distance that appears to lie
-between world and eternity, between suffering and bliss, between evil
-and good, is also an illusion.
-<cite>H. Hesse (t. Bernofsky), Siddhartha</cite>
-</blockquote
-</a>
-
-<br>
-<img src="/images/train_cherry_opt.gif" alt="train gif by @1041uuu"
-     class="index-gif">
-
-<h2>posts <a href="./feed">[rss]</a></h2>
-
-$partial("templates/post-list.html")$
+<section class="contact-block fields">
+  <span class="field">
+    <span class="field-label">email</span>
+    <span class="field-value">
+      esrh@esrh.me
+      <span class="fingerprint">
+        [<a class="link-secondary" href="/files/pub.asc">0xE4CEB0F0B2EC09A39678F294CC7A7E3C6CF31343</a>]
+      </span>
+    </span>
+  </span>
+</section>
+<section class="signal-panel">
+  <div class="signal-meter-frame">
+    <svg
+      id="signal-meter-svg"
+      class="signal-meter-svg"
+      viewBox="0 140 600 220"
+      role="img"
+    ></svg>
+  </div>
+</section>
+<section>
+  <h2 class="aberrate">transmission log <a href="./feed">[feed]</a></h2>
+  <div class="tx-meta fields">
+    <span class="field">
+      <span class="field-label">BAND</span><span class="field-value">20M</span>
+    </span>
+    <span class="field">
+      <span class="field-label">MODE</span><span class="field-value">PSK31</span>
+    </span>
+    <span class="field">
+      <span class="field-label">ENCRYPTION</span><span class="field-value">NONE</span>
+    </span>
+  </div>
+  $partial("templates/post-list.html")$
+</section>
+<p class="index-bottom-link">
+  <a href="/pages/archive.html">>> archive</a>
+</p>
+<script src="/js/smeter.js"></script>

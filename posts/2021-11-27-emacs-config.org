@@ -240,6 +240,11 @@ position of the outside of the paren.  Otherwise return nil."
 (add-hook 'prog-mode #'rainbow-mode)
 #+END_SRC
 
+** Auto-revert prog modes
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode #'auto-revert-mode)
+#+END_SRC
+
 ** Auto whitespace cleanup
 Couldn't be bothered to care about whitespace myself. Didn't we make
 computers to do repetitive stuff for us??
@@ -1065,9 +1070,17 @@ for most block based languages, but works like a charm for lisps.
 #+END_SRC
 
 **** Racket
+for some reason, racket-mode is not loaded automatically... need to investigate.
 #+BEGIN_SRC emacs-lisp
-(sup 'racket-mode 'scribble-mode)
-(sup 'geiser-racket)
+(use-package racket-mode
+  :straight t)
+
+(add-fs-to-hook 'racket-mode-hook rainbow-delimiters-mode aggressive-indent-mode)
+(when (executable-find "racket")
+  (add-fs-to-hook 'racket-mode-hook racket-xp-mode))
+
+(use-package scribble-mode
+  :straight t)
 #+END_SRC
 
 I use [[https://docs.racket-lang.org/qi/index.html][qi]], a dsl for piping. This introduces several new syntactical
@@ -1079,10 +1092,16 @@ constructs I use frequently:
 (put 'on 'racket-indent-function 1)
 (put 'π 'racket-indent-function 1)
 (put 'try 'racket-indent-function 1)
-#+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-(add-fs-to-hook 'racket-mode-hook aggressive-indent-mode rainbow-delimiters-mode)
+(require 'quail)
+(quail-define-package
+ "racket-qi" "English" "QI" nil
+ "qi symbols"
+ nil t t t t nil nil nil nil nil t)
+
+(quail-define-rules
+ ("\\>" "~>")
+ ("\\q" ?☯))
 #+END_SRC
 
 **** Clojure

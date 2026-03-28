@@ -1,0 +1,42 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.35.2.
+--
+-- see: https://github.com/sol/hpack
+
+name:           site
+version:        0.1
+synopsis:       esrh's site
+author:         esrh
+maintainer:     esrh@gatech.edu
+license:        GPL-3
+build-type:     Simple
+
+executable site
+  main-is: site.hs
+  other-modules:
+      Paths_site
+  hs-source-dirs:
+      ./
+  ghc-options: -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , blaze-html
+    , bytestring
+    , containers
+    , directory
+    , filepath
+    , hakyll
+    , hakyll-sass
+    , language-javascript
+    , lens
+    , pandoc
+    , pandoc-types
+    , pretty-terminal
+    , skylighting
+    , skylighting-core
+    , split
+    , text
+    , time
+    , xml
+  default-language: Haskell2010

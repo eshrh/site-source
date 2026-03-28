@@ -42,7 +42,7 @@ The following is a mostly faithful reconstruction of the transmission
 scheme given in =gr-digital-python/digital/ofdm_txrx.py=.
 #+attr_html: :width 100%
 #+attr_latex: :width \textwidth
-[[../images/ofdm_tx.png]]
+[[../images/ofdm/ofdm_tx.png]]
 
 For the sake of the narrative, we'll take it step by step and
 introduce the parameters to each block as we get there.
@@ -356,7 +356,7 @@ of the OFDM chain.
 
 #+attr_html: :width 100%
 #+attr_latex: :width \textwidth
-[[../images/ofdm_frequency.png]]
+[[../images/ofdm/ofdm_frequency.png]]
 
 We can clearly see the side lobes due to null subcarriers.
 * Reception
@@ -365,7 +365,7 @@ complicated than the transmitter.
 
 #+attr_html: :width 100%
 #+attr_latex: :width \textwidth
-[[../images/ofdm_rx.png]]
+[[../images/ofdm/ofdm_rx.png]]
 ** Schmidl & Cox
 The first step in decoding an OFDM burst is to figure out when it
 starts. This block uses the strategy given by Schmidl & Cox in their
@@ -401,7 +401,7 @@ this.
 
 #+attr_html: :width 100%
 #+attr_latex: :width \textwidth
-[[../images/ofdm_sc.png]]
+[[../images/ofdm/ofdm_sc.png]]
 
 You can observe a graph showing autocorrelation peaks like the above
 by defining the flag =SYNC_ADD_DEBUG_OUTPUT= in the source file

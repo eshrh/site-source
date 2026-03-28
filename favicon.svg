@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#0b0c0a"/>
+
+  <line x1="8" y1="32" x2="56" y2="32"
+        stroke="hsl(43 100% 50%)"
+        stroke-width="1"
+        opacity="0.3"
+        shape-rendering="crispEdges"/>
+
+  <polyline
+    points="
+      8,32
+      14,20
+      20,16
+      26,24
+      32,32
+      38,40
+      44,48
+      50,44
+      56,32
+    "
+    fill="none"
+    stroke="hsl(43 100% 50%)"
+    stroke-width="2"
+    stroke-linecap="square"
+    stroke-linejoin="miter"/>
+</svg>

@@ -1,45 +1,128 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>eshan ramesh</title>
-        <link rel="stylesheet" href="/css/default.css" />
-        <link rel="stylesheet" href="/css/syntax.css" />
-    </head>
-    <body>
-     <nav class="desktop-nav">
-        <div class="logo">
-          <a href="/">eshan <br> ramesh</a>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>eshan ramesh</title>
+    <link rel="stylesheet" href="/css/default.css" />
+    <link rel="stylesheet" href="/css/syntax.css" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="crt crt-flicker-smooth">
+    <div class="screen-shell">
+      <div class="glyph-vertical glyph-vertical-top">一卽一切</div>
+      <div class="glyph-vertical glyph-vertical-bottom">一切卽一</div>
+      <div class="screen">
+        <div class="screen-content">
+          <header>
+            $if(isIndex)$
+            <h1 class="aberrate">eshan ramesh</h1>
+            $else$
+            <h1 class="aberrate">$pageTitle$</h1>
+            <p class="back-link"><a href="/"><< RESET</a></p>
+            $endif$
+          </header>
+          $body$
         </div>
-        <a href="/">index</a><br>
-        <a href="/pages/about.html">about</a><br>
-        <a href="/pages/contact.html">contact</a><br>
-        <a href="https://notes.esrh.me">wiki</a><br>
-        <a href="https://photos.esrh.me">film</a><br>
-        <p>
-          github: <a href="https://github.com/eshrh">eshrh</a>
-        </p>
-      </nav>
+      </div>
+      <div
+        class="status-strip fields"
+        data-last-post="$lastPostIso$"
+        data-sync="$syncIso$"
+      >
+        <span class="field field-time"
+          ><span class="field-label">TOKYO</span
+          ><span class="field-value"
+            ><span id="status-jst">--:--</span>
+            <span class="tz-note">utc+9</span></span
+          ></span
+        >
+        <span class="field field-since"
+          ><span class="field-label">since last tx</span
+          ><span class="field-value" id="status-since">--</span></span
+        >
+        <span class="field field-scan"
+          ><span class="field-label">scan</span
+          ><span class="field-value" id="status-scan">--</span></span
+        >
+        <span class="field field-relay"
+          ><span class="field-label">relay</span
+          ><span class="field-value"
+            ><a class="relay-link" href="https://tilde.town/~esrh"
+              >$relay$</a
+            ></span
+          ></span
+        >
+        <span class="field field-sync"
+          ><span class="field-label">sync</span
+          ><span class="field-value" id="status-sync">--</span></span
+        >
+      </div>
+    </div>
+    <script>
+      const pad = (value) => String(value).padStart(2, "0");
+      const strip = document.querySelector(".status-strip");
+      const lastPost = new Date(strip.dataset.lastPost);
+      const sync = new Date(strip.dataset.sync);
+      const jstEl = document.getElementById("status-jst");
+      const sinceEl = document.getElementById("status-since");
+      const scanEl = document.getElementById("status-scan");
+      const syncEl = document.getElementById("status-sync");
+      const scroller = document.querySelector(".screen-content");
 
-     <nav class="mobile-nav">
-        <div class="logo">
-          <a href="/">eshan ramesh</a>
-        </div>
-        <a href="/">index</a>
-        <a href="/pages/about.html">about</a>
-        <a href="/pages/contact.html">contact</a>
-        <a href="https://notes.esrh.me">wiki</a>
-        <a href="https://photos.esrh.me">film</a>
-        <p>
-          github: <a href="https://github.com/eshrh">eshrh</a>
-        </p>
-      </nav>
+      const formatClock = (date) =>
+        pad(date.getHours()) + ":" + pad(date.getMinutes());
+      const formatUptime = (ms) => {
+        const total = Math.max(0, Math.floor(ms / 1000));
+        const days = Math.floor(total / 86400);
+        const hours = Math.floor((total % 86400) / 3600);
+        const mins = Math.floor((total % 3600) / 60);
+        if (days > 0) return days + "d " + pad(hours) + "h";
+        return hours + "h " + pad(mins) + "m";
+      };
 
-     <main role="main">
-       <h1>$title$</h1>
-       $body$
-     </main>
-    </body>
+      const updateTime = () => {
+        const now = new Date();
+        jstEl.textContent = formatClock(
+          new Date(now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" })),
+        );
+        sinceEl.textContent = formatUptime(now - lastPost);
+        syncEl.textContent =
+          sync.getFullYear() +
+          "-" +
+          pad(sync.getMonth() + 1) +
+          "-" +
+          pad(sync.getDate());
+      };
+
+      const getScrollState = () => {
+        if (scroller && scroller.scrollHeight > scroller.clientHeight) {
+          const max = scroller.scrollHeight - scroller.clientHeight;
+          return { max, offset: scroller.scrollTop };
+        }
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        return { max, offset: window.scrollY };
+      };
+
+      const updateScan = () => {
+        const { max, offset } = getScrollState();
+        const pct = max > 0 ? Math.round((offset / max) * 100) : 0;
+        scanEl.textContent = pct + "%";
+      };
+
+
+      updateTime();
+      updateScan();
+      setInterval(updateTime, 1000);
+      window.addEventListener("resize", () => {
+        updateScan();
+      });
+      if (scroller) {
+        scroller.addEventListener("scroll", updateScan);
+      } else {
+        window.addEventListener("scroll", updateScan);
+      }
+    </script>
+  </body>
 </html>

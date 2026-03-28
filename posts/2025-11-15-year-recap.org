@@ -21,7 +21,7 @@ Kaidou and the rest just around Tokyo and Yokohama. I bought my bike
 off ジモティー, a second-hand sales website, late last year:
 
 #+ATTR_HTML: :class post-image
-[[../images/2025_bike2.jpg]]
+[[../images/2025/2025_bike2.jpg]]
 
 It cost me about $350 as pictured, which was probably too high with
 all things said, but I immediately fell in love with the look of the
@@ -37,7 +37,7 @@ all-ultegra drivetrain (including the chain!) later, it looks
 something like this:
 
 #+ATTR_HTML: :class post-image
-[[../images/2025_bike1.jpg]]
+[[../images/2025/2025_bike1.jpg]]
 
 I feel like bicycles are simultaneously magical and intricate but also
 surprisingly foolproof and operationally obvious. I find this balance
@@ -98,13 +98,13 @@ The campus and my office though, are really awesome. In the spring,
 the pathway to the main building is flanked by cherry blossom trees:
 
 #+ATTR_HTML: :class post-image
-[[../images/2025_sakura.jpg]]
+[[../images/2025/2025_sakura.jpg]]
 
 And in the fall, the main road is covered in yellow gingko leaves
 (let's not talk about the rotting fruit):
 
 #+ATTR_HTML: :class post-image
-[[../images/2025_ichou.jpg]]
+[[../images/2025/2025_ichou.jpg]]
 
 (My office is just off to the right).
 
@@ -202,7 +202,7 @@ wise was definitely the venue, the [[https://en.wikipedia.org/wiki/Kyoto_Interna
 Center]]. This building is extraordinarily striking:
 
 #+ATTR_HTML: :class post-image
-[[../images/2025_kicc.jpg]]
+[[../images/2025/2025_kicc.jpg]]
 
 It's designed in such a way that there are very few vertical lines at
 all, and no vertical supporting columns. The famous Kyoto Protocol was
@@ -217,7 +217,7 @@ food and a really spectacular view of the Hong Kong island skyline:
 
 
 #+CAPTION: Carlsberg at the conference reception
-[[../images/2025_hotel.jpg]]
+[[../images/2025/2025_hotel.jpg]]
 
 I presented a demo of our real-time implementation of LatentCSI. I met
 some very interesting people, students and professors alike. The final
@@ -296,7 +296,7 @@ The main thing I missed was probably Yangmingshan park, with its
 grasslands, cows, and hilly hiking routes:
 
 #+CAPTION: Yangmingshan grasslands (entrance)
-[[../images/2025_yangmingshan.jpg]]
+[[../images/2025/2025_yangmingshan.jpg]]
 
 In the same area I missed doing the hot springs at Beitou, but I did
 get a chance to see the very cool old Xinbeitou train station. The
@@ -306,7 +306,7 @@ restaurants and food stalls. I absolutely love the kind of congyoubing
 ask for an egg and extra spicy sauce.
 
 #+CAPTION: Congyoubing
-[[../images/2025_congyoubing.jpg]]
+[[../images/2025/2025_congyoubing.jpg]]
 
 When it's done right, it's incredibly flaky on the outside but soft
 and chewy on the inside. My other top choice of street food is
@@ -327,10 +327,10 @@ ideal, the views from the gondola and the Taiwanese tea we shared at
 the top were both fantastic.
 
 #+CAPTION: Maokong gondola view, Taipei 101 barely visible on the right
-[[../images/2025_maokong.jpg]]
+[[../images/2025/2025_maokong.jpg]]
 
 #+CAPTION: Tea and sweets (maybe a bit overboard for 3 guys)
-[[../images/2025_cha.jpg]]
+[[../images/2025/2025_cha.jpg]]
 
 * Looking forward
 With that, I think I've covered my 2025 in fairly large strokes.  When

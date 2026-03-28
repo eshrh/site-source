@@ -13,7 +13,7 @@ learned some valuable things other than a lot of Japanese words.
 
 * Timeline
 ** 2020
-[[../images/anki-2020.png]]
+[[../images/anki/anki-2020.png]]
 
 I first found out about Anki and the spaced repetition idea around
 March of 2020. To be honest though, I was still really toying around
@@ -62,7 +62,7 @@ finished earlier to be infinitely mature, and began starting at 2000,
 and continued until 2021.
 
 ** 2021
-[[../images/anki-2021.png]]
+[[../images/anki/anki-2021.png]]
 
 Unfortunately, I broke my streak right at the new year by getting
 really into the Witcher 3. I still love the game, but at the time I
@@ -126,7 +126,7 @@ for a while. In December, I began the whole process anew, with
 Mandarin using a HSK Chinese vocab deck.
 
 ** 2022
-[[../images/anki-2022.png]]
+[[../images/anki/anki-2022.png]]
 
 I feel that using Anki for Mandarin for the first time was decidedly
 easier than using it for Japanese back in 2020. I think this
@@ -138,11 +138,11 @@ symbols. This is helped a lot by the fact that I'm currently
 memorizing traditional characters rather than simplified ones.
 
 * Statistics
-[[../images/anki-card-pie.png]]
+[[../images/anki/anki-card-pie.png]]
 
-[[../images/anki-reviews.png]]
+[[../images/anki/anki-reviews.png]]
 
-[[../images/anki-review-time.png]]
+[[../images/anki/anki-review-time.png]]
 
 + Total young+mature cards :: 11892
 + Total reviews :: 158,334
