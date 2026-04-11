@@ -57,6 +57,7 @@ body {
 .crt {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
   animation: scanline 10s infinite linear;
 }
@@ -887,6 +888,7 @@ blockquote {
     width: 100%;
     height: auto;
     min-height: calc(100vh - 1.5rem);
+    min-height: calc(100dvh - 1.5rem);
   }
 
   .screen-shell {
@@ -975,6 +977,6 @@ blockquote {
   }
 
   .heading-inline-link {
-    font-size: 0.7em;
+    font-size: 0.65em;
   }
 }
