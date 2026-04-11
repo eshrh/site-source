@@ -79,7 +79,7 @@ body {
   pointer-events: none;
   position: fixed;
   inset: 0;
-  z-index: 10;
+  z-index: 999;
   background:
     radial-gradient(
       ellipse at center,
@@ -92,7 +92,6 @@ body {
       hsl(0 0% 0% / 0) 2px,
       var(--scanline) 3px
     );
-  mix-blend-mode: multiply;
   opacity: 0.9;
 }
 
@@ -873,8 +872,8 @@ blockquote {
 @media (max-width: 800px) {
   html,
   body {
-    align-items: flex-start;
-    justify-content: flex-start;
+    display: block;
+    height: auto;
     overflow-x: hidden;
     overflow-y: auto;
   }
@@ -892,8 +891,8 @@ blockquote {
   }
 
   .screen-shell {
-    width: calc(100% - 1.5rem);
-    margin: 0.75rem;
+    width: calc(100% - 1rem);
+    margin: 0.5rem;
   }
 
   .screen-content {
@@ -964,7 +963,6 @@ blockquote {
 
   .fingerprint {
     display: inline;
-    font-size: 0.65rem;
     line-height: 1.35;
   }
 
@@ -974,9 +972,10 @@ blockquote {
 
   .fingerprint-short {
     display: inline;
+    font-size: 0.6rem;
   }
 
   .heading-inline-link {
-    font-size: 0.65em;
+    font-size: 0.6em;
   }
 }
