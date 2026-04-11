@@ -162,6 +162,7 @@ body {
 .screen {
   width: 100%;
   height: 85vh;
+  box-sizing: border-box;
   background: var(--bg);
   border: 1px solid hsl(41 20% 20% / 0.8);
   border-radius: 0;
@@ -524,6 +525,10 @@ li {
   font-size: 0.75rem;
 }
 
+.fingerprint-short {
+  display: none;
+}
+
 .post-date {
   font-family: var(--font-display);
   display: inline-block;
@@ -869,7 +874,13 @@ blockquote {
   body {
     align-items: flex-start;
     justify-content: flex-start;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .crt {
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 
   .screen {
@@ -895,6 +906,12 @@ blockquote {
   .screen-footer-glyph-link {
     flex-direction: column;
     gap: 0.45rem;
+    align-items: center;
+  }
+
+  .screen-footer-glyph-link span {
+    writing-mode: horizontal-tb;
+    text-orientation: mixed;
   }
 
   .status-strip {
@@ -938,5 +955,23 @@ blockquote {
   .cap-row {
     grid-template-columns: 1fr;
     gap: 0.15rem;
+  }
+
+  .fingerprint {
+    display: inline;
+    font-size: 0.65rem;
+    line-height: 1.35;
+  }
+
+  .fingerprint-full {
+    display: none;
+  }
+
+  .fingerprint-short {
+    display: inline;
+  }
+
+  .heading-inline-link {
+    font-size: 0.7em;
   }
 }

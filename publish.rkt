@@ -17,7 +17,7 @@
   ($ "stack run -- build"))
 
 (define (commit-and-push-tracked!)
-  ($ "git add css files favicon.ico images pages posts publish.mts site.hs templates index.html package.yaml nix")
+  ($ "git add css files favicon.svg images pages posts publish.rkt site.hs templates index.html package.yaml nix")
   ($ "git commit -m 'website update'")
   ($ "git push origin master"))
 
